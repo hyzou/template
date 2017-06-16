@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title ng-bind="site.title">玺签宝</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="static/css/login.css"/>
+	<script src="./static/js/vendor/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+  	<div class="loginBg">
+  		<div class="login_container boxsbb">
+  			<div class="loginLogo"></div>
+  			<div class="loginChange">
+  				<ul class="loginTab">
+  					<li data-index='1' class="boxsbb loginTabActive">登录</li>
+  					<li data-index='2' class="boxsbb">注册</li>
+  				</ul>
+  				<div class="signbox displayNo">
+  					<ul>
+  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="登录名" /></li>
+  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="手机号/邮箱号" /></li>
+  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="密码" /></li>
+  						<li class="boxsbb posiRel">
+  							<input type="text" class="boxsbb" placeholder="6位数验证码" />
+  							<span class="sendTelCode posiAbs loginYzm">点击发送验证码</span>
+  						</li>
+  					</ul>
+	  				<div class="setbox">
+	  					<div class="setBtn">
+	  						注册玺签宝
+	  					</div>
+	  					<div class="readOrders">
+	  						点击「注册」按钮即代表你同意<span>《玺签宝注册协议》</span>
+	  					</div>
+	  				</div>
+		  			<div class="download">
+		  				下载玺签宝
+		  			</div>
+  				</div>
+  				<div class="loginbox">
+  					<ul>
+  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="手机号/邮箱号/登录名" /></li>
+  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="密码" /></li>
+  					</ul>
+	  				<div class="setbox">
+	  					<div class="readOrders loginread">
+	  						<a class="floatLeft"><span>手机验证码登录</span></a>
+	  						<a class="floatRight">忘记密码</a>
+	  					</div>
+	  					<div id="login" class="setBtn loginread">
+	  						登录
+	  					</div>
+	  					<div style="width: 100%;height: 30px;"></div>
+	  				</div>
+		  			<div class="download marginTop50">
+		  				下载玺签宝
+		  			</div>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+    <script type="text/javascript">
+    	$("#login").on('click',function(){
+    		window.location.replace("./app.htm");
+    		localStorage.setItem('cookie','1')
+    	})
+    	$(".loginTab li").on('click',function(){
+    		var idx = $(this).data('index');
+    		$(this).addClass('loginTabActive');
+    		$(this).siblings().removeClass('loginTabActive');
+    		if(idx == '1'){
+    			$(".loginbox").removeClass('displayNo');
+    			$(".signbox").addClass('displayNo');
+    		}else{
+    			$(".loginbox").addClass('displayNo');
+    			$(".signbox").removeClass('displayNo');
+    		}
+    	})
+    </script>
+</body>
+</html>

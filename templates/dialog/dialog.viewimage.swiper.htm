@@ -1,0 +1,6 @@
+<a class="prev-img iconfont" ng-click="prevImage()">&#xe619;</a>
+<a class="next-img iconfont" ng-click="nextImage()">&#xe618;</a>
+<a class="img-rotate iconfont" ng-click="rotateImg()">&#xe617;</a>
+<a class="image-view-close" ng-click="closeThisDialog()"></a>
+<img ng-src="{{globalImgPath + nowImages[nowImageIdx]}}" ng-class="getRotate()" ng-style="rotateStyle()" class="fullview-image">
+<div class="fullview-name" ng-if="nowNames[nowImageIdx]">{{nowNames[nowImageIdx]}}</div>

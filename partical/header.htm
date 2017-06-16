@@ -1,0 +1,15 @@
+<div class="headlogo floatLeft"></div>
+<div class="userInfo floatRight posiRel" ng-mouseenter="seen = 'true'" ng-mouseleave="seen = 'false'">
+	<div class="userName floatRight">
+		您好,{{user.userName}}
+		<span class="arrow">▼</span>
+	</div>
+	<div class="userLogo floatRight"></div>
+	<div class="tool" ng-show="seen == 'true'" ng-hide="seen == 'false'">
+		<ul>
+			<li ng-click="change()">切换目录</li>
+			<li ng-click="loginOut()">退出登录</li>
+		</ul>
+	</div>
+	<div class="clearfix"></div>
+</div>

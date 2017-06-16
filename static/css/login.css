@@ -1,0 +1,212 @@
+*{
+	margin: 0;
+	bottom: 0;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+  font-size: 14px;
+}
+
+h1, h2 {
+  font-weight: normal;
+}
+
+ul,li,dl,dt,dd,ol {
+  list-style-type: none;
+  padding: 0;
+}
+input,textarea,select,option,details,summary{
+	outline: none;
+	border: none;
+}
+a {
+  color: #42b983;
+  cursor: pointer;
+}
+
+/*公共样式开始*/
+.boxsbb{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+.posiRel{
+	position:relative;
+}
+.posiAbs{
+	position:absolute;
+}
+.sendTelCode{
+	height: 50px;
+	line-height: 50px;
+	color: #fff;
+	background: #3499da;
+	padding: 0 20px;
+}
+.displayNo{
+	display: none;
+}
+.floatLeft{
+	float: left;
+}
+.floatRight{
+	float: right;
+}
+.marginTop50{
+	margin-top: 50px !important;
+}
+/*公共样式结束*/
+
+/*登录页面开始*/
+.loginBg{
+	position:fixed;
+	top: 0;
+	bottom:0;
+	left: 0;
+	right: 0;
+	background: url(assets/loginBg.png);
+	background-size: 100%;
+	-webkit-background-size: 100%;
+	-moz-background-size: 100%;
+}
+.login_container{
+	width: 420px;
+	height: 670px;
+	position:absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	-moz-transform: translate(-50%,-50%);
+	-ms-transform: translate(-50%,-50%);
+	-webkit-transform: translate(-50%,-50%);
+	-webkit-box-shadow: 0 0 10px 3px rgba(0,0,0,.3);  
+	-moz-box-shadow: 0 0 10px 3px rgba(0,0,0,.3);  
+	box-shadow: 0 0 10px 3px rgba(0,0,0,.3);
+	background: #fff;
+	padding: 40px 50px;
+	color: #7c7c7c;
+}
+.loginLogo{
+	width: 100%;
+	height: 49px;
+	background: url(assets/login.png) center no-repeat;
+	margin-bottom: 40px;
+}
+.loginChange{
+	width: 100%;
+	/*border-bottom: 1px solid #dfdfdf;*/
+}
+.loginTab{
+	width: 100%;
+	height: 50px;
+}
+.loginTab li{
+	float: left;
+	width: 50%;
+	border-top: 1px solid #dfdfdf;
+	line-height: 50px;
+	text-align: center;
+}
+.loginTab li:hover{
+	border-top: 1px solid #3db0da;
+	color: #3db0da;
+}
+.loginTabActive{
+	border-top: 1px solid #3db0da !important;
+	color: #3db0da !important;
+}
+
+.signbox{
+	width: 100%;
+	height: 380px;
+}
+.signbox ul{
+	width: 100%;
+	margin-bottom: 50px;
+}
+.signbox ul li,.loginbox ul li{
+	width: 100%;
+	height: 50px;
+	border: 1px solid #dfdfdf;
+	padding: 15px 10px;
+	margin-bottom: 10px;
+}
+.signbox ul li:last-child,.loginbox ul li:last-child{
+	margin-bottom: 0;
+}
+
+.signbox ul li input,.loginbox ul li input{
+	width: 100%;
+	height: 100%;
+	display: inline-block;
+}
+
+.loginbox{
+	width: 100%;
+	height: 290px;
+}
+.loginbox ul{
+	width: 100%;
+}
+.loginbox ul li{
+	margin-bottom: 20px;
+}
+.loginYzm{
+	right: 0;
+	top: -1px;
+}
+.setbox{
+	width: 100%;
+	border-bottom: 1px solid #dfdfdf;
+}
+.setBtn{
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	color: #fff;
+	background: #3499da;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	font-size: 20px;
+	text-align: center;
+	cursor: pointer;
+}
+.readOrders{
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	font-size: 12px;
+}
+.readOrders span{
+	color: #3499da;
+	cursor: pointer;
+}
+.loginread{
+	margin-bottom: 20px;
+}
+.download{
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	color: #3499da;
+	background: #fff;
+	border: 1px solid #3499da;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	font-size: 20px;
+	text-align: center;
+	cursor: pointer;
+	margin-top: 20px;
+}
+/*登录页面结束*/
+
+

@@ -1,0 +1,15 @@
+<div class="main-container">
+	<div class="">
+		index
+	</div>
+	<ul class="idxItemList">
+		<li ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
+			<div class="itemCon" ng-class="{'itemConActive': item == selectd }">
+			</div>
+		</li>
+		<div class="clearfix"></div>
+	</ul>
+	<ul class="idxConList">
+		<li ng-repeat="list in contentList track by $index"></li>
+	</ul>
+</div>

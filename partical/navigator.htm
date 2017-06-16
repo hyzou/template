@@ -1,0 +1,6 @@
+<div class="menus">
+	<a class="menu-item" ng-repeat="item in globalNavs track by $index" ng-class="{'menu-active': site.menuKey == item.key}" ng-href="{{'#'+getNavRoute(item.key)}}" ng-if="getNavRoute(item.key)">
+		<span class="menu-title">{{item.name}}</span>
+		<span class="menu-counter floatRight" ng-if="item.count > 0">({{item.count}})</span>
+	</a>
+</div>

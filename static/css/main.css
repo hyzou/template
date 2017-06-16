@@ -1,0 +1,186 @@
+/*reset*/
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body *,body *:after,body *:before {
+	box-sizing: border-box;
+}
+
+body,input,select,textarea,a,pre {
+	font-family: 'Heiti SC', 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', Helvetica, sans-serif;
+	font-size: 14px;
+	color: #333;
+	line-height: 1;
+	outline: none;
+}
+em,i {
+	font-style: normal;
+}
+a {
+	text-decoration: none;
+	cursor: pointer;
+}
+ul,li{
+	list-style: none;
+}
+
+/*公共样式定义*/
+	.floatLeft{
+		float: left;
+	}
+	.floatRight{
+		float: right;
+	}
+	.displayInLB{
+		display: inline-block;
+	}
+	.posiRel{
+		position:relative;
+	}
+	.posiAbs{
+		position:absolute;
+	}
+	.clearfix{
+		clear: both;
+	}
+/*公共样式定义*/
+/*顶部导航开始*/
+	.header{
+		width: 100%;
+		height: 60px;
+		border-bottom: 1px solid #ccc;
+		position: absolute;
+		top: 0;
+		left: 0;			
+		background: #fff;
+		overflow: visible;
+	}
+	.headlogo{
+		background: url(img/mainLogo.png) no-repeat left;
+		width: 200px;
+		height: 100%;
+		margin-left: 25px;
+	}
+	.userInfo{
+		height: 100%;
+		line-height: 60px;
+		margin-right: 35px;
+	}
+	.userLogo{
+		width: 30px;
+		height: 30px;
+		margin: 15px 10px;
+		border-radius: 50%;
+		-moz-border-radius: 50%;
+		-webkit-border-radius: 50%;
+		background: lightblue;
+	}
+	.userName{
+		margin: 0;
+		cursor: pointer;
+	}
+	.tool{
+		position: absolute;
+		z-index: 9;
+		width: 150px;
+		top: 50px;
+		right: 0;
+		margin-left: -75px;
+		background: #fff;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+	}
+/*顶部导航结束*/
+
+/*主体开始*/
+	.container{
+		position: fixed;
+		top: 60px;
+		left: 0;
+		right:0;
+		bottom: 0;
+	}
+	/*左侧边栏导航开始*/
+		.sider{
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 160px;
+			height: 100%;
+			background: #333742;
+		}
+		.menus{
+			color: #fff;
+		}
+		.menus a{
+			display: block;
+			line-height: 50px;
+			color: #a7b1c2;
+			padding: 0 15px 0 25px;
+		}
+		.menus a:hover{
+			color: #fff;
+			background: #292c35;
+			border-left: 3px solid #00bcd4;
+		}
+		.menu-active{
+			color: #fff;
+			background: #292c35;
+			border-left: 3px solid #00bcd4;
+		}
+	/*左侧边栏导航结束*/
+	
+	/*主体内容开始*/
+		.main{
+			position: absolute;
+			left: 160px;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			width: calc(100% - 160px);
+			width: -moz-calc(100% - 160px);
+			width: -webkit-calc(100% - 160px);
+			overflow-y: scroll;
+			background: #f3f3f4;
+			padding: 20px;
+		}
+		/*所有内页页面主容器*/
+		.main-container{
+			width: 100%;
+			min-height: 100%;
+		}
+		.main-container-white{
+			width: 100%;
+			min-height: 100%;
+			background: #fff;
+		}
+		/*首页私有样式*/
+		.idxItemList li{
+			float: left;
+			width: 33.333333%;
+			height: 160px;
+			padding: 0 20px 20px 0;
+			margin: 0 !important;
+		}
+		.itemCon{
+			width: 100%;
+			height: 100%;
+			background: #fff;
+		}
+		.itemCon:hover{
+			-webkit-box-shadow: 0 0 15px 3px rgba(0,0,0,.1);  
+			-moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.1);  
+			box-shadow: 0 0 15px 3px rgba(0,0,0,.1);
+		}
+		.itemConActive{
+			-webkit-box-shadow: 0 0 15px 3px rgba(0,0,0,.1);  
+			-moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.1);  
+			box-shadow: 0 0 15px 3px rgba(0,0,0,.1);
+		}
+	/*主体内容结束*/
+/*主体结束*/
