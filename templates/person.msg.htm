@@ -1,15 +1,43 @@
-<div class="main-container">
-	<div class="">
-		person234
+<div class="main-container-short-white">
+	<div class="pTitle">
+		消息设置
 	</div>
-	<ul class="idxItemList">
-		<li ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
-			<div class="itemCon" ng-class="{'itemConActive': item == selectd }">
+	<div class="pContent">
+		<div class="msgSet mrb40">
+			<div class="msgSetLogo boxCircle bgColorblue floatLeft"></div>
+			<div class="msgSetText floatLeft mrl15">
+				<p class="msgSetTextTit">短信通知</p>
+				<p class="msgSetTextTet">若关闭，进行实名认证、文件签署、完成文件签署时，将不通过短信的方式向您注册的手机发送通知短信</p>
 			</div>
-		</li>
-		<div class="clearfix"></div>
-	</ul>
-	<ul class="idxConList">
-		<li ng-repeat="list in contentList track by $index"></li>
-	</ul>
+			<div class="msgSetBtn floatLeft mrl15">
+				<div class="openbtnbg">
+					<div class="openbtnceil posiRel floatRight">
+						<div class="openbtntail">
+							<div class="openbtntailceil floatLeft"></div>
+							<div class="openbtntailceil floatRight"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="msgSet">
+			<div class="msgSetLogo boxCircle bgColorblue floatLeft"></div>
+			<div class="msgSetText floatLeft mrl15">
+				<p class="msgSetTextTit">邮件通知</p>
+				<p class="msgSetTextTet">若关闭，进行实名认证、文件签署、完成文件签署时，将不通过邮件的方式向您注册的邮箱发送通知邮件</p>
+			</div>
+			<div class="msgSetBtn floatLeft mrl15">
+				<div class="closebtnbg">
+					<div class="closebtnceil posiRel">
+						<div class="closebtntail">
+							<div class="closebtntailceil floatLeft"></div>
+							<div class="closebtntailceil floatRight"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
 </div>

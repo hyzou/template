@@ -532,12 +532,6 @@ kry.controller('global', [
 		$root.showSubmenu = false;
 		$root.phNotice = null;
 		$root.InterValObj = null;
-		$scope.personSet = [
-	        {
-	            "key":"index",
-	            "name":"个人信息"
-	        }
-	    ];
 
 		$root.setSite = function(o) {
 			$scope.site = angular.merge($scope.site, o);
@@ -561,9 +555,10 @@ kry.controller('global', [
 			fd.append('fileData', file);
 			srv.upload(order, flag, isocr, role, type, fd, cb);
 		}
-		$cookies.put(config.cookie.id, 1);
-		//$root.uid = $cookies.get(config.cookie.id);
-		$root.uid = localStorage.getItem('cookie');
+		$cookies.put(config.cookie.id, localStorage.getItem('cookie'));
+		localStorage.removeItem('cookie');
+		$root.uid = $cookies.get(config.cookie.id);
+		//$root.uid = localStorage.getItem('cookie');
 		if (!$root.uid) {
 			var diag = base.alert('你未登录，或凭据已过期，请先登录');
 			diag.closePromise.then(function(d) {
@@ -616,33 +611,39 @@ kry.controller('global', [
 				return $scope.navRoute.srv[key].route;
 			else return false;
 		}
-//		if($location.$$url != '/'){
-//			$scope.navRoute = navs["person"];
-//			getNavTip();
-//			$scope.globalNavs = $scope.personNavs;
-//			if ($scope.navRoute.srv[key])
-//				return $scope.navRoute.srv[key].route;
-//			else return false;
-//		};
+		$scope.backtoIndex = function(key) {
+			$scope.navRoute = navs["main"];
+			getNavTip();
+			$scope.globalNavs = $scope.mainNavs;
+			if ($scope.navRoute.srv[key])
+				return $scope.navRoute.srv[key].route;
+			else return false;
+		}
+		checkUrl();
+		function checkUrl(key){
+			if($location.$$url != '/' && $location.$$url.substring(1,5) == 'pers'){
+				$scope.navRoute = navs["person"];
+				getNavTip();
+				$scope.globalNavs = $scope.personNavs;
+				if ($scope.navRoute.srv[key])
+					return $scope.navRoute.srv[key].route;
+				else return false;
+			}else{
+				$scope.navRoute = navs["main"];
+				getNavTip();
+				$scope.globalNavs = $scope.mainNavs;
+				$scope.getNavRoute();
+			};
+		}
 		$scope.loginOut = function() {
 			$window.location.href = config.login;
+			localStorage.clear();
 			/*srv.loginOut(function(xhr) {
 				if (!xhr.code) {
 					$window.location.href = config.login;
 				} else
 					base.alert('退出失败，请刷新后重试');
 			})*/
-		}
-
-		$scope.modifyPassword = function() {
-			$root.showSubmenu = false;
-			dialog.open({
-				templateUrl: 'templates/dialog/dialog.password.htm',
-				scope: $scope,
-				closeByDocument: false,
-				controller: 'dialog.password',
-				className: 'ngdialog-theme-input'
-			})
 		}
 
 		function getNavTip() {
@@ -682,6 +683,26 @@ kry.controller('global', [
 		        {
 		            "key":"personInfo",
 		            "name":"个人信息",
+		            "count":0
+		        },
+		        {
+		            "key":"personInforec",
+		            "name":"信息认证",
+		            "count":0
+		        },
+		        {
+		            "key":"personSign",
+		            "name":"我的签名",
+		            "count":0
+		        },
+		        {
+		            "key":"personSafe",
+		            "name":"安全设置",
+		            "count":0
+		        },
+		        {
+		            "key":"personMsg",
+		            "name":"消息设置",
 		            "count":0
 		        }
 		    ];
@@ -731,7 +752,23 @@ kry.factory('navs', function() {
 				"personInfo": {
 					"code": 1,
 					"route": "/personInfo"
-				}
+				},
+				"personInforec": {
+					"code": 1,
+					"route": "/personInforec"
+				},
+				"personMsg": {
+					"code": 1,
+					"route": "/personMsg"
+				},
+				"personSafe": {
+					"code": 1,
+					"route": "/personSafe"
+				},
+				"personSign": {
+					"code": 1,
+					"route": "/personSign"
+				},
 			}
 		}
 	}
@@ -834,6 +871,20 @@ kry.controller('ctrl.main.signFinish', [
 			title: '已完成签署',
 			menuKey: 'signFinish'
 		});
+		$('#red').smartpaginator({ 
+			totalrecords: 32, 
+			recordsperpage: 4, 
+			length: 4, 
+			next: 'Next', 
+			prev: 'Prev', 
+			first: 'First', 
+			last: 'Last', 
+			theme: 'red', 
+			controlsalways: true, 
+			onchange: function (newPage) {
+            	alert('Page # ' + newPage);
+            }	
+       })
 	}
 ])
 kry.controller('ctrl.main.docBack', [
@@ -902,6 +953,98 @@ kry.controller('ctrl.person.info', [
 		$root.setSite({
 			title: '个人信息',
 			menuKey: 'personInfo'
+		});
+	}
+])
+kry.controller('ctrl.person.inforec', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '信息认证',
+			menuKey: 'personInforec'
+		});
+	}
+])
+kry.controller('ctrl.person.msg', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '消息设置',
+			menuKey: 'personMsg'
+		});
+	}
+])
+kry.controller('ctrl.person.safe', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '安全设置',
+			menuKey: 'personSafe'
+		});
+	}
+])
+kry.controller('ctrl.person.sign', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '我的签名',
+			menuKey: 'personSign'
 		});
 	}
 ])

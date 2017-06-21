@@ -12,6 +12,10 @@ var routes = {
 		'/signFinish': 'main.signFinish',
 		'/docBack': 'main.docBack',
 		'/drafts': 'main.drafts',
-		'/personInfo': 'person.info'
+		'/personInfo': 'person.info',
+		'/personInforec': 'person.inforec',
+		'/personMsg': 'person.msg',
+		'/personSafe': 'person.safe',
+		'/personSign': 'person.sign'
 	}
 }

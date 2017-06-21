@@ -1,15 +1,53 @@
-<div class="main-container">
-	<div class="">
-		person234
+<div class="main-container-white">
+	<div class="pTitle">
+		个人信息
 	</div>
-	<ul class="idxItemList">
-		<li ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
-			<div class="itemCon" ng-class="{'itemConActive': item == selectd }">
-			</div>
-		</li>
-		<div class="clearfix"></div>
-	</ul>
-	<ul class="idxConList">
-		<li ng-repeat="list in contentList track by $index"></li>
-	</ul>
+	<div class="pHeadlogo">
+		<div class="pHeadlogoPic"></div>
+		<div class="pHeadlogoText">
+			修改头像
+		</div>
+	</div>
+	<div class="pSetmsg">
+		<table>
+			<tr>
+				<td>登录名:</td>
+				<td><input type="text" /></td>
+			</tr>
+			<tr>
+				<td><i>*</i>身份证号:</td>
+				<td><input type="text" /></td>
+			</tr>
+			<tr>
+				<td><i>*</i>常用地址:</td>
+				<td>
+					<select>
+						<option value="" disabled selected>省</option>
+					</select>
+					<select>
+						<option value="" disabled selected>市</option>
+					</select>
+					<select>
+						<option value="" disabled selected>区/县</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="text" placeholder="详细地址" /></td>
+			</tr>
+			<tr>
+				<td>公司名称:</td>
+				<td><input type="text" /></td>
+			</tr>
+			<tr>
+				<td>工作职位:</td>
+				<td><input type="text" /></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><div class="pSetmsgSubmit bgColortextdanger">提交</div></td>
+			</tr>
+		</table>
+	</div>
 </div>

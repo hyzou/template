@@ -1,15 +1,232 @@
-<div class="main-container">
-	<div class="">
-		person234
+<div class="main-container-short-white mrb20">
+	<div class="pTitle">
+		信息认证
 	</div>
-	<ul class="idxItemList">
-		<li ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
-			<div class="itemCon" ng-class="{'itemConActive': item == selectd }">
+	<div class="pContent">
+		<div class="pMsgRec floatLeft posiRel">
+			<div class="pMsgRecItem mrAuto">
+				<div class="pMsgReclogo boxCircle floatLeft"></div>
+				<div class="pMsgRectext floatLeft">
+					<p class="pMsgRectextTit">手机认证<span class="bgColorsuc boxCircle">✔</span></p>
+					<p class="pMsgRectextTet">您已完成手机认证</p>
+				</div>
+				<div class="vertail-line-2-78"></div>
+				<div class="clearfix"></div>
 			</div>
-		</li>
+		</div>
+		<div class="pMsgRec floatLeft posiRel">
+			<div class="pMsgRecItem mrAuto">
+				<div class="pMsgReclogo boxCircle floatLeft"></div>
+				<div class="pMsgRectext floatLeft">
+					<p class="pMsgRectextTit">邮箱认证<span class="bgColordanger boxCircle">!</span></p>
+					<p class="pMsgRectextTet">邮箱认证后可使用更多服务</p>
+				</div>
+				<div class="vertail-line-2-78"></div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<div class="pMsgRec floatLeft posiRel">
+			<div class="pMsgRecItem mrAuto">
+				<div class="pMsgReclogo boxCircle floatLeft"></div>
+				<div class="pMsgRectext floatLeft">
+					<p class="pMsgRectextTit">实名认证<span class="bgColordanger boxCircle">!</span></p>
+					<p class="pMsgRectextTet">实名认证后可使用更多服务</p>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
 		<div class="clearfix"></div>
-	</ul>
-	<ul class="idxConList">
-		<li ng-repeat="list in contentList track by $index"></li>
-	</ul>
+	</div>
+</div>
+
+<div class="main-container-short-white mrb20">
+	<div class="pTitle">
+		邮箱认证
+	</div>
+	<div class="pContent">
+		<div class="pMailRecTips floatLeft">
+			<p class="pMailRecTit">邮箱认证后你可享受以下服务:</p>
+			<p class="pMailRecTet"><b>邮箱账户登录:</b>直接使用邮箱登录到玺签宝。</p>
+			<p class="pMailRecTet"><b>重要事件提醒:</b>签章信息，可及时收到邮箱提醒。</p>
+			<p class="pMailRecTet"><b>找回密码:</b>忘记密码时，可使用邮箱找回密码。</p>
+		</div>
+		<div class="pMailRecDatas floatLeft">
+			<div class="pMailRecItem posiRel mrAuto">
+				<div class="pMailRecItembg"></div>
+				<div class="pMailRecItemTip">
+					<ul>
+						<li class="floatLeft">
+							<span>1.填写邮箱号码</span>
+							<span class="arrow"></span>
+						</li>
+						<li class="floatLeft">
+							<span>2.接收并填写验证码</span>
+							<span class="arrow"></span>
+						</li>
+						<li class="floatLeft">
+							<span>3.认证成功</span>
+							<span class="arrow"></span>
+						</li>
+					</ul>
+				</div>
+				<div class="pMailRecGroupCon posiAbs">
+					<div class="pMailRecGroup mrb40">
+						<div class="pMailReclogo boxCircle bgColorblue floatLeft">1</div>
+						<div class="pMailRectext floatLeft">请输入邮箱号:</div>
+						<div class="pMailRecIpt floatLeft"><input type="text" /></div>
+						<div class="pMailRecBtn bgColorblue floatLeft">获取验证码</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="pMailRecGroup">
+						<div class="pMailReclogo boxCircle bgColorblue floatLeft">2</div>
+						<div class="pMailRectext floatLeft">请输入验证码:</div>
+						<div class="pMailRecIpt floatLeft"><input type="text" /></div>
+						<div class="pMailRecBtn bgColorblue floatLeft">提交</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div class="main-container-short-white mrb20">
+	<div class="pTitle">
+		手机认证
+	</div>
+	<div class="pContent">
+		<div class="pMailRecTips floatLeft">
+			<p class="pMailRecTit">手机认证后你可享受以下服务:</p>
+			<p class="pMailRecTet"><b>手机账户登录:</b>直接使用手机号登录到玺签宝。</p>
+			<p class="pMailRecTet"><b>重要事件提醒:</b>签章信息，可及时收到短信提醒。</p>
+		</div>
+		<div class="pMailRecDatas floatLeft">
+			<div class="pMailRecItem posiRel mrAuto">
+				<div class="pMailRecItembg"></div>
+				<div class="pMailRecItemTip">
+					<ul>
+						<li class="floatLeft">
+							<span>1.填写手机号码</span>
+							<span class="arrow"></span>
+						</li>
+						<li class="floatLeft">
+							<span>2.接收并填写验证码</span>
+							<span class="arrow"></span>
+						</li>
+						<li class="floatLeft">
+							<span>3.认证成功</span>
+							<span class="arrow"></span>
+						</li>
+					</ul>
+				</div>
+				<div class="pMailRecGroupCon posiAbs">
+					<div class="pMailRecGroup mrb40">
+						<div class="pMailReclogo boxCircle bgColorblue floatLeft">1</div>
+						<div class="pMailRectext floatLeft">请输入手机号:</div>
+						<div class="pMailRecIpt floatLeft"><input type="text" /></div>
+						<div class="pMailRecBtn bgColorblue floatLeft">获取验证码</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="pMailRecGroup">
+						<div class="pMailReclogo boxCircle bgColorblue floatLeft">2</div>
+						<div class="pMailRectext floatLeft">请输入验证码:</div>
+						<div class="pMailRecIpt floatLeft"><input type="text" /></div>
+						<div class="pMailRecBtn bgColorblue floatLeft">提交</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<div class="main-container-short-white">
+	<div class="pTitle">
+		实名认证
+	</div>
+	<div class="pContent">
+		<div class="pNameRecTips floatLeft">
+			<p class="pMailRecTit">实名认证后你可享受以下服务:</p>
+			<p class="pMailRecTet"><b>设置签章:</b>设计常规签章与个性化签章</p>
+			<p class="pMailRecTet"><b>使用签章:</b>使用签章功能</p>
+			<p class="pMailRecTet"><b>赠送服务:</b>免费使用基础签章功能</p>
+		</div>
+		<div class="pNameRecDatas floatLeft">
+			<div class="pNameRecItem mrAuto">
+				<div class="pNameRecItemTip">
+					<ul>
+						<li class="floatLeft pNameRecItemTipAct">
+							<span>上传身份证认证</span>
+						</li>
+						<li class="floatLeft">
+							<span>通过银行预留信息认证</span>
+						</li>
+						<div class="clearfix"></div>
+					</ul>
+				</div>
+				<div class="idRecGroupCon mrt20">
+					<table width="490">
+						<tr>
+							<td>
+								<div class="idRecGroup mrAuto">
+									<div class="idRecGroupTit">
+										身份证信息页
+									</div>
+									<div class="idRecGroupPic">
+										<div class="idPicFront"></div>
+									</div>
+									<div class="idRecGroupBtn mrt10">
+										<a href="javascript:;" class="a-upload">
+										    <input type="file" name="" id="">上传文件
+										</a>
+									</div>
+								</div>
+							</td>
+							<td>
+								<div class="idRecGroup mrAuto">
+									<div class="idRecGroupTit">
+										身份证国徽页
+									</div>
+									<div class="idRecGroupPic">
+										<div class="idPicBack"></div>
+									</div>
+									<div class="idRecGroupBtn mrt10">
+										<a href="javascript:;" class="a-upload">
+										    <input type="file" name="" id="">上传文件
+										</a>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="idRecGroup mrAuto mrt10">
+									<div class="idRecGroupTit">
+										手持身份证照
+									</div>
+									<div class="idRecGroupPic">
+										<div class="idPicPeo"></div>
+									</div>
+									<div class="idRecGroupBtn mrt10">
+										<a href="javascript:;" class="a-upload">
+										    <input type="file" name="" id="">上传文件
+										</a>
+									</div>
+								</div>
+							</td>
+							<td class="posiRel">
+								<div class="posiAbs idRecGroupConfirm">
+									<a class="btn-middle bgBorderblue borderBlue">上一步</a>	
+									<a class="btn-middle bgColorblue borderBlue mrl15">确定</a>	
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
 </div>

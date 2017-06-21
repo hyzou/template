@@ -1,12 +1,40 @@
 <div class="main-container">
 	<ul class="idxItemList">
-		<li ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
-			<div class="itemCon" ng-class="{'itemConActive': item == selectd }">
+		<li class="floatLeft" ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
+			<div class="itemCon pdt35" ng-class="{'itemConActive': item == selectd }">
+				<div class="idxItem">
+					<div class="idxItemLogo boxCircle posiRel floatLeft" ng-class="{'bgColorsuc': $index == '0','bgColorblue': $index == '1','bgColorwarn': $index == '2' }">
+						<div class="idxItemLogoceil">
+							<div class="square"></div>
+							<div class="triangle-down"></div>
+						</div>
+					</div>
+					<div class="idxItemText mrl15 floatLeft">
+						<p ng-class="{'idxItemTitFir': $index == '0','idxItemTit': $index !='0'}">{{item}}</p>
+						<p class="idxItemTetFir" ng-if="$index == '0'">当下支持:doc,docx,pdf,</br>jpg,png,jpeg,bmp格式</p>
+					</div>
+					<div class="clearfix"></div>
+				</div>
 			</div>
 		</li>
 		<div class="clearfix"></div>
 	</ul>
-	<ul class="idxConList">
-		<li ng-repeat="list in contentList track by $index"></li>
+	<ul class="itemList">
+		<li class="floatLeft" ng-repeat="role in mainNavs track by $index" >
+			<div class="itemCon posiRel">
+				<div class="pTitle">
+					{{role.name}}
+				</div>
+				<div class="itemcontent">
+					<span class="idxItemLogo boxCircle bgColorblack displayBl floatLeft">
+						
+					</span>
+					<span class="displayBl floatLeft mrl15">
+						<p class="idxItemTit bigFont50">{{role.count}}<span class="bigFont36">次</span></p>
+					</span>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+		</li>
 	</ul>
 </div>
