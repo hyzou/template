@@ -1055,14 +1055,28 @@ kry.controller('ctrl.main.cloudFile', [
 			title: '云文件',
 			menuKey: 'cloudFile'
 		});
+		$scope.showRank = false;
+		$scope.fileTitleArr = ['员工公寓租赁合同','员工公寓租赁合同1','员工公寓租赁合同2','员工公寓租赁合同3'];
+		$scope.fileTitle = function(idx){
+			$scope.selectd = idx;
+		}
 		$('#edit').editable({
 			inlineMode: false,
-			alwaysBlank: true
-		})
+			alwaysBlank: true,
+			buttons: ["bold", "italic", "underline", "strikeThrough", "fontSize", "fontFamily", "color", "formatBlock", "blockStyle", "align", "insertOrderedList", "insertUnorderedList", "outdent", "indent", "insertHorizontalRule", "undo", "redo"],
+            language: 'zh_cn'
+		});
 		$scope.saveEditor = function(){
 			debugger
 			var content = $("#edit .froala-element").eq(0)[0].innerHTML;
 			console.log(content)
+		}
+		$scope.rankCondition = function(){
+			if($scope.showRank){
+				$scope.showRank = false;
+			}else{
+				$scope.showRank = true;
+			}
 		}
 	}
 ])

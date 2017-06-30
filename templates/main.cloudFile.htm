@@ -6,8 +6,8 @@
 				<img src="../template/static/css/img/newFile.png"/>
 			</div>
 			<div class="triangleDbtn cursor posiRel floatLeft">
-				<img src="../template/static/css/img/moreBtn.png"/>
-				<div class="searchType itemConActive">
+				<img src="../template/static/css/img/moreBtn.png" ng-click="rankCondition()"/>
+				<div class="searchType itemConActive" ng-if="showRank">
 					<ul>
 						<li class="colorBlue">创建时间<span class="mrl10">✔</span></li>
 						<li>修改时间<span class="mrl10">✔</span></li>
@@ -17,11 +17,11 @@
 				</div>
 			</div>
 		</div>
-		<div class="cloudFileList">
-			<a><img class="floatLeft" src="../template/static/css/img/file.png"/><span class="mrl10 floatRight">1.员工公寓租赁合同</span></a>
-			<a class="cloudFileListActive"><img class="floatLeft" src="../template/static/css/img/file.png"/><span class="floatRight">2.员工公寓租赁合同员工公寓租赁合同员</span></a>
-			<a><img class="floatLeft" src="../template/static/css/img/file.png"/><span class="mrl10 floatRight">2.员工公寓租赁合同员工公寓租赁合同员</span></a>
-			<a><img class="floatLeft" src="../template/static/css/img/file.png"/><span class="mrl10 floatRight">1.员工公寓租赁合同</span></a>
+		<div class="cloudFileList" id="fileTitleList">
+			<a ng-repeat="titleItem in fileTitleArr track by $index" ng-click="fileTitle($index)" ng-class="{'cloudFileListActive': $index == selectd }">
+				<img class="floatLeft" src="../template/static/css/img/file.png"/>
+				<span class="mrl10 floatRight">{{$index+1}}.{{titleItem}}</span>
+			</a>
 		</div>
 		<div class="cloudModelBtn cursor">合同模板</div>
 	</div>
@@ -47,4 +47,4 @@
 <script src="static/js/third/editor/js/plugins/font_family.min.js"></script>
 <script src="static/js/third/editor/js/plugins/font_size.min.js"></script>
 <script src="static/js/third/editor/js/plugins/block_styles.min.js"></script>
-<script src="static/js/third/editor/js/plugins/video.min.js"></script>
+<script src="static/js/third/editor/js/langs/zh_cn.js"></script>

@@ -2066,3 +2066,10 @@ input[type=radio]:checked:after  {
 .ngdialog-theme-view .ngdialog-close {
   display: none;
 }
+
+/*部分插件样式修改*/
+.froala-element{
+	height: calc(100% - 40px);
+	height: -moz-calc(100% - 40px);
+	height: -webkit-calc(100% - 40px);
+}
