@@ -1,15 +1,109 @@
-<div class="main-container">
-	<div class="">
-		个人签名
+<div class="main-container-short-white mrb20">
+	<div class="pTitle">
+		选择默认签名
 	</div>
-	<ul class="idxItemList">
-		<li ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
-			<div class="itemCon" ng-class="{'itemConActive': item == selectd }">
+	<div class="pContent">
+		<div class="signPicCon" style="height: 240px;">
+			<ul>
+				<li class="floatLeft">
+					<p>华文行楷框</p>
+					<div class="signFont">
+						<img src="../template/static/css/img/sign.png"/>
+					</div>
+					<div class="signStatus cursor" ng-if="fontChoose" ng-click="fontChose()">
+						<img src="../template/static/css/img/checked.png" class="floatLeft">
+						<span class="colorSuc floatLeft mrl10">默认</span>
+					</div>
+					<div class="signStatus cursor" ng-if="!fontChoose" ng-click="fontChose()">
+						<img src="../template/static/css/img/inhert.png" class="floatLeft">
+						<span class="colorGray floatLeft mrl10">设为默认</span>
+					</div>
+					<div class="signColor">
+						<a class="btn-mini">黑色</a>
+						<a class="btn-mini bgColordanger borderdanger colorWhite">红色</a>
+						<a class="btn-mini colorDarkblue">蓝色</a>
+					</div>
+				</li>
+				<li class="floatLeft">
+					<p>华文行楷框</p>
+					<div class="signFont">
+						<img src="../template/static/css/img/sign.png"/>
+					</div>
+					<div class="signStatus cursor" ng-if="fontChoose" ng-click="fontChose()">
+						<img src="../template/static/css/img/checked.png" class="floatLeft">
+						<span class="colorSuc floatLeft mrl10">默认</span>
+					</div>
+					<div class="signStatus cursor" ng-if="!fontChoose" ng-click="fontChose()">
+						<img src="../template/static/css/img/inhert.png" class="floatLeft">
+						<span class="colorGray floatLeft mrl10">设为默认</span>
+					</div>
+					<div class="signColor">
+						<a class="btn-mini">黑色</a>
+						<a class="btn-mini bgColordanger borderdanger colorWhite">红色</a>
+						<a class="btn-mini colorDarkblue">蓝色</a>
+					</div>
+				</li>
+				<li class="floatLeft">
+					<p>华文行楷框</p>
+					<div class="signFont">
+						<img src="../template/static/css/img/sign.png"/>
+					</div>
+					<div class="signStatus cursor" ng-if="fontChoose" ng-click="fontChose()">
+						<img src="../template/static/css/img/checked.png" class="floatLeft">
+						<span class="colorSuc floatLeft mrl10">默认</span>
+					</div>
+					<div class="signStatus cursor" ng-if="!fontChoose" ng-click="fontChose()">
+						<img src="../template/static/css/img/inhert.png" class="floatLeft">
+						<span class="colorGray floatLeft mrl10">设为默认</span>
+					</div>
+					<div class="signColor">
+						<a class="btn-mini">黑色</a>
+						<a class="btn-mini bgColordanger borderdanger colorWhite">红色</a>
+						<a class="btn-mini colorDarkblue">蓝色</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="main-container-short-white mrb20">
+	<div class="pTitle">
+		自建签名
+	</div>
+	<div class="pContent">
+		<div class="pMailRecTips floatLeft">
+			<div class="mrAuto" style="width: 220px;">
+				<div class="pHeadlogoText text_align_left">本地上传</div>
+				<div class="personalSign">
+					<img src="../template/static/css/img/picbg.png"/ width="100%">
+				</div>
+				<div class="idRecGroupBtn mrt10">
+					<a href="javascript:;" class="a-upload">
+					    <input type="file" name="" id="">点击上传
+					</a>
+				</div>
 			</div>
-		</li>
+		</div>
+		<div class="pMailRecDatas floatLeft">
+			<div class="mrAuto" style="width: 440px;">
+				<div class="pHeadlogoText text_align_left">手绘签名</div>
+				<div class="personalSignH5">
+					<div class="qrCode">
+						<img src="../template/static/css/img/qrcode.png"/ width="100%">
+					</div>
+					<div class="qrCodeIntro mrt20">
+						<p>使用说明</p>
+						<p>请使用微信或者手机浏览器的<span class="colorBlue">扫一扫</span>左侧二维码（此二维码五分钟内有效）</p>
+					</div>
+				</div>
+				<div class="idRecGroupBtn mrt10">
+					<a href="javascript:;" class="a-upload">
+					    <input type="button" name="" id="">刷新
+					</a>
+				</div>
+			</div>
+		</div>
 		<div class="clearfix"></div>
-	</ul>
-	<ul class="idxConList">
-		<li ng-repeat="list in contentList track by $index"></li>
-	</ul>
+	</div>
 </div>

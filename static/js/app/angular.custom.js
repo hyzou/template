@@ -528,10 +528,11 @@ kry.controller('global', [
 			menuKey: 'createCustomer'
 		}
 		
-		$root.seen = false;
+		$scope.seen = false;
 		$root.showSubmenu = false;
 		$root.phNotice = null;
 		$root.InterValObj = null;
+		$scope.backToIdx = false;
 
 		$root.setSite = function(o) {
 			$scope.site = angular.merge($scope.site, o);
@@ -604,6 +605,7 @@ kry.controller('global', [
 		}
 
 		$scope.change = function(key) {
+			$scope.backToIdx = true;
 			$scope.navRoute = navs["person"];
 			getNavTip();
 			$scope.globalNavs = $scope.personNavs;
@@ -612,6 +614,7 @@ kry.controller('global', [
 			else return false;
 		}
 		$scope.backtoIndex = function(key) {
+			$scope.backToIdx = false;
 			$scope.navRoute = navs["main"];
 			getNavTip();
 			$scope.globalNavs = $scope.mainNavs;
@@ -622,6 +625,7 @@ kry.controller('global', [
 		checkUrl();
 		function checkUrl(key){
 			if($location.$$url != '/' && $location.$$url.substring(1,5) == 'pers'){
+				$scope.backToIdx = true;
 				$scope.navRoute = navs["person"];
 				getNavTip();
 				$scope.globalNavs = $scope.personNavs;
@@ -629,6 +633,7 @@ kry.controller('global', [
 					return $scope.navRoute.srv[key].route;
 				else return false;
 			}else{
+				$scope.backToIdx = false;
 				$scope.navRoute = navs["main"];
 				getNavTip();
 				$scope.globalNavs = $scope.mainNavs;
@@ -676,6 +681,11 @@ kry.controller('global', [
 		        {
 		            "key":"drafts",
 		            "name":"草稿箱",
+		            "count":0
+		        },
+		        {
+		            "key":"cloudFile",
+		            "name":"云文件",
 		            "count":0
 		        }
 		    ];
@@ -744,6 +754,10 @@ kry.factory('navs', function() {
 				"drafts": {
 					"code": 8,
 					"route": "/drafts"
+				},
+				"cloudFile": {
+					"code": 8,
+					"route": "/cloudFile"
 				}
 			}
 		},
@@ -778,6 +792,7 @@ kry.controller('ctrl.index', [
 	'$rootScope',
 	'$location',
 	'$compile',
+	'ngDialog',
 	'srv',
 	'base',
 	function(
@@ -785,6 +800,7 @@ kry.controller('ctrl.index', [
 		$root,
 		$location,
 		$compile,
+		dialog,
 		srv,
 		base
 	) {
@@ -798,9 +814,25 @@ kry.controller('ctrl.index', [
 		$scope.titleList = [
 			"本地文件签署","云文件签署","合同模板签署"
 		];
-		$scope.selectd = '本地文件签署';
+//		$scope.selectd = '本地文件签署';
 		$scope.titleSel = function(idx,$el){
 			$scope.selectd = $el;
+			if($el == '云文件签署'){
+//				dialog.open({
+//					templateUrl: './templates/dialog/dialog.cloudfilelist.htm',
+//					scope: $scope,
+//					controller: 'dialog.cloudfilelist'
+//				})
+				var diag = dialog.open({
+					templateUrl: 'templates/dialog/dialog.cloudfilelist.htm',
+					scope: $scope,
+					controller:'ctrl.dialog.cloudfilelist',
+					className: 'ngdialog-theme-input'
+				});
+				diag.closePromise.then(function() {
+					alert(123)
+				})
+			}
 		};
 	}
 ])
@@ -825,6 +857,20 @@ kry.controller('ctrl.main.signMe', [
 			title: '待我签署',
 			menuKey: 'signMe'
 		});
+		$('#red').smartpaginator({ 
+			totalrecords: 320, 
+			recordsperpage: 4, 
+			length: 10, 
+			next: '>', 
+			prev: '<', 
+			first: '首页', 
+			last: '尾页', 
+			theme: 'defined', 
+			controlsalways: true, 
+			onchange: function (newPage) {
+            	alert('Page # ' + newPage);
+            }	
+       })
 	}
 ])
 kry.controller('ctrl.main.signOther', [
@@ -848,6 +894,20 @@ kry.controller('ctrl.main.signOther', [
 			title: '待他人签署',
 			menuKey: 'signOther'
 		});
+		$('#red').smartpaginator({ 
+			totalrecords: 320, 
+			recordsperpage: 4, 
+			length: 10, 
+			next: '>', 
+			prev: '<', 
+			first: '首页', 
+			last: '尾页', 
+			theme: 'defined', 
+			controlsalways: true, 
+			onchange: function (newPage) {
+            	alert('Page # ' + newPage);
+            }	
+       })
 	}
 ])
 kry.controller('ctrl.main.signFinish', [
@@ -872,19 +932,27 @@ kry.controller('ctrl.main.signFinish', [
 			menuKey: 'signFinish'
 		});
 		$('#red').smartpaginator({ 
-			totalrecords: 32, 
+			totalrecords: 320, 
 			recordsperpage: 4, 
-			length: 4, 
-			next: 'Next', 
-			prev: 'Prev', 
-			first: 'First', 
-			last: 'Last', 
-			theme: 'red', 
+			length: 10, 
+			next: '>', 
+			prev: '<', 
+			first: '首页', 
+			last: '尾页', 
+			theme: 'defined', 
 			controlsalways: true, 
 			onchange: function (newPage) {
             	alert('Page # ' + newPage);
             }	
-       })
+        })
+		$scope.documentRank = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.documentRank.htm',
+				scope: $scope,
+				controller:'ctrl.dialog.documentRank',
+				className: 'ngdialog-theme-input'
+			});
+		}
 	}
 ])
 kry.controller('ctrl.main.docBack', [
@@ -905,9 +973,23 @@ kry.controller('ctrl.main.docBack', [
 		base
 	) {
 		$root.setSite({
-			title: '退回都文件',
+			title: '退回的文件',
 			menuKey: 'docBack'
 		});
+		$('#red').smartpaginator({ 
+			totalrecords: 320, 
+			recordsperpage: 4, 
+			length: 10, 
+			next: '>', 
+			prev: '<', 
+			first: '首页', 
+			last: '尾页', 
+			theme: 'defined', 
+			controlsalways: true, 
+			onchange: function (newPage) {
+            	alert('Page # ' + newPage);
+            }	
+       })
 	}
 ])
 kry.controller('ctrl.main.drafts', [
@@ -931,6 +1013,158 @@ kry.controller('ctrl.main.drafts', [
 			title: '草稿箱',
 			menuKey: 'drafts'
 		});
+		$('#red').smartpaginator({ 
+			totalrecords: 320, 
+			recordsperpage: 4, 
+			length: 10, 
+			next: '>', 
+			prev: '<', 
+			first: '首页', 
+			last: '尾页', 
+			theme: 'defined', 
+			controlsalways: true, 
+			onchange: function (newPage) {
+            	alert('Page # ' + newPage);
+            }	
+       })
+	}
+])
+kry.controller('ctrl.main.cloudFile', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '云文件',
+			menuKey: 'cloudFile'
+		});
+		$('#edit').editable({
+			inlineMode: false,
+			alwaysBlank: true
+		})
+		$scope.saveEditor = function(){
+			debugger
+			var content = $("#edit .froala-element").eq(0)[0].innerHTML;
+			console.log(content)
+		}
+	}
+])
+kry.controller('ctrl.main.fileSign', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '文件签署',
+			menuKey: 'fileSign'
+		});
+//		$(".filesContain").slide({
+//			mainCell:".filesPicCon",
+//			vis:3,
+//			prevCell:".filesArrowPrew",
+//			nextCell:".filesArrowNext",
+//			effect:"leftLoop"
+//		});
+		var h=0,
+			scrollTimes = 0;
+		$scope.scrollbar = false;
+		var maxTimes = $("#dowebok .filesPicConItem").length,
+			divWidth = $("#dowebok").width(),
+			showLen = Math.floor(divWidth/155);
+		if(maxTimes > showLen){
+			$scope.scrollbar = true;
+		}
+		$scope.scrollLeft = function(){
+			var maxTimes = $("#dowebok .filesPicConItem").length,
+				divWidth = $("#dowebok").width(),
+				showLen = Math.floor(divWidth/155),
+				clickTimes = maxTimes-showLen + 1,
+				leftScroll = $("#dowebok").scrollLeft(),
+				leftScrollspace = divWidth-leftScroll;
+			
+			if(leftScroll <= 0){
+				return;
+			}else{
+				h -= 154;
+				scrollTimes-=1;
+				$("#dowebok").scrollLeft(h);
+			}
+		}
+		$scope.scrollRight = function(){
+			var maxTimes = $("#dowebok .filesPicConItem").length,
+				divWidth = $("#dowebok").width(),
+				showLen = Math.floor(divWidth/155),
+				clickTimes = maxTimes-showLen+1,
+				leftScroll = $("#dowebok").scrollLeft(),
+				leftScrollspace = divWidth-leftScroll;
+			if(leftScroll <= 0){
+				scrollTimes = 0;
+				scrollTimes+=1;
+			}else{
+				scrollTimes+=1;
+			}
+			if(scrollTimes >= clickTimes){
+				scrollTimes = clickTimes - 1;
+				return;
+			}else{
+				h += 154;
+				$("#dowebok").scrollLeft(h);
+			}
+		}
+		$('#dowebok').viewer({
+			url: 'data-original',
+		});
+	}
+])
+kry.controller('ctrl.main.signature', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '签章',
+			menuKey: 'signature'
+		});
+		$scope.scrollFile = function(index){
+			debugger
+			document.getElementById("pic_"+index).scrollIntoView();
+		}
 	}
 ])
 kry.controller('ctrl.person.info', [
@@ -1046,9 +1280,17 @@ kry.controller('ctrl.person.sign', [
 			title: '我的签名',
 			menuKey: 'personSign'
 		});
+		$scope.fontChoose = false;
+		$scope.fontChose = function(){
+			if($scope.fontChoose){
+				$scope.fontChoose = false;
+			}else{
+				$scope.fontChoose = true;
+			}
+		};
 	}
 ])
-kry.controller('ctrl.div', [
+kry.controller('ctrl.dialog.cloudfilelist', [
 	'$scope',
 	'$rootScope',
 	'$location',
@@ -1067,26 +1309,32 @@ kry.controller('ctrl.div', [
 	) {
 		$root.setSite({
 			title: '首页',
-			menuKey: 'createCustomer'
+			menuKey: 'index'
 		});
-		$scope.msg = '898888';
-		$scope.showDia = function(){
-			dialog.open({
-				templateUrl: './templates/dialog/dialog.confirm.htm',
-				scope: $scope,
-				closeByDocument: false,
-				//controller: 'dialog.password',
-				className: 'ngdialog-theme-input'
-			})
-		}
-//		var params = {'option':'555'};
-//		srv.getUserList(params,function(xhr) {
-//			if (!xhr.code) {
-//				$scope.globalNavs = xhr.data;
-//				var myMenuList = $scope.navRoute.user;
-//				srv.getUserCount(myMenuList, $scope);
-//				setTimeout(getNavTip, 60000);
-//			}
-//		})
+		
+	}
+])
+kry.controller('ctrl.dialog.documentRank', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '首页',
+			menuKey: 'index'
+		});
+		
 	}
 ])

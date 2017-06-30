@@ -20,7 +20,7 @@
 		<div class="clearfix"></div>
 	</ul>
 	<ul class="itemList">
-		<li class="floatLeft" ng-repeat="role in mainNavs track by $index" >
+		<li class="floatLeft" ng-repeat="role in mainNavs track by $index" ng-if="$index !='0'">
 			<div class="itemCon posiRel">
 				<div class="pTitle">
 					{{role.name}}

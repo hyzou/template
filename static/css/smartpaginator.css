@@ -4,7 +4,8 @@
     height: 30px;
     padding: 0;
     margin: 0;
-    padding-top: 10px;
+    line-height: 30px;
+    /*padding-top: 10px;*/
     padding-left: 10px; /*border-radius: 8px; 	-moz-border-radius: 8px;*/
 }
 .pager div.short
@@ -13,14 +14,26 @@
     margin: 0;
     padding: 0;
     margin-right: 10px;
-    width: 74px;
+    /*width: 140px;*/
 }
-.pager div.short input
+.pager div.short input[type='text']
 {
-    width: 28px;
-    height: 18px;
-    border: none;
-    margin-left: 8px;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #d7dadd;
+    text-align: center;
+    float: left;
+    margin: 0 10px;
+}
+.pager div.short input[type='button']
+{
+    width: 40px;
+    height: 30px;
+    border: 1px solid #d7dadd;
+    background: #fff;
+    color: #3499da;
+    margin-left: 10px;
+    text-align: center;
     float: left;
 }
 .pager ul
@@ -29,54 +42,52 @@
     padding: 0;
     margin: 0;
     float: left;
-    margin-right: 4px;
 }
 .pager ul li
 {
-    display: inline;
-    margin-left: 2px;
+	width: 30px;
+	height: 30px;
+	float: left;
+}
+.pager ul li:first-child a
+{
+	border-left: 1px solid #d7dadd;
 }
 .pager ul li a
 {
-    text-decoration: none;
-    display: inline-table;
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    line-height: 28px;
+	border: 1px solid #d7dadd;
+	border-left: none;
+	text-align: center;
 }
 
 .pager span
 {
     margin-left: 4px;
-    color: White;
+    color: #585858;
+	font-size: 12px;
     float: left;
 }
-.pager .btn
+.pager .btn1
 {
     display: block;
     width: 40px;
+    line-height: 30px;
+    height: 30px;
+    border: 1px solid #d7dadd;
     text-align: center;
     float: left;
     padding: 0;
     margin: 0;
-    margin-left: 4px;
     cursor: pointer;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
 }
 .pager .disabled
 {
     color: #A0A0A0 !important;
-    text-shadow: 1px 1px 1px #FFFFFF;
+    /*text-shadow: 1px 1px 1px #FFFFFF;*/
 }
 /*green*/.green
 {
@@ -143,4 +154,15 @@
     background-color: #E71C18;
     color: White;
     border: solid 1px #F82723;
+}
+
+
+.defined .number{
+	color: #585858;
+	font-size: 12px;
+}
+.defined .active{
+    background-color: #3499da;
+    color: #fff;
+    border: solid 1px #3499da;
 }

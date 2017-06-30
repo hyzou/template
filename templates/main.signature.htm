@@ -1,0 +1,61 @@
+<div class="main-container-full" style="padding-bottom: 60px;">
+	<div class="top-main-container-flex">
+		<div class="cloudNav">
+			<div class="signNotice">
+				<img src="../template/static/css/img/signNotice.png"/>
+			</div>
+			<div class="signNoticeType" style="border-bottom: 1px solid #f5f5f5;">
+				<div class="signNoticeTypeTit mrb10">单页签章
+					<input class="checkbox floatRight" type="radio" name="signNoticeType" />
+				</div>
+				<div class="signNoticeTypeText">一次只能选择在一个页面中签章</div>
+			</div>
+			<div class="signNoticeType">
+				<div class="signNoticeTypeTit mrb10">骑缝签章
+					<input class="checkbox floatRight" type="radio" name="signNoticeType" />
+				</div>
+				<div class="signNoticeTypeText">在文档右边的交界处加盖印章</div>
+			</div>
+		</div>
+		<div class="signPic">
+			<div class="signPicShow">
+				<div class="signPics mrb20" id="pic_0">
+					<a></a>
+					<img src="../template/static/js/third/viewerJs/img/tibet-1.jpg" width="100%" height="100%">
+				</div>
+				<div class="signPics mrb20" id="pic_1">
+					<a></a>
+					<img src="../template/static/js/third/viewerJs/img/tibet-2.jpg" width="100%" height="100%">
+				</div>
+				<div class="signPics mrb20" id="pic_2">
+					<a></a>
+					<img src="../template/static/js/third/viewerJs/img/tibet-3.jpg" width="100%" height="100%">
+				</div>
+			</div>
+		</div>
+		<div class="cloudNav posiRel">
+			<div class="cloudSearch" style="padding-right: 20px;">
+				<div class="signNoticeTypeTit">文件</div>
+				<div class="signNoticeTypeText">文件名称文件名称<span class="floatRight">共20页</span></div>
+			</div>
+			<div class="signNoticeHeadLogo">
+				<ul>
+					<li class="mrb10">
+						<a ng-click="scrollFile(0)"><img src="../template/static/js/third/viewerJs/img/thumbnails/tibet-1.jpg" alt="图片1" width="100%" height="100%"></a>
+					</li>
+					<li class="mrb10">
+						<a ng-click="scrollFile(1)"><img src="../template/static/js/third/viewerJs/img/thumbnails/tibet-2.jpg" alt="图片1" width="100%" height="100%"></a>
+					</li>
+					<li class="mrb10">
+						<a ng-click="scrollFile(2)"><img src="../template/static/js/third/viewerJs/img/thumbnails/tibet-3.jpg" alt="图片1" width="100%" height="100%"></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="bottom-btn-group text_align_center">
+		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20 floatLeft" href="#/fileSign">上一步</a>
+		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20">保存</a>
+		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20 floatRight" href="#/signature">发送</a>
+	</div>
+</div>

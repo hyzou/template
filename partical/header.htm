@@ -1,14 +1,28 @@
-<div class="headlogo floatLeft"></div>
+<div class="headlogo floatLeft"><a href="#/index"></a></div>
+<div class="back floatLeft" ng-if="backToIdx">
+	<div ng-click="backtoIndex()">
+		<div class="arrow-left floatLeft"></div>
+		<a class="floatLeft" href="#/index">
+			返回首页
+		</a>
+	</div>
+</div>
 <div class="userInfo floatRight posiRel" ng-mouseenter="seen = 'true'" ng-mouseleave="seen = 'false'">
 	<div class="userName floatRight">
 		您好,{{user.userName}}
 		<span class="arrow">▼</span>
 	</div>
-	<div class="userLogo floatRight"></div>
-	<div class="tool" ng-show="seen == 'true'" ng-hide="seen == 'false'">
+	<div class="userLogo floatRight">
+		<img src="../template/static/css/img/personInfoLogo.png"/ width="100%">
+	</div>
+	<div class="tool" ng-if="seen" ng-show="seen == 'true'" ng-hide="seen == 'false'">
 		<ul>
-			<li ng-click="change()">切换目录</li>
-			<li ng-click="loginOut()">退出登录</li>
+			<li ng-click="change()"><a href="#/personInfo">个人信息</a></li>
+			<li ng-click="change()"><a href="#/personInforec">信息认证</a></li>
+			<li ng-click="change()"><a href="#/personSign">我的签名</a></li>
+			<li ng-click="change()"><a href="#/personSafe">安全设置</a></li>
+			<li ng-click="change()"><a href="#/personMsg">消息设置</a></li>
+			<li ng-click="loginOut()"><a>退出登录</a></li>
 		</ul>
 	</div>
 	<div class="clearfix"></div>

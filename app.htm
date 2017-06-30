@@ -5,8 +5,12 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<title ng-bind="site.title">玺签宝</title>
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-    <link rel="stylesheet" href="./static/css/main.css">
+	<link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="static/css/main.css">
     <link rel="stylesheet" type="text/css" href="static/css/smartpaginator.css"/>
+	<link rel="stylesheet" type="text/css" href="static/js/third/editor/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="static/js/third/editor/css/froala_editor.min.css">
+	<link rel="stylesheet" type="text/css" href="static/js/third/viewerJs/css/viewer.min.css">
 </head>
 <body>
 	<div class="header" ng-include="'partical/header.htm'"></div>
@@ -14,10 +18,27 @@
 		<div class="sider" ng-include="'partical/navigator.htm'"></div>
 		<div class="main" ng-view></div>
 	</div>
-    <script src="./static/js/vendor/jquery-1.11.2.min.js"></script>
-    <script src="./static/js/vendor/angular.all.js"></script>
-    <script src="./static/js/app/routes.js"></script>
-    <script src="./static/js/app/angular.custom.js"></script>
+    <script src="static/js/vendor/jquery-1.11.2.min.js"></script>
+    <script src="static/js/vendor/angular.all.js"></script>
+    <script src="static/js/app/routes.js"></script>
+    <script src="static/js/app/angular.custom.js"></script>
     <script src="static/js/vendor/smartpaginator.js" type="text/javascript" charset="utf-8"></script>
+    <script src="static/js/vendor/slidePic.js" type="text/javascript" charset="utf-8"></script>
+    
+    <script src="./static/js/third/editor/js/froala_editor.min.js"></script>
+    <!--[if lt IE 9]>
+    	<script src="./static/js/third/editor/js/froala_editor_ie8.min.js"></script>
+  	<![endif]-->
+  	<script src="./static/js/third/editor/js/plugins/tables.min.js"></script>
+  	<script src="./static/js/third/editor/js/plugins/lists.min.js"></script>
+  	<script src="./static/js/third/editor/js/plugins/colors.min.js"></script>
+  	<script src="./static/js/third/editor/js/plugins/media_manager.min.js"></script>
+  	<script src="./static/js/third/editor/js/plugins/font_family.min.js"></script>
+  	<script src="./static/js/third/editor/js/plugins/font_size.min.js"></script>
+  	<script src="./static/js/third/editor/js/plugins/block_styles.min.js"></script>
+  	<script src="./static/js/third/editor/js/plugins/video.min.js"></script>
+  	<script src="./static/js/third/viewerJs/js/jquery.min.js"></script>
+  	<script src="./static/js/third/viewerJs/js/viewer-jquery.min.js"></script>
+
 </body>
 </html>

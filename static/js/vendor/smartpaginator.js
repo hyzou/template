@@ -9,7 +9,7 @@
                 prev: 'Prev',
                 first: 'First',
                 last: 'Last',
-                go: 'Go',
+                go: '确定',
                 theme: 'green',
                 display: 'double',
                 initval: 1,
@@ -35,10 +35,10 @@
                     dataElements = $('' + settings.dataelement + '', dataContainer);
                 }
                 var list = $('<ul/>');
-                var btnPrev = $('<div/>').text(settings.prev).click(function () { if ($(this).hasClass('disabled')) return false; currentPage = parseInt(list.find('li a.active').text()) - 1; navigate(--currentPage); }).addClass('btn');
-                var btnNext = $('<div/>').text(settings.next).click(function () { if ($(this).hasClass('disabled')) return false; currentPage = parseInt(list.find('li a.active').text()); navigate(currentPage); }).addClass('btn');
-                var btnFirst = $('<div/>').text(settings.first).click(function () { if ($(this).hasClass('disabled')) return false; currentPage = 0; navigate(0); }).addClass('btn');
-                var btnLast = $('<div/>').text(settings.last).click(function () { if ($(this).hasClass('disabled')) return false; currentPage = totalpages - 1; navigate(currentPage); }).addClass('btn');
+                var btnPrev = $('<div/>').text(settings.prev).click(function () { if ($(this).hasClass('disabled')) return false; currentPage = parseInt(list.find('li a.active').text()) - 1; navigate(--currentPage); }).addClass('btn1');
+                var btnNext = $('<div/>').text(settings.next).click(function () { if ($(this).hasClass('disabled')) return false; currentPage = parseInt(list.find('li a.active').text()); navigate(currentPage); }).addClass('btn1');
+                var btnFirst = $('<div/>').text(settings.first).click(function () { if ($(this).hasClass('disabled')) return false; currentPage = 0; navigate(0); }).addClass('btn1');
+                var btnLast = $('<div/>').text(settings.last).click(function () { if ($(this).hasClass('disabled')) return false; currentPage = totalpages - 1; navigate(currentPage); }).addClass('btn1');
                 var inputPage = $('<input/>').attr('type', 'text').keydown(function (e) {
                     if (isTextSelected(inputPage)) inputPage.val('');
                     if (e.which >= 48 && e.which < 58) {
@@ -46,8 +46,10 @@
                         if (!(value > 0 && value <= totalpages)) e.preventDefault();
                     } else if (!(e.which == 8 || e.which == 46)) e.preventDefault();
                 });
-                var btnGo = $('<input/>').attr('type', 'button').attr('value', settings.go).addClass('btn').click(function () { if (inputPage.val() == '') return false; else { currentPage = parseInt(inputPage.val()) - 1; navigate(currentPage); } });
-                container.append(btnFirst).append(btnPrev).append(list).append(btnNext).append(btnLast).append($('<div/>').addClass('short').append(inputPage).append(btnGo));
+                var spanTet = $('<span/>').text('跳转到');
+                var spanPage = $('<span/>').text('页');
+                var btnGo = $('<input/>').attr('type', 'button').attr('value', settings.go).addClass('btn1').click(function () { if (inputPage.val() == '') return false; else { currentPage = parseInt(inputPage.val()) - 1; navigate(currentPage); } });
+                container.append(btnFirst).append(btnPrev).append(list).append(btnNext).append(btnLast).append($('<div/>').addClass('short').append(spanTet).append(inputPage).append(spanPage).append(btnGo));
                 if (settings.display == 'single') {
                     btnGo.css('display', 'none');
                     inputPage.css('display', 'none');
@@ -58,14 +60,17 @@
                 navigate(currentPage);
                 initialized = true;
                 function showLabels(pageIndex) {
-                    container.find('span').remove();
+                    container.find('.number').remove();
                     var upper = (pageIndex + 1) * settings.recordsperpage;
                     if (upper > settings.totalrecords) upper = settings.totalrecords;
-                    container.append($('<span/>').append($('<b/>').text(pageIndex * settings.recordsperpage + 1)))
-                                             .append($('<span/>').text('-'))
-                                             .append($('<span/>').append($('<b/>').text(upper)))
-                                             .append($('<span/>').text('of'))
-                                             .append($('<span/>').append($('<b/>').text(settings.totalrecords)));
+                    container.append("<div class='number'></div>");
+                    $(".number").append($('<span/>').text('显示'))
+                    						.append($('<span/>').append($('<b/>').text(pageIndex * settings.recordsperpage + 1)))
+                                            .append($('<span/>').text('至'))
+                                            .append($('<span/>').append($('<b/>').text(upper)))
+                                            .append($('<span/>').text('，共'))
+                                            .append($('<span/>').append($('<b/>').text(settings.totalrecords)))
+                                            .append($('<span/>').text('条记录'));
                 }
                 function buildNavigation(startPage) {
                     list.find('li').remove();
@@ -81,14 +86,14 @@
                                         navigate(currentPage);
                                     }));
                     }
-                    showLabels(startPage);
+                    //showLabels(startPage);
                     inputPage.val((startPage + 1));
                     list.find('li a').addClass(settings.theme).removeClass('active');
                     list.find('li:eq(0) a').addClass(settings.theme).addClass('active');
                     //set width of paginator
                     var sW = list.find('li:eq(0) a').outerWidth() + (parseInt(list.find('li:eq(0)').css('margin-left')) * 2);
                     var width = sW * list.find('li').length;
-                    list.css({ width: width });
+//                  list.css({ width: width });
                     showRequiredButtons(startPage);
                 }
                 function navigate(topage) {
@@ -104,7 +109,8 @@
                             else if (totalpages > settings.length)
                                 startIndex = totalpages - settings.length;
                         }
-                        buildNavigation(startIndex); showLabels(currentPage);
+                        buildNavigation(startIndex); 
+                        showLabels(currentPage);
                         list.find('li a').removeClass('active');
                         inputPage.val(currentPage + 1);
                         list.find('li a[id="' + (index + 1) + '"]').addClass('active');
