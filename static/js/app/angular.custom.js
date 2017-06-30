@@ -814,15 +814,10 @@ kry.controller('ctrl.index', [
 		$scope.titleList = [
 			"本地文件签署","云文件签署","合同模板签署"
 		];
-//		$scope.selectd = '本地文件签署';
+		// $scope.selectd = '本地文件签署';
 		$scope.titleSel = function(idx,$el){
 			$scope.selectd = $el;
 			if($el == '云文件签署'){
-//				dialog.open({
-//					templateUrl: './templates/dialog/dialog.cloudfilelist.htm',
-//					scope: $scope,
-//					controller: 'dialog.cloudfilelist'
-//				})
 				var diag = dialog.open({
 					templateUrl: 'templates/dialog/dialog.cloudfilelist.htm',
 					scope: $scope,
@@ -830,7 +825,17 @@ kry.controller('ctrl.index', [
 					className: 'ngdialog-theme-input'
 				});
 				diag.closePromise.then(function() {
-					alert(123)
+					console.log(123)
+				})
+			} else if($el == '合同模板签署'){
+				var diag = dialog.open({
+					templateUrl: 'templates/dialog/dialog.modelfilelist.htm',
+					scope: $scope,
+					controller:'ctrl.dialog.modelfilelist',
+					className: 'ngdialog-theme-input'
+				});
+				diag.closePromise.then(function() {
+					console.log(123)
 				})
 			}
 		};
@@ -1162,8 +1167,13 @@ kry.controller('ctrl.main.signature', [
 			menuKey: 'signature'
 		});
 		$scope.scrollFile = function(index){
-			debugger
 			document.getElementById("pic_"+index).scrollIntoView();
+		}
+		$scope.runSign = function(){
+			var fileList = $(".signPics");
+			for(var i=0;i<fileList.length;i++){
+				$("#pic_"+i).zSign({ img: '../template/static/js/third/zSign/images/1.gif'});
+			}
 		}
 	}
 ])
@@ -1308,7 +1318,31 @@ kry.controller('ctrl.dialog.cloudfilelist', [
 		base
 	) {
 		$root.setSite({
-			title: '首页',
+			title: '云文件签署弹窗',
+			menuKey: 'index'
+		});
+		
+	}
+])
+kry.controller('ctrl.dialog.modelfilelist', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '合同模板签署弹窗',
 			menuKey: 'index'
 		});
 		
