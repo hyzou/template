@@ -21,19 +21,30 @@
 	</ul>
 	<ul class="itemList">
 		<li class="floatLeft" ng-repeat="role in mainNavs track by $index" ng-if="$index !='0'">
-			<div class="itemCon posiRel">
+			<div class="itemCon posiRel cursor" ng-click="operatePage(role.name)" style="overflow: hidden;">
 				<div class="pTitle">
 					{{role.name}}
 				</div>
 				<div class="itemcontent">
 					<span class="idxItemLogo boxCircle bgColorblack displayBl floatLeft">
-						
+						<img src="../template/static/css/img/signme.png" class="mrt12" ng-if="role.name == '待我签署'" />
+						<img src="../template/static/css/img/signother.png" class="mrt12" ng-if="role.name == '待他人签署'" />
+						<img src="../template/static/css/img/signfinish.png" class="mrt12" ng-if="role.name == '已完成签署'" />
+						<img src="../template/static/css/img/backfile.png" class="mrt12" ng-if="role.name == '退回的文件'" />
+						<img src="../template/static/css/img/drafts.png" class="mrt12" ng-if="role.name == '草稿箱'" />
+						<img src="../template/static/css/img/cloudFile.png" class="mrt12" ng-if="role.name == '云文件'" />
 					</span>
 					<span class="displayBl floatLeft mrl15">
 						<p class="idxItemTit bigFont50">{{role.count}}<span class="bigFont36">次</span></p>
 					</span>
 					<div class="clearfix"></div>
 				</div>
+				<img src="../template/static/css/img/signmebg.png" class="posiAbs" width="110px" ng-if="role.name == '待我签署'" style="top: 80px;right: -30px;">
+				<img src="../template/static/css/img/signotherbg.png" class="posiAbs" width="110px" ng-if="role.name == '待他人签署'" style="top: 90px;right: -30px;">
+				<img src="../template/static/css/img/signfinishbg.png" class="posiAbs" width="110px" ng-if="role.name == '已完成签署'" style="top: 80px;right: -30px;">
+				<img src="../template/static/css/img/backfilebg.png" class="posiAbs" width="110px" ng-if="role.name == '退回的文件'" style="top: 80px;right: -30px;">
+				<img src="../template/static/css/img/draftsbg.png" class="posiAbs" width="110px" ng-if="role.name == '草稿箱'" style="top: 100px;right: -30px;">
+				<img src="../template/static/css/img/cloudfilebg.png" class="posiAbs" width="110px" ng-if="role.name == '云文件'" style="top: 80px;right: -30px;">
 			</div>
 		</li>
 	</ul>

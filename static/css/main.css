@@ -578,6 +578,9 @@ input[type=radio]:checked:after  {
 			padding: 10px 75px 10px 45px;
 		}
 		/*首页私有样式*/
+		.mrt12{
+			margin-top: 13px;
+		}
 		.idxItemList li{
 			width: 33.333333%;
 			height: 170px;
@@ -601,6 +604,7 @@ input[type=radio]:checked:after  {
 			left: 50%;
 			top: 50%;
 			transform: translate(-50%,-30%);
+			z-index: 9;
 		}
 		.idxItem{
 			width: 235px;
@@ -697,6 +701,7 @@ input[type=radio]:checked:after  {
 			height: 100%;
 			display: block;
 			border: 1px solid #d9d9d9;
+			padding: 0 5px;
 		}
 		.resultBar table{
 			line-height: 36px;

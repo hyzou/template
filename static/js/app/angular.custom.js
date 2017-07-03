@@ -839,6 +839,31 @@ kry.controller('ctrl.index', [
 				})
 			}
 		};
+		$scope.operatePage = function(name){
+			switch (name){
+				case '待我签署':
+					$location.path('/signMe');
+					break;
+				case '待他人签署':
+					$location.path('/signOther');
+					break;
+				case '已完成签署':
+					$location.path('/signFinish');
+					break;
+				case '退回的文件':
+					$location.path('/docBack');
+					break;
+				case '草稿箱':
+					$location.path('/drafts');
+					break;
+				case '云文件':
+					$location.path('/cloudFile');
+					break;
+				default:
+					return;
+					break;
+			}
+		}
 	}
 ])
 kry.controller('ctrl.main.signMe', [

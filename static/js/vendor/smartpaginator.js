@@ -44,7 +44,12 @@
                     if (e.which >= 48 && e.which < 58) {
                         var value = parseInt(inputPage.val() + (e.which - 48));
                         if (!(value > 0 && value <= totalpages)) e.preventDefault();
-                    } else if (!(e.which == 8 || e.which == 46)) e.preventDefault();
+                    } else if (e.which >= 96 && e.which < 106){
+                        var value = parseInt(inputPage.val() + (e.which - 96));
+                        if (!(value > 0 && value <= totalpages)) e.preventDefault();
+                    } else if (!(e.which == 8 || e.which == 46)) {
+                    	e.preventDefault();
+                    }
                 });
                 var spanTet = $('<span/>').text('跳转到');
                 var spanPage = $('<span/>').text('页');
