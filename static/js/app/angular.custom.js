@@ -123,38 +123,7 @@ kry.directive('endRepeat', ['$timeout', function($timeout) {
 		}
 	}
 }])
-kry.directive('flexTable', function() {
-	return {
-		restrict: 'A',
-		scope: {
-			cols: '='
-		},
-		link: function(scope, ele, attr) {
-			var cols = scope.cols,
-				arr = [],
-				count = 0;
-			arr.push('<table class="console-table">');
-			for (var key in cols) {
-				value = cols[key];
-				if (count % 3 == 0) {
-					if (count > 0) arr.push('</tr>')
-					arr.push('<tr>');
-				}
-				arr.push('<td class="table-title">');
-				arr.push(key);
-				arr.push('</td>');
-				arr.push('<td>');
-				arr.push(value);
-				arr.push('</td>');
-				count++;
-			}
-			if (count > 0) {
-				arr.push('</table>');
-				ele.html(arr.join(''));
-			}
-		}
-	}
-})
+
 kry.directive('pageNav', function() {
 	return {
 		restrict: 'E',
@@ -900,7 +869,59 @@ kry.controller('ctrl.main.signMe', [
 			onchange: function (newPage) {
             	alert('Page # ' + newPage);
             }	
-       })
+        });
+    	$(".fromdata").datepicker({ //添加日期选择功能    
+    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
+    		}
+    	});
+    	$(".enddata").datepicker({ //添加日期选择功能    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    
+    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
+    		}
+    	});
 	}
 ])
 kry.controller('ctrl.main.signOther', [
@@ -938,6 +959,58 @@ kry.controller('ctrl.main.signOther', [
             	alert('Page # ' + newPage);
             }	
        })
+    	$(".fromdata").datepicker({ //添加日期选择功能    
+    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
+    		}
+    	});
+    	$(".enddata").datepicker({ //添加日期选择功能    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    
+    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
+    		}
+    	});
 	}
 ])
 kry.controller('ctrl.main.signFinish', [
@@ -975,6 +1048,58 @@ kry.controller('ctrl.main.signFinish', [
             	alert('Page # ' + newPage);
             }	
         })
+    	$(".fromdata").datepicker({ //添加日期选择功能    
+    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
+    		}
+    	});
+    	$(".enddata").datepicker({ //添加日期选择功能    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    
+    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
+    		}
+    	});
 		$scope.documentRank = function(){
 			var diag = dialog.open({
 				templateUrl: 'templates/dialog/dialog.documentRank.htm',
@@ -1019,7 +1144,59 @@ kry.controller('ctrl.main.docBack', [
 			onchange: function (newPage) {
             	alert('Page # ' + newPage);
             }	
-       })
+        });
+    	$(".fromdata").datepicker({ //添加日期选择功能    
+    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
+    		}
+    	});
+    	$(".enddata").datepicker({ //添加日期选择功能    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    
+    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
+    		}
+    	});
 	}
 ])
 kry.controller('ctrl.main.drafts', [
@@ -1057,6 +1234,58 @@ kry.controller('ctrl.main.drafts', [
             	alert('Page # ' + newPage);
             }	
        })
+    	$(".fromdata").datepicker({ //添加日期选择功能    
+    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
+    		}
+    	});
+    	$(".enddata").datepicker({ //添加日期选择功能    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    
+    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
+    		}
+    	});
 	}
 ])
 kry.controller('ctrl.main.cloudFile', [
@@ -1082,26 +1311,33 @@ kry.controller('ctrl.main.cloudFile', [
 		});
 		$scope.showRank = false;
 		$scope.fileTitleArr = ['员工公寓租赁合同','员工公寓租赁合同1','员工公寓租赁合同2','员工公寓租赁合同3'];
-		$scope.fileTitle = function(idx){
+		$scope.filterArr = ['创建时间','修改时间','文件名称','文件大小'];
+		$scope.fileTitle = function(idx,$el){
 			$scope.selectd = idx;
+			$scope.selectedTitle = $el;
 		}
 		$('#edit').editable({
 			inlineMode: false,
 			alwaysBlank: true,
-			buttons: ["bold", "italic", "underline", "strikeThrough", "fontSize", "fontFamily", "color", "formatBlock", "blockStyle", "align", "insertOrderedList", "insertUnorderedList", "outdent", "indent", "insertHorizontalRule", "undo", "redo"],
+			buttons: ["bold", "italic", "underline", "strikeThrough", "fontSize", "color", "formatBlock", "blockStyle", "align", "insertOrderedList", "insertUnorderedList", "outdent", "indent", "insertHorizontalRule", "undo", "redo"],
             language: 'zh_cn'
 		});
 		$scope.saveEditor = function(){
-			debugger
+			console.log($scope.artTitle);
 			var content = $("#edit .froala-element").eq(0)[0].innerHTML;
 			console.log(content)
 		}
+		
 		$scope.rankCondition = function(){
 			if($scope.showRank){
 				$scope.showRank = false;
 			}else{
 				$scope.showRank = true;
 			}
+		}
+		$scope.liSel = function(idx,$el){
+			$scope.sel = idx;
+			$scope.elName = $el;
 		}
 	}
 ])

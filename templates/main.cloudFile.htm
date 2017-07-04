@@ -9,16 +9,13 @@
 				<img src="../template/static/css/img/moreBtn.png" ng-click="rankCondition()"/>
 				<div class="searchType itemConActive" ng-if="showRank">
 					<ul>
-						<li class="colorBlue">创建时间<span class="mrl10">✔</span></li>
-						<li>修改时间<span class="mrl10">✔</span></li>
-						<li>文件名称<span class="mrl10">✔</span></li>
-						<li>文件大小<span class="mrl10">✔</span></li>
+						<li ng-repeat="filt in filterArr track by $index" ng-click="liSel($index,filt)" ng-class="{'colorBlue': filt == elName}">{{filt}}<span ng-if="sel == $index" class="mrl10">✔</span></li>
 					</ul>
 				</div>
 			</div>
 		</div>
 		<div class="cloudFileList" id="fileTitleList">
-			<a ng-repeat="titleItem in fileTitleArr track by $index" ng-click="fileTitle($index)" ng-class="{'cloudFileListActive': $index == selectd }">
+			<a ng-repeat="titleItem in fileTitleArr track by $index" ng-click="fileTitle($index,titleItem)" ng-class="{'cloudFileListActive': $index == selectd }">
 				<img class="floatLeft" src="../template/static/css/img/file.png"/>
 				<span class="mrl10 floatRight">{{$index+1}}.{{titleItem}}</span>
 			</a>
@@ -27,7 +24,9 @@
 	</div>
 	<div class="cloudMain">
 		<div class="cloudMainTitle">
-			员工公寓租赁合同员工公寓租赁合同员
+			<span contenteditable="true" ng-model="artTitle">
+				{{selectedTitle}}
+			</span>
 			<a class="btn-middle bgColorgray mrl15 floatRight">取消</a>
 			<a class="btn-middle bgColorgray mrl15 floatRight" ng-click="saveEditor()">保存</a>
 			<a class="btn-middle bgColorgray mrl15 floatRight">删除</a>

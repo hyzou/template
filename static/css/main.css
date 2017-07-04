@@ -696,7 +696,7 @@ input[type=radio]:checked:after  {
 			height: 32px;
 			padding: 10px 15px 10px 0;
 		}
-		.filterBar table input{
+		.filterBar table input, .filterBar table select{
 			width: 100%;
 			height: 100%;
 			display: block;
