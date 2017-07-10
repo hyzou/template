@@ -4,7 +4,7 @@
 	</div>
 	<div class="pContent">
 		<div class="pMsgRec floatLeft posiRel">
-			<div class="pMsgRecItem mrAuto">
+			<div class="pMsgRecItem mrAuto cursor" ng-click="mobileCli()">
 				<div class="pMsgReclogo boxCircle floatLeft">
 					<img src="../template/static/css/img/phone.png"/>
 				</div>
@@ -17,7 +17,7 @@
 			</div>
 		</div>
 		<div class="pMsgRec floatLeft posiRel">
-			<div class="pMsgRecItem mrAuto">
+			<div class="pMsgRecItem mrAuto cursor" ng-click="mailCli()">
 				<div class="pMsgReclogo boxCircle floatLeft">
 					<img src="../template/static/css/img/mail.png"/>
 				</div>
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 		<div class="pMsgRec floatLeft posiRel">
-			<div class="pMsgRecItem mrAuto">
+			<div class="pMsgRecItem mrAuto cursor" ng-click="nameRealCli()">
 				<div class="pMsgReclogo boxCircle floatLeft">
 					<img src="../template/static/css/img/person.png"/>
 				</div>
@@ -45,7 +45,7 @@
 	</div>
 </div>
 
-<div class="main-container-short-white mrb20">
+<div class="main-container-short-white mrb20" ng-show="mailRec">
 	<div class="pTitle">
 		邮箱认证
 	</div>
@@ -97,7 +97,7 @@
 	</div>
 </div>
 
-<div class="main-container-short-white mrb20">
+<div class="main-container-short-white mrb20" ng-show="mobileRec">
 	<div class="pTitle">
 		手机认证
 	</div>
@@ -148,7 +148,7 @@
 	</div>
 </div>
 
-<div class="main-container-short-white">
+<div class="main-container-short-white" ng-show="realNameRec">
 	<div class="pTitle">
 		实名认证
 	</div>
@@ -160,13 +160,13 @@
 			<p class="pMailRecTet"><b>赠送服务:</b>免费使用基础签章功能</p>
 		</div>
 		<div class="pNameRecDatas floatLeft">
-			<div class="pNameRecItem mrAuto">
+			<div class="pNameRecItem mrAuto" ng-show="idcardShow">
 				<div class="pNameRecItemTip">
 					<ul>
-						<li class="floatLeft pNameRecItemTipAct">
+						<li class="floatLeft pNameRecItemTipAct cursor">
 							<span>上传身份证认证</span>
 						</li>
-						<li class="floatLeft">
+						<li class="floatLeft cursor" ng-click="bankRec()">
 							<span>通过银行预留信息认证</span>
 						</li>
 						<div class="clearfix"></div>
@@ -181,11 +181,12 @@
 										身份证信息页
 									</div>
 									<div class="idRecGroupPic">
-										<div class="idPicFront"></div>
+										<!--<div class="idPicFront"></div>-->
+										<img src="../template/static/css/img/idCardidx.png" width="100%" height="100%" />
 									</div>
 									<div class="idRecGroupBtn mrt10">
 										<a href="javascript:;" class="a-upload">
-										    <input type="file" name="" id="">上传文件
+										    <input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件
 										</a>
 									</div>
 								</div>
@@ -196,11 +197,12 @@
 										身份证国徽页
 									</div>
 									<div class="idRecGroupPic">
-										<div class="idPicBack"></div>
+										<!--<div class="idPicBack"></div>-->
+										<img src="../template/static/css/img/idCardbg.png" width="100%" height="100%" />
 									</div>
 									<div class="idRecGroupBtn mrt10">
 										<a href="javascript:;" class="a-upload">
-										    <input type="file" name="" id="">上传文件
+										    <input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件
 										</a>
 									</div>
 								</div>
@@ -213,24 +215,74 @@
 										手持身份证照
 									</div>
 									<div class="idRecGroupPic">
-										<div class="idPicPeo"></div>
+										<!--<div class="idPicPeo"></div>-->
+										<img src="../template/static/css/img/idCardph.png" width="100%" height="100%" />
 									</div>
 									<div class="idRecGroupBtn mrt10">
 										<a href="javascript:;" class="a-upload">
-										    <input type="file" name="" id="">上传文件
+										    <input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件
 										</a>
 									</div>
 								</div>
 							</td>
 							<td class="posiRel">
 								<div class="posiAbs idRecGroupConfirm">
-									<a class="btn-middle bgBorderblue borderBlue">上一步</a>	
-									<a class="btn-middle bgColorblue borderBlue mrl15">确定</a>	
+									<a class="btn-middle bgBorderblue borderBlue" ng-click="Inforwrap()">上一步</a>	
+									<a class="btn-middle bgColorblue borderBlue mrl15" ng-click="infoRecSubmit()">确定</a>	
 								</div>
 							</td>
 						</tr>
 					</table>
 				</div>
+			</div>
+			<div class="pSetmsg mrt20" ng-show="inforShow">
+				<table>
+					<tr>
+						<td><i>*</i>姓名:</td>
+						<td><input type="text" ng-model="loginName" /></td>
+					</tr>
+					<tr>
+						<td><i>*</i>身份证号:</td>
+						<td><input type="text" ng-model="loginIdnum" /></td>
+					</tr>
+					<tr>
+						<td><i>*</i>常用地址:</td>
+						<td>
+							<select ng-model="province">
+								<option value="" disabled selected>省</option>
+								<option value="31">河北省</option>
+								<option value="41">浙江省</option>
+							</select>
+							<select ng-model="city">
+								<option value="" disabled selected>市</option>
+								<option value="3101">唐山市</option>
+								<option value="4101">杭州市</option>
+							</select>
+							<select ng-model="county">
+								<option value="" disabled selected>区/县</option>
+								<option value="310101">乐亭县</option>
+								<option value="410101">萧山区</option>
+								<option value="410102">江干区</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="text" placeholder="详细地址" ng-model="detailAdd" /></td>
+					</tr>
+					<tr>
+						<td>公司名称:</td>
+						<td><input type="text" ng-model="company" /></td>
+					</tr>
+					<tr>
+						<td>工作职位:</td>
+						<td><input type="text" ng-model="job" /></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><div class="pSetmsgSubmit bgColorblue" ng-click="inforIdcard()">下一步</div></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<div class="clearfix"></div>

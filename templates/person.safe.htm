@@ -10,7 +10,7 @@
 				</div>
 				<div class="pMsgRectext floatLeft">
 					<p class="pMsgRectextTit">登录密码<span class="bgColorsuc boxCircle">✔</span></p>
-					<p class="pMsgRectextTet"><span>已设置</span><a class="mrl15 colorDanger text_underline">修改</a></p>
+					<p class="pMsgRectextTet"><span>已设置</span><a class="mrl15 colorDanger text_underline" ng-click="passwordCh()">修改</a></p>
 				</div>
 				<div class="vertail-line-2-78"></div>
 				<div class="clearfix"></div>
@@ -23,7 +23,8 @@
 				</div>
 				<div class="pMsgRectext floatLeft">
 					<p class="pMsgRectextTit">签署密码<span class="bgColordanger boxCircle">!</span></p>
-					<p class="pMsgRectextTet"><span>未设置</span><a class="mrl15 colorDanger text_underline">设置</a></p>
+					<p class="pMsgRectextTet" ng-if="noSign"><span>未设置</span><a class="mrl15 colorDanger text_underline" ng-click="signPswSet()">设置</a></p>
+					<p class="pMsgRectextTet" ng-if="hasSign"><span>已设置</span><a class="mrl15 colorDanger text_underline" ng-click="signPswChange()">更改</a></p>
 				</div>
 				<div class="vertail-line-2-78"></div>
 				<div class="clearfix"></div>
@@ -36,7 +37,7 @@
 				</div>
 				<div class="pMsgRectext floatLeft">
 					<p class="pMsgRectextTit">UKey证书<span class="bgColordanger boxCircle">!</span></p>
-					<p class="pMsgRectextTet"><span>未绑定</span><a class="mrl15 colorDanger text_underline">绑定</a></p>
+					<p class="pMsgRectextTet"><span>未绑定</span><a class="mrl15 colorDanger text_underline" ng-click="bindUkey()">绑定</a></p>
 				</div>
 				<div class="clearfix"></div>
 			</div>
@@ -44,7 +45,7 @@
 		<div class="clearfix"></div>
 	</div>
 </div>
-<div class="main-container-short-white mrb20">
+<div class="main-container-short-white mrb20" ng-show="password">
 	<div class="pTitle">
 		登录密码修改
 	</div>
@@ -53,25 +54,25 @@
 			<table>
 				<tr>
 					<td>输入原密码:</td>
-					<td><input type="text" /></td>
+					<td><input type="text" ng-model="prePsw" /></td>
 				</tr>
 				<tr>
 					<td>输入新密码:</td>
-					<td><input type="text" /></td>
+					<td><input type="text" ng-model="newPsw" /></td>
 				</tr>
 				<tr>
 					<td>确认新密码:</td>
-					<td><input type="text" /></td>
+					<td><input type="text" ng-model="confirmPsw" /></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td><div class="pSetmsgSubmit bgColortextblue">下一步</div></td>
+					<td><div class="pSetmsgSubmit bgColortextblue" ng-click="setPsw()">下一步</div></td>
 				</tr>
 			</table>
 		</div>
 	</div>
 </div>
-<div class="main-container-short-white mrb20">
+<div class="main-container-short-white mrb20" ng-show="signPsw">
 	<div class="pTitle">
 		签署密码设置
 	</div>
@@ -80,21 +81,21 @@
 			<table>
 				<tr>
 					<td>输入签署密码:</td>
-					<td><input type="text" /></td>
+					<td><input type="text" ng-model="setsignPsw" /></td>
 				</tr>
 				<tr>
 					<td>确认签署密码:</td>
-					<td><input type="text" /></td>
+					<td><input type="text" ng-model="confirmSignPsw" /></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td><div class="pSetmsgSubmit bgColortextblue">确定</div></td>
+					<td><div class="pSetmsgSubmit bgColortextblue" ng-click="setSignPsw()">确定</div></td>
 				</tr>
 			</table>
 		</div>
 	</div>
 </div>
-<div class="main-container-short-white mrb20">
+<div class="main-container-short-white mrb20" ng-show="signPswCh">
 	<div class="pTitle">
 		签署密码修改
 	</div>
@@ -103,21 +104,24 @@
 			<table>
 				<tr>
 					<td>输入原密码:</td>
-					<td><input type="text" /></td>
+					<td><input type="text" ng-model="presignPsw" /></td>
 				</tr>
 				<tr>
 					<td>输入新密码:</td>
-					<td><input type="text" /></td>
+					<td><input type="text" ng-model="newsignPsw" /></td>
 				</tr>
 				<tr>
 					<td>确认新密码:</td>
-					<td><input type="text" /></td>
+					<td><input type="text" ng-model="confirmnewsignPsw" /></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td><div class="pSetmsgSubmit bgColortextblue">下一步</div></td>
+					<td><div class="pSetmsgSubmit bgColortextblue" ng-click="resetSignPsw()">下一步</div></td>
 				</tr>
 			</table>
 		</div>
 	</div>
+</div>
+<div class="notOPen">
+	该功能暂未开放
 </div>

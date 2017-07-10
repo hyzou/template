@@ -234,7 +234,6 @@ kry.factory('base', [
 				}
 			}
 		}
-
 		return {
 			//imgPath: 'http://192.168.2.190:8020/image/',
 			imgType: ['idcfront', 'idcback', 'sign', 'auth'],
@@ -323,7 +322,7 @@ kry.factory('api', function() {
 	}
 	var api = {
 		//获取用户
-		getUserList:'user/queryUserList.html'
+		getUserList:'users'
 	}
 	return api;
 })
@@ -397,17 +396,17 @@ kry.factory('srv', [
 
 		function upload(url, filedata, callback) {
 			$http.post(config.host + url, filedata, {
-					headers: {
-						'Content-Type': undefined
-					},
-					transformRequest: angular.identity
-				})
-				.success(callback)
-				.error(function(data, status, headers, cfg) {
-					callback({
-						code: -1
-					});
-				})
+				headers: {
+					'Content-Type': undefined
+				},
+				transformRequest: angular.identity
+			})
+			.success(callback)
+			.error(function(data, status, headers, cfg) {
+				callback({
+					code: -1
+				});
+			})
 		}
 		var srv = {}
 			/**
@@ -445,7 +444,7 @@ kry.factory('srv', [
 				var p = {
 					url: api.getUserList,
 					data: params,
-					method: 'post'
+					method: 'get'
 				}
 				ajax(p, cb);
 			}
@@ -796,7 +795,7 @@ kry.controller('ctrl.index', [
 				diag.closePromise.then(function() {
 					console.log(123)
 				})
-			} else if($el == '合同模板签署'){
+			} else if ($el == '合同模板签署'){
 				var diag = dialog.open({
 					templateUrl: 'templates/dialog/dialog.modelfilelist.htm',
 					scope: $scope,
@@ -806,8 +805,14 @@ kry.controller('ctrl.index', [
 				diag.closePromise.then(function() {
 					console.log(123)
 				})
-			}
+			} 
 		};
+		$scope.fileUpload = function(file){
+			console.log(file);
+			if(file){
+				$location.path('/fileSign');
+			}
+		}
 		$scope.operatePage = function(name){
 			switch (name){
 				case '待我签署':
@@ -922,6 +927,14 @@ kry.controller('ctrl.main.signMe', [
     			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
     		}
     	});
+		$scope.documentRank = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.documentRank.htm',
+				scope: $scope,
+				controller:'ctrl.dialog.documentRank',
+				className: 'ngdialog-theme-input'
+			});
+		}
 	}
 ])
 kry.controller('ctrl.main.signOther', [
@@ -1011,6 +1024,14 @@ kry.controller('ctrl.main.signOther', [
     			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
     		}
     	});
+		$scope.documentRank = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.documentRank.htm',
+				scope: $scope,
+				controller:'ctrl.dialog.documentRank',
+				className: 'ngdialog-theme-input'
+			});
+		}
 	}
 ])
 kry.controller('ctrl.main.signFinish', [
@@ -1197,6 +1218,17 @@ kry.controller('ctrl.main.docBack', [
     			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
     		}
     	});
+		$scope.documentRank = function(){
+//			srv.getUserList(28,function(xhr){
+//				console.log(xhr);
+//			})
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.documentRank.htm',
+				scope: $scope,
+				controller:'ctrl.dialog.documentRank',
+				className: 'ngdialog-theme-input'
+			});
+		}
 	}
 ])
 kry.controller('ctrl.main.drafts', [
@@ -1286,6 +1318,14 @@ kry.controller('ctrl.main.drafts', [
     			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
     		}
     	});
+		$scope.documentRank = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.documentRank.htm',
+				scope: $scope,
+				controller:'ctrl.dialog.documentRank',
+				className: 'ngdialog-theme-input'
+			});
+		}
 	}
 ])
 kry.controller('ctrl.main.cloudFile', [
@@ -1315,13 +1355,22 @@ kry.controller('ctrl.main.cloudFile', [
 		$scope.fileTitle = function(idx,$el){
 			$scope.selectd = idx;
 			$scope.selectedTitle = $el;
+			$scope.artTitle = $el;
 		}
+		$scope.htmlStr = '<p>为富人se<u>re日</u>晚污染<strike>范围限定房价是否建立快</strike>速交<span data-fr-verified="true" style="color: #FFFF00;">付了</span>空间</p>';
 		$('#edit').editable({
 			inlineMode: false,
 			alwaysBlank: true,
 			buttons: ["bold", "italic", "underline", "strikeThrough", "fontSize", "color", "formatBlock", "blockStyle", "align", "insertOrderedList", "insertUnorderedList", "outdent", "indent", "insertHorizontalRule", "undo", "redo"],
-            language: 'zh_cn'
+            language: 'zh_cn',
+            placeholder: ''
 		});
+		edit()
+		function edit(){
+			if($scope.htmlStr){
+				$('#edit').find(".froala-element").html($scope.htmlStr)
+			}
+		}
 		$scope.saveEditor = function(){
 			console.log($scope.artTitle);
 			var content = $("#edit .froala-element").eq(0)[0].innerHTML;
@@ -1339,6 +1388,51 @@ kry.controller('ctrl.main.cloudFile', [
 			$scope.sel = idx;
 			$scope.elName = $el;
 		}
+	}
+])
+kry.controller('ctrl.main.fileModel', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$root.setSite({
+			title: '合同模板',
+			menuKey: 'cloudFile'
+		});
+		$scope.showRank = false;
+		$scope.fileTitleArr = ['员工公寓租赁合同','员工公寓租赁合同1','员工公寓租赁合同2','员工公寓租赁合同3'];
+		$scope.filterArr = ['创建时间','修改时间','文件名称','文件大小'];
+		$scope.fileTitle = function(idx,$el){
+			$scope.selectd = idx;
+			$scope.selectedTitle = $el;
+			$scope.artTitle = $el;
+		};
+		$scope.rankCondition = function(){
+			if($scope.showRank){
+				$scope.showRank = false;
+			}else{
+				$scope.showRank = true;
+			}
+		};
+		$scope.liSel = function(idx,$el){
+			$scope.sel = idx;
+			$scope.elName = $el;
+		};
+		$('#dowebok').viewer({
+			url: 'data-original',
+		});
 	}
 ])
 kry.controller('ctrl.main.fileSign', [
@@ -1369,6 +1463,17 @@ kry.controller('ctrl.main.fileSign', [
 //			nextCell:".filesArrowNext",
 //			effect:"leftLoop"
 //		});
+		$scope.contactList = [{
+			'tel': '13812345678',
+			'name': '孙红雷',
+			'mail': '2659889896@qq.com',
+			'recognize': '手机+邮箱+实名'
+		},{
+			'tel': '13812345678',
+			'name': '黄渤',
+			'mail': '2659889896@qq.com',
+			'recognize': '手机+邮箱+实名'
+		}];
 		var h=0,
 			scrollTimes = 0;
 		$scope.scrollbar = false;
@@ -1418,6 +1523,19 @@ kry.controller('ctrl.main.fileSign', [
 		$('#dowebok').viewer({
 			url: 'data-original',
 		});
+		$scope.addReceiver = function(){
+			var newObj = {
+			'tel': '',
+			'name': '',
+			'mail': '',
+			'recognize': ''
+			};
+			$scope.contactList.push(newObj);
+		};
+		$scope.removeLast = function(){
+			$scope.contactList.pop();
+		};
+		$("#payments").msDropdown({visibleRows:4});
 	}
 ])
 kry.controller('ctrl.main.signature', [
@@ -1473,6 +1591,60 @@ kry.controller('ctrl.person.info', [
 			title: '个人信息',
 			menuKey: 'personInfo'
 		});
+		$scope.fileUpload = function(fil){
+			for(var i = 0; i < fil.length; i++) {
+				reads(fil[i]);
+			}
+		};
+		function reads(fil) {
+			var reader = new FileReader();
+			reader.readAsDataURL(fil);
+			reader.onload = function() {
+				$("#logoPic").attr('src', reader.result);
+			};
+		}
+		$scope.infoSubmit = function(){
+			// var userCreditInfo = encodeURIComponent(encodeURIComponent(ct.userCreditInfo));  +,%编码
+			// 解码方法http://blog.csdn.net/li2327234939/article/details/53675211
+			var data = {};
+			if (base.isDefined($scope.loginName))
+				data['loginName'] = $scope.loginName;
+			if (!$scope.loginIdnum || !base.isIdc($scope.loginIdnum)) {
+				base.alert('请正确填写您的身份证号码');
+				return;
+			} else {
+				data['loginIdnum'] = $scope.loginIdnum;
+			}
+			if(!$scope.province){
+				base.alert("请填写您所在省份")
+				return;
+			} else {
+				data['province'] = $scope.province;
+			}
+			if(!$scope.city){
+				base.alert("请填写您所在城市")
+				return;
+			} else {
+				data['city'] = $scope.city;
+			}
+			if(!$scope.county){
+				base.alert("请填写您所在区/县")
+				return;
+			} else {
+				data['county'] = $scope.county;
+			}
+			if(!$scope.detailAdd){
+				base.alert("请填写您的详细地址")
+				return;
+			} else {
+				data['detailAdd'] = $scope.detailAdd;
+			}
+			if (base.isDefined($scope.company))
+				data['company'] = $scope.company;
+			if (base.isDefined($scope.job))
+				data['job'] = $scope.job;
+			console.log(data);
+		}
 	}
 ])
 kry.controller('ctrl.person.inforec', [
@@ -1496,6 +1668,104 @@ kry.controller('ctrl.person.inforec', [
 			title: '信息认证',
 			menuKey: 'personInforec'
 		});
+		$scope.mailRec = false;
+		$scope.mobileRec = false;
+		$scope.realNameRec = false;
+		$scope.notOpen = false;
+		$scope.idcardShow = false;
+		$scope.inforShow = true;
+		$scope.mobileCli = function(){
+			$scope.mailRec = false;
+			$scope.mobileRec = true;
+			$scope.realNameRec = false;
+		};
+		$scope.mailCli = function(){
+			$scope.mailRec = true;
+			$scope.mobileRec = false;
+			$scope.realNameRec = false;
+		};
+		$scope.nameRealCli = function(){
+			$scope.mailRec = false;
+			$scope.mobileRec = false;
+			$scope.realNameRec = true;
+		};
+		$scope.bankRec = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.notopen.htm',
+				scope: $scope,
+				// controller:'ctrl.dialog.cloudfilelist',
+				className: 'ngdialog-notopen'
+			});
+			setTimeout(function(){
+				diag.close();
+			},1500);
+		};
+		$scope.fileUpload = function(fil,elem){
+			for(var i = 0; i < fil.length; i++) {
+				reads(fil[i],elem);
+			}
+		};
+		function reads(fil,ele) {
+			var reader = new FileReader();
+			reader.readAsDataURL(fil);
+			reader.onload = function() {
+				$(ele).parent().parent().siblings('.idRecGroupPic').find('img').attr('src', reader.result);
+			};
+		};
+		$scope.inforIdcard = function(){
+			$scope.idcardShow = true;
+			$scope.inforShow = false;
+		};
+		$scope.Inforwrap = function(){
+			$scope.idcardShow = false;
+			$scope.inforShow = true;
+		}
+		$scope.infoRecSubmit = function(){
+			// var userCreditInfo = encodeURIComponent(encodeURIComponent(ct.userCreditInfo));  +,%编码
+			// 解码方法http://blog.csdn.net/li2327234939/article/details/53675211
+			var data = {};
+			if (!$scope.loginName) {
+				base.alert('请填写您的名字');
+				return;
+			} else {
+				data['loginName'] = $scope.loginName;
+			}
+			if (!$scope.loginIdnum || !base.isIdc($scope.loginIdnum)) {
+				base.alert('请正确填写您的身份证号码');
+				return;
+			} else {
+				data['loginIdnum'] = $scope.loginIdnum;
+			}
+			if(!$scope.province){
+				base.alert("请填写您所在省份")
+				return;
+			} else {
+				data['province'] = $scope.province;
+			}
+			if(!$scope.city){
+				base.alert("请填写您所在城市")
+				return;
+			} else {
+				data['city'] = $scope.city;
+			}
+			if(!$scope.county){
+				base.alert("请填写您所在区/县")
+				return;
+			} else {
+				data['county'] = $scope.county;
+			}
+			if(!$scope.detailAdd){
+				base.alert("请填写您的详细地址")
+				return;
+			} else {
+				data['detailAdd'] = $scope.detailAdd;
+			}
+			if (base.isDefined($scope.company))
+				data['company'] = $scope.company;
+			if (base.isDefined($scope.job))
+				data['job'] = $scope.job;
+			console.log(data);
+		}
 	}
 ])
 kry.controller('ctrl.person.msg', [
@@ -1519,6 +1789,22 @@ kry.controller('ctrl.person.msg', [
 			title: '消息设置',
 			menuKey: 'personMsg'
 		});
+		$scope.open = false;
+		$scope.openM = false;
+		$scope.openMsg = function(){
+			if($scope.open){
+				$scope.open = false;
+			}else{
+				$scope.open = true;
+			}
+		}
+		$scope.openMail = function(){
+			if($scope.openM){
+				$scope.openM = false;
+			}else{
+				$scope.openM = true;
+			}
+		}
 	}
 ])
 kry.controller('ctrl.person.safe', [
@@ -1542,6 +1828,112 @@ kry.controller('ctrl.person.safe', [
 			title: '安全设置',
 			menuKey: 'personSafe'
 		});
+		$scope.noSign = true;
+		$scope.hasSign = false;
+		$scope.password = false;
+		$scope.signPsw = false;
+		$scope.signPswCh = false;
+		$scope.passwordCh = function(){
+			$scope.password = true;
+			$scope.signPsw = false;
+			$scope.signPswCh = false;
+		};
+		$scope.signPswSet = function(){
+			$scope.signPsw = true;
+			$scope.password = false;
+			$scope.signPswCh = false;
+		};
+		$scope.signPswChange = function(){
+			$scope.password = false;
+			$scope.signPsw = false;
+			$scope.signPswCh = true;
+		};
+		$scope.bindUkey = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.notopen.htm',
+				scope: $scope,
+				// controller:'ctrl.dialog.cloudfilelist',
+				className: 'ngdialog-notopen'
+			});
+			setTimeout(function(){
+				diag.close();
+			},1500);
+		};
+		$scope.setPsw = function(){
+			var data = {};
+			if(!$scope.prePsw){
+				base.alert("请填写原密码")
+				return;
+			} else {
+				data['prePsw'] = $scope.prePsw;
+			}
+			if(!$scope.newPsw){
+				base.alert("请填写新密码")
+				return;
+			} else {
+				data['newPsw'] = $scope.newPsw;
+			}
+			if(!$scope.confirmPsw){
+				base.alert("请确认新密码")
+				return;
+			} else {
+				if($scope.confirmPsw != $scope.newPsw){
+					base.alert("确认密码与新密码不一致，请重新填写")
+					$scope.confirmPsw = '';
+					return;
+				}else{
+					data['confirmPsw'] = $scope.confirmPsw;
+				}
+			}
+		}
+		$scope.setSignPsw = function(){
+			var data = {};
+			if(!$scope.setsignPsw){
+				base.alert("请填写签署密码")
+				return;
+			} else {
+				data['setsignPsw'] = $scope.setsignPsw;
+			}
+			if(!$scope.confirmSignPsw){
+				base.alert("请确认签署密码")
+				return;
+			} else {
+				if($scope.confirmSignPsw != $scope.signPsw){
+					base.alert("确认密码与签署密码不一致，请重新填写")
+					$scope.confirmSignPsw = '';
+					return;
+				}else{
+					data['confirmSignPsw'] = $scope.confirmSignPsw;
+				}
+			}
+		}
+		$scope.resetSignPsw = function(){
+			var data = {};
+			if(!$scope.presignPsw){
+				base.alert("请填写原密码")
+				return;
+			} else {
+				data['presignPsw'] = $scope.presignPsw;
+			}
+			if(!$scope.newsignPsw){
+				base.alert("请填写新密码")
+				return;
+			} else {
+				data['newsignPsw'] = $scope.newsignPsw;
+			}
+			if(!$scope.confirmnewsignPsw){
+				base.alert("请确认新密码")
+				return;
+			} else {
+				if($scope.confirmnewsignPsw != $scope.newsignPsw){
+					base.alert("确认密码与新密码不一致，请重新填写")
+					$scope.confirmnewsignPsw = '';
+					return;
+				}else{
+					data['confirmnewsignPsw'] = $scope.confirmnewsignPsw;
+				}
+			}
+		}
 	}
 ])
 kry.controller('ctrl.person.sign', [

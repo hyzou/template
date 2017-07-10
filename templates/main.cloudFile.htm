@@ -20,13 +20,11 @@
 				<span class="mrl10 floatRight">{{$index+1}}.{{titleItem}}</span>
 			</a>
 		</div>
-		<div class="cloudModelBtn cursor">合同模板</div>
+		<div class="cloudModelBtn cursor"><a href="#/fileModel">合同模板</a></div>
 	</div>
 	<div class="cloudMain">
-		<div class="cloudMainTitle">
-			<span contenteditable="true" ng-model="artTitle">
-				{{selectedTitle}}
-			</span>
+		<div class="cloudMainTitle"><!--{{artTitle}}-->
+			<input type="text" class="editTitle borderNone" title="{{artTitle}}" ng-model="artTitle" />
 			<a class="btn-middle bgColorgray mrl15 floatRight">取消</a>
 			<a class="btn-middle bgColorgray mrl15 floatRight" ng-click="saveEditor()">保存</a>
 			<a class="btn-middle bgColorgray mrl15 floatRight">删除</a>

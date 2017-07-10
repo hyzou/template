@@ -11,12 +11,20 @@
 				<p class="msgSetTextTit">短信通知</p>
 				<p class="msgSetTextTet">若关闭，进行实名认证、文件签署、完成文件签署时，将不通过短信的方式向您注册的手机发送通知短信</p>
 			</div>
-			<div class="msgSetBtn floatLeft mrl50">
-				<div class="openbtnbg">
+			<div class="msgSetBtn floatLeft mrl50" ng-click="openMsg()">
+				<div class="openbtnbg" ng-show="open">
 					<div class="openbtnceil posiRel floatRight">
 						<div class="openbtntail">
 							<div class="openbtntailceil floatLeft"></div>
 							<div class="openbtntailceil floatRight"></div>
+						</div>
+					</div>
+				</div>
+				<div class="closebtnbg" ng-show="!open">
+					<div class="closebtnceil posiRel">
+						<div class="closebtntail">
+							<div class="closebtntailceil floatLeft"></div>
+							<div class="closebtntailceil floatRight"></div>
 						</div>
 					</div>
 				</div>
@@ -31,8 +39,16 @@
 				<p class="msgSetTextTit">邮件通知</p>
 				<p class="msgSetTextTet">若关闭，进行实名认证、文件签署、完成文件签署时，将不通过邮件的方式向您注册的邮箱发送通知邮件</p>
 			</div>
-			<div class="msgSetBtn floatLeft mrl50">
-				<div class="closebtnbg">
+			<div class="msgSetBtn floatLeft mrl50" ng-click="openMail()">
+				<div class="openbtnbg" ng-show="openM">
+					<div class="openbtnceil posiRel floatRight">
+						<div class="openbtntail">
+							<div class="openbtntailceil floatLeft"></div>
+							<div class="openbtntailceil floatRight"></div>
+						</div>
+					</div>
+				</div>
+				<div class="closebtnbg" ng-show="!openM">
 					<div class="closebtnceil posiRel">
 						<div class="closebtntail">
 							<div class="closebtntailceil floatLeft"></div>

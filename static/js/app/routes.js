@@ -15,6 +15,7 @@ var routes = {
 		'/cloudFile': 'main.cloudFile',
 		'/fileSign': 'main.fileSign',
 		'/signature': 'main.signature',
+		'/fileModel': 'main.fileModel',
 		'/personInfo': 'person.info',
 		'/personInforec': 'person.inforec',
 		'/personMsg': 'person.msg',

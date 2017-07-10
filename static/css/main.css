@@ -169,7 +169,7 @@ input[type=radio]:checked:after  {
 		color: #fff;
 	}
 	.bgBorderblue{
-		color: #3db0da;
+		color: #3db0da !important;
 		background: #fff;
 	}
 	.bgBordergray{
@@ -188,6 +188,9 @@ input[type=radio]:checked:after  {
 	}
 	.borderBtf5{
 		border:1px solid #f5f5f5;
+	}
+	.borderNone{
+		border: 0 !important;
 	}
 	.colorGray{
 		color: #8b8b8b;
@@ -353,6 +356,7 @@ input[type=radio]:checked:after  {
 		width: 100%;
 		height: 70px;
 		line-height: 70px;
+		display: none;
 	}
 	.flexBox{
 		display: flex;
@@ -361,6 +365,9 @@ input[type=radio]:checked:after  {
 		flex-flow: row wrap; 
 		align-items: stretch; 
 		justify-content: center;
+	}
+	.overflowVis{
+		overflow: visible !important;
 	}
 	/*a  upload */
 	.a-upload {
@@ -610,6 +617,15 @@ input[type=radio]:checked:after  {
 			width: 235px;
 			margin: auto;
 		}
+		.localfile{
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%; 
+			height: 100%;
+			display: block;
+			opacity: 0;
+		}
 		.itemCon:hover{
 			-webkit-box-shadow: 0 0 15px 3px rgba(0,0,0,.1);  
 			-moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.1);  
@@ -770,6 +786,16 @@ input[type=radio]:checked:after  {
 			border: 1px solid #e8e8e8;
 			margin: auto;
 			cursor: pointer;
+			overflow: hidden;
+		}
+		.logoFile{
+			position:absolute;
+			top: 0;
+			left: 0;
+			opacity: 0;
+			display: block;
+			width: 100%;
+			height: 100%;
 		}
 		.pHeadlogoText{
 			text-align: center;
@@ -1392,20 +1418,34 @@ input[type=radio]:checked:after  {
 		.cloudModelBtn{
 			width: 240px;
 			height: 32px;
-			line-height: 30px;
 			border: 1px solid #3499da;
-			color: #3499da;
-			text-align: center;
-			font-size: 16px;
 			position: absolute;
 			bottom: 20px;
 			left: 12px;
+		}
+		.cloudModelBtn a{
+			color: #3499da;
+			line-height: 30px;
+			width: 100%;
+			height: 100%;
+			text-align: center;
+			font-size: 16px;
+			display: block;
 		}
 		.cloudMainTitle{
 			height: 51px;
 			padding: 10px 20px 10px 30px;
 			line-height: 30px;
 			border-bottom: 1px solid #f6f6f6;
+			font-size: 18px;
+			color: #585858;
+		}
+		.editTitle{
+			height: 100%;
+			display: block;
+			float: left;
+			width: 50%;
+			line-height: 30px;
 			font-size: 18px;
 			color: #585858;
 		}
@@ -1421,6 +1461,19 @@ input[type=radio]:checked:after  {
 			height: calc(100% - 51px);
 			height: -moz-calc(100% - 51px);
 			height: -webkit-calc(100% - 51px);
+		}
+		.fileModellist{
+			width: 155px;
+			height: 205px;
+			border: 1px solid #ececec;
+			padding: 8px;
+			margin: 0 25px 25px 0;
+		}
+		.fileModeltit{
+			width: 100%;
+			line-height: 22px;
+			font-size: 12px;
+			color: #5f5e5e;
 		}
 		.fileContent{
 			padding: 15px;
@@ -1482,7 +1535,7 @@ input[type=radio]:checked:after  {
 		.signPicCon ul li{
 			width: 170px;
 			height: 100%;
-			margin: 0 10px;
+			margin: 10px;
 			padding: 0 8px;
 			border: 1px solid #ececec;
 		}
@@ -1540,6 +1593,7 @@ input[type=radio]:checked:after  {
 			height: 100%;
 			border: none;
 			background: none;
+			outline: none;
 		}
 		.initiatortable td{
 			border-right: 1px solid #d9d9d9;
@@ -1908,7 +1962,7 @@ input[type=radio]:checked:after  {
   top: 0;
   left: 0px;
   right: 0px;
-  content: "æç¤º";
+  content: "提示";
   height: 34px;
   line-height: 34px;
   border-bottom: 1px solid #3288e6;
@@ -1923,7 +1977,7 @@ input[type=radio]:checked:after  {
 .ngdialog.ngdialog-theme-alert .ngdialog-close:before {
   background: transparent;
   color: #fff;
-  content: 'ç¡®å®š';
+  content: '确认';
   font-size: 14px;
   font-weight: 400;
   height: 40px;
@@ -2071,7 +2125,20 @@ input[type=radio]:checked:after  {
 .ngdialog-theme-view .ngdialog-close {
   display: none;
 }
-
+.ngdialog-notopen .ngdialog-overlay{
+	display: none;
+}
+.ngdialog-notopen .ngdialog-content{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 130px;
+	background: none;
+}
+.ngdialog-notopen .ngdialog-close{
+	display: none;
+}
 /*部分插件样式修改*/
 .froala-element{
 	height: calc(100% - 40px);

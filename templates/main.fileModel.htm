@@ -1,0 +1,64 @@
+<div class="main-container-full" style="padding-right: 60px;">
+	<div class="cloudNav">
+		<div class="cloudSearch" style="height: 60px;">
+			<input class="floatLeft" type="text" placeholder="搜索..." id="" value="" />
+			<div class="addBtn cursor floatLeft">
+				<img src="../template/static/css/img/newFile.png"/>
+			</div>
+			<div class="triangleDbtn cursor posiRel floatLeft">
+				<img src="../template/static/css/img/moreBtn.png" ng-click="rankCondition()"/>
+				<div class="searchType itemConActive" ng-if="showRank">
+					<ul>
+						<li ng-repeat="filt in filterArr track by $index" ng-click="liSel($index,filt)" ng-class="{'colorBlue': filt == elName}">{{filt}}<span ng-if="sel == $index" class="mrl10">✔</span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="cloudFileList" id="fileTitleList">
+			<a ng-repeat="titleItem in fileTitleArr track by $index" ng-click="fileTitle($index,titleItem)" ng-class="{'cloudFileListActive': $index == selectd }">
+				<img class="floatLeft" src="../template/static/css/img/file.png"/>
+				<span class="mrl10 floatRight">{{$index+1}}.{{titleItem}}</span>
+			</a>
+		</div>
+		<!--<div class="cloudModelBtn cursor">合同模板</div>-->
+	</div>
+	<div class="cloudMain">
+		<div class="cloudMainEditor" style="padding: 25px;">
+			<ul>
+				<li class="fileModellist floatLeft">
+					<div class="fileModeltit">
+						租房合同模板
+					</div>
+					<img src="../template/static/css/img/model.png"/>
+					<div style="margin-top: 5px;">
+						<a class="btn-mini bgColorblue borderBlue colorWhite posiRel" style="line-height: 22px;padding: 0 15px;">
+							预览
+							<ul id="dowebok" style="position: absolute;top: 0;bottom:0;left: 0;right: 0;overflow: hidden;">
+								<li class="opticy"><img data-original="../template/static/js/third/viewerJs/img/tibet-1.jpg" src="../template/static/js/third/viewerJs/img/thumbnails/tibet-1.jpg" alt="图片1" width="100%" height="100%"></li>
+								<li class="opticy"><img data-original="../template/static/js/third/viewerJs/img/tibet-2.jpg" src="../template/static/js/third/viewerJs/img/thumbnails/tibet-2.jpg" alt="图片2" width="100%" height="100%"></li>
+								<li class="opticy"><img data-original="../template/static/js/third/viewerJs/img/tibet-3.jpg" src="../template/static/js/third/viewerJs/img/thumbnails/tibet-3.jpg" alt="图片3" width="100%" height="100%"></li>
+								<li class="opticy"><img data-original="../template/static/js/third/viewerJs/img/tibet-4.jpg" src="../template/static/js/third/viewerJs/img/thumbnails/tibet-4.jpg" alt="图片4" width="100%" height="100%"></li>
+								<li class="opticy"><img data-original="../template/static/js/third/viewerJs/img/tibet-5.jpg" src="../template/static/js/third/viewerJs/img/thumbnails/tibet-5.jpg" alt="图片5" width="100%" height="100%"></li>
+								<li class="opticy"><img data-original="../template/static/js/third/viewerJs/img/tibet-6.jpg" src="../template/static/js/third/viewerJs/img/thumbnails/tibet-6.jpg" alt="图片6" width="100%" height="100%"></li>
+							</ul>
+						</a>
+						<a href="#/cloudFile" class="btn-mini floatRight bgBorderblue borderBlue" style="line-height: 22px;padding: 0 15px;">编辑</a>
+					</div>
+				</li>
+				<li class="fileModellist floatLeft">
+					<div class="fileModeltit">
+						租房合同模板
+					</div>
+					<img src="../template/static/css/img/model.png"/>
+					<div style="margin-top: 5px;">
+						<a class="btn-mini bgColorblue borderBlue colorWhite" style="line-height: 22px;padding: 0 15px;">预览</a>
+						<a class="btn-mini floatRight bgBorderblue borderBlue" style="line-height: 22px;padding: 0 15px;">编辑</a>
+					</div>
+				</li>
+				<li class="fileModellist floatLeft">
+					<img class="cursor" src="../template/static/css/img/addModel.png"/>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

@@ -1,7 +1,7 @@
 <div class="main-container">
 	<ul class="idxItemList">
 		<li class="floatLeft" ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
-			<div class="itemCon pdt35" ng-class="{'itemConActive': item == selectd }">
+			<div class="itemCon pdt35 posiRel cursor" ng-class="{'itemConActive': item == selectd }">
 				<div class="idxItem">
 					<div class="idxItemLogo boxCircle posiRel floatLeft" ng-class="{'bgColorsuc': $index == '0','bgColorblue': $index == '1','bgColorwarn': $index == '2' }">
 						<div class="idxItemLogoceil">
@@ -15,6 +15,7 @@
 					</div>
 					<div class="clearfix"></div>
 				</div>
+				<input class="localfile cursor" onchange="angular.element(this).scope().fileUpload(this.files)" ng-if="$index == '0'" type="file" ng-model="fileName" />
 			</div>
 		</li>
 		<div class="clearfix"></div>
@@ -28,8 +29,8 @@
 				<div class="itemcontent">
 					<span class="idxItemLogo boxCircle bgColorblack displayBl floatLeft">
 						<img src="../template/static/css/img/signme.png" class="mrt12" ng-if="role.name == '待我签署'" />
-						<img src="../template/static/css/img/signother.png" class="mrt12" ng-if="role.name == '待他人签署'" />
-						<img src="../template/static/css/img/signfinish.png" class="mrt12" ng-if="role.name == '已完成签署'" />
+						<img src="../template/static/css/img/signOther.png" class="mrt12" ng-if="role.name == '待他人签署'" />
+						<img src="../template/static/css/img/signFinish.png" class="mrt12" ng-if="role.name == '已完成签署'" />
 						<img src="../template/static/css/img/backfile.png" class="mrt12" ng-if="role.name == '退回的文件'" />
 						<img src="../template/static/css/img/drafts.png" class="mrt12" ng-if="role.name == '草稿箱'" />
 						<img src="../template/static/css/img/cloudFile.png" class="mrt12" ng-if="role.name == '云文件'" />

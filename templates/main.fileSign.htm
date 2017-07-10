@@ -26,85 +26,63 @@
 			<div class="pTitle">
 				第二步：填写签收人信息
 			</div>
-			<div class="fileContent borderBtf5">
+			<div ng-repeat="item in contactList track by $index" class="fileContent borderBtf5">
 				<ul class="receiverInfotable">
 					<li class="floatLeft">
 						<span>签收人手机号/邮箱：</span>
-						<input width="130px" type="" name="" id="" value="" />
+						<input width="130px" type="text" name="tel" title="{{item.tel}}" value="{{item.tel}}" />
 					</li>
 					<li class="floatLeft mrl25">
 						<span>签收人姓名：</span>
-						<input width="95px"  type="" name="" id="" value="" />
+						<input width="95px" type="text" value="{{item.name}}" readonly />
 					</li>
 					<li class="floatLeft mrl25">
 						<span>签收人邮箱/手机号：</span>
-						<input width="130px" type="" name="" id="" value="" />
+						<input width="130px" type="text" title="{{item.mail}}" value="{{item.mail}}" readonly />
 					</li>
 					<li class="floatLeft mrl25">
 						<span>操作类型：</span>
-						<select>
-							<option value="">需要签名</option>
-							<option value="">不需要签名</option>
-							<option value="">需要签名</option>
+						<select name="type">
+							<option value="0">需要签署</option>
+							<option value="1">接受副本</option>
 						</select>
 					</li>
 					<li class="floatLeft mrl25">
 						<span>签署方认证级别：</span>
-						<input width="130px" type="" name="" id="" value="" />
-					</li>
-				</ul>
-			</div>
-			<div class="fileContent borderBtf5">
-				<ul class="receiverInfotable">
-					<li class="floatLeft">
-						<span>签收人手机号/邮箱：</span>
-						<input width="130px" type="" name="" id="" value="" />
-					</li>
-					<li class="floatLeft mrl25">
-						<span>签收人姓名：</span>
-						<input width="95px"  type="" name="" id="" value="" />
-					</li>
-					<li class="floatLeft mrl25">
-						<span>签收人邮箱/手机号：</span>
-						<input width="130px" type="" name="" id="" value="" />
-					</li>
-					<li class="floatLeft mrl25">
-						<span>操作类型：</span>
-						<select>
-							<option value="">需要签名</option>
-							<option value="">不需要签名</option>
-							<option value="">需要签名</option>
-						</select>
-					</li>
-					<li class="floatLeft mrl25">
-						<span>签署方认证级别：</span>
-						<input width="130px" type="" name="" id="" value="" />
+						<input width="130px" type="text" value="{{item.recognize}}" readonly />
 					</li>
 				</ul>
 			</div>
 			<div class="fileContent">
-				<a class="btn-middle bgColorblue floatLeft">添加新签收人</a>
-				<a class="btn-middle borderBlue colorBlue mrl15 floatLeft">删除上一条</a>
+				<a class="btn-middle bgColorblue floatLeft" ng-click="addReceiver()">添加新签收人</a>
+				<a class="btn-middle borderBlue colorBlue mrl15 floatLeft" ng-click="removeLast()">删除上一条</a>
 			</div>
 		</div>
 		<div class="main-container-short-white">
 			<div class="pTitle">
 				第三步：文件发起方签字
 			</div>
-			<div class="fileContent">
+			<div class="fileContent overflowVis">
 				<table class="initiatortable">
 					<tr>
+						<!--<td style="background: #fff;" class="posiRel">-->
 						<td style="background: #fff;">
-							<select name="">
-								<option value="">1</option>
-								<option value="">1</option>
-								<option value="">1</option>
-								<option value="">1</option>
-								<option value="">1</option>
-								<option value="">1</option>
-								<option value="">1</option>
-								<option value="">1</option>
-							</select>
+							<!--<div class="signPicChoose">
+								<img ng-if="picChoose" src="{{picChoose}}"/>
+							</div>
+							<ul class="signPicChooseList">
+								<li class="floatLeft"><img src="../template/static/css/img/sign.png" height="100%" /></li>
+								<li class="floatLeft"><img src="../template/static/css/img/sign.png" height="100%" /></li>
+								<li class="floatLeft"><img src="../template/static/css/img/sign.png" height="100%" /></li>
+							</ul>-->
+						    <select id="payments" >
+						        <option value="">请选择</option>
+						        <option value="1" data-image="../template/static/css/img/sign.png"></option>
+						        <option selected="selected" value="2" data-image="../template/static/css/img/sign.png"></option>
+						        <option value="3" data-image="../template/static/js/third/viewerJs/img/thumbnails/tibet-4.jpg"></option>
+						        <option value="4" data-image="../template/static/css/img/sign.png"></option>
+						    </select>
+							
 						</td>
 						<td>客户名</td>
 						<td>9999888888@qq.com</td>

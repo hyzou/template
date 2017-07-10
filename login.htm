@@ -28,7 +28,7 @@
   						</li>
   					</ul>
 	  				<div class="setbox">
-	  					<div class="setBtn">
+	  					<div id="signUp" class="setBtn">
 	  						注册玺签宝
 	  					</div>
 	  					<div class="readOrders">
@@ -42,27 +42,79 @@
   				<div class="loginbox">
   					<ul>
   						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="手机号/邮箱号/登录名" /></li>
-  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="密码" /></li>
+  						<li class="boxsbb" style="margin-bottom: 0;" id="mmNum"><input type="text" class="boxsbb" placeholder="密码" /></li>
+  						<li class="boxsbb posiRel displayNo" id="yzmNum">
+  							<input type="text" class="boxsbb" placeholder="6位数验证码" />
+  							<span class="sendTelCode posiAbs loginYzm">发送验证码</span>
+  						</li>
   					</ul>
 	  				<div class="setbox">
 	  					<div class="readOrders loginread">
-	  						<a class="floatLeft"><span>手机验证码登录</span></a>
+	  						<a class="floatLeft" id="yzmLog"><span>手机验证码登录</span></a>
+	  						<a class="floatLeft displayNo" id="mmLog"><span>帐号密码登录</span></a>
 	  						<a class="floatRight">忘记密码</a>
 	  					</div>
-	  					<div id="login" class="setBtn loginread">
+	  					<div id="login" class="setBtn">
 	  						登录
 	  					</div>
 	  					<div style="width: 100%;height: 30px;"></div>
 	  				</div>
-		  			<div class="download marginTop50">
+		  			<div class="download marginTop30">
 		  				下载玺签宝
 		  			</div>
   				</div>
   			</div>
   		</div>
   	</div>
+  	<div id="ngdialog1" class="ngdialog">
+  		<div class="ngdialog-content">
+  			<div class="backStatus">
+  				<img src="static/css/assets/loginSuc.png" width="100%" />
+  			</div>
+  			<div class="btnGroup">
+  				<div class="btn nameRec" id="nameRec">实名认证</div>
+  				<div class="btn skipRec" id="skipRec">跳过认证</div>
+  			</div>
+  		</div>
+  	</div>
+  	<div id="ngdialog2" class="ngdialog">
+  		<div class="ngdialog-content">
+  			<div class="closeB" id="closeDia">×</div>
+  			<div class="backStatus" style="margin-top: 80px;">
+  				<img src="static/css/assets/loginSuc.png" width="100%" />
+  			</div>
+  		</div>
+  	</div>
     <script type="text/javascript">
+    	$("#yzmLog").on('click',function(){
+    		$("#yzmNum").show();
+    		$("#mmNum").hide();
+    		$("#mmLog").show();
+    		$("#yzmLog").hide();
+    	})
+    	$("#mmLog").on('click',function(){
+    		$("#yzmNum").hide();
+    		$("#mmNum").show();
+    		$("#mmLog").hide();
+    		$("#yzmLog").show();
+    	})
     	$("#login").on('click',function(){
+    		window.location.replace("./app.htm");
+    		localStorage.setItem('cookie','1')
+    	})
+    	$("#signUp").on('click',function(){
+    		$("#ngdialog2").show();
+    		return;
+    	})
+    	$("#closeDia").on('click',function(){
+    		$("#ngdialog2").hide();
+    		return;
+    	})
+    	$("#nameRec").on('click',function(){
+    		window.location.replace("./app.htm#/personInforec");
+    		localStorage.setItem('cookie','1')
+    	})
+    	$("#skipRec").on('click',function(){
     		window.location.replace("./app.htm");
     		localStorage.setItem('cookie','1')
     	})
@@ -73,9 +125,11 @@
     		if(idx == '1'){
     			$(".loginbox").removeClass('displayNo');
     			$(".signbox").addClass('displayNo');
+    			$(".login_container ").css('height','600px')
     		}else{
     			$(".loginbox").addClass('displayNo');
     			$(".signbox").removeClass('displayNo');
+    			$(".login_container ").css('height','670px')
     		}
     	})
     </script>
