@@ -5,10 +5,8 @@
 	<div class="pContent">
 		<div class="searchbar mrb20">
 			<div class="search floatLeft">
-				<input type="text" placeholder="请输入文档标题" />
-				<a class="btn-middle bgColorblue floatRight">
-					快速筛选
-				</a>
+				<input type="text" placeholder="请输入文档标题" ng-model="documentTit" />
+				<div class="btn-middle bgColorblue floatRight" ng-click="fastSearch()">快速筛选</div>
 			</div>
 			<div class="btn-middle bgBordergray floatLeft mrl15">高级筛选<span class="mrl10">▼</span></div>
 			<div class="btn-middle bgBordergray floatRight">导出</div>
@@ -18,26 +16,30 @@
 			<table>
 				<tr>
 					<td width="75">合同名称:</td>
-					<td><input type="text" id="" value="" /></td>
+					<td><input type="text" ng-model="documentName" /></td>
 					<td>发起人:</td>
-					<td><input type="text" id="" value="" /></td>
+					<td><input type="text" ng-model="provider" /></td>
 					<td>接收人:</td>
-					<td><input type="text" id="" value="" /></td>
+					<td><input type="text" ng-model="receiver" /></td>
 				</tr>
 				<tr>
 					<td>开始时间:</td>
-					<td><input type="text" id="" class="fromdata" readonly value="" /></td>
+					<td><from-date></from-date></td>
 					<td>结束时间:</td>
-					<td><input type="text" id="" class="enddata" readonly value="" /></td>
+					<td><end-date></end-date></td>
 					<td>类型:</td>
 					<td>
-						<select></select>
+						<select ng-model="docType">
+							<option value="">请选择</option>
+							<option value="1">类型一</option>
+							<option value="2">类型二</option>
+						</select>
 					</td>
 				</tr>
 				<tr>
 					<td colspan="6" class="text_align_left">
-						<div class="btn-middle bgColorblue">筛选</div>
-						<div class="btn-middle bgBorderblue borderBlue mrl15">重置</div>
+						<div class="btn-middle bgColorblue" ng-click="fiterSearch()">筛选</div>
+						<div class="btn-middle bgBorderblue borderBlue mrl15" ng-click="filterReset()">重置</div>
 					</td>
 				</tr>
 			</table>
@@ -70,11 +72,7 @@
 			</div>
 			<div class="resultBarRight floatLeft mrb40">
 				<table>
-					<tr>
-						<th>
-							操作
-						</th>
-					</tr>
+					<tr><th>操作</th></tr>
 					<tr>
 						<td>
 							<a class="colorBlue text_underline">下载</a>
@@ -93,7 +91,7 @@
 			</div>
 			<div class="clearfix"></div>
 			<div class="posiRel">
-				<div class="floatRight" id="red"></div>
+				<page-nav></page-nav>
 			</div>
 		</div>
 	</div>

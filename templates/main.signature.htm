@@ -12,7 +12,7 @@
 			</div>
 			<div class="signNoticeType">
 				<div class="signNoticeTypeTit mrb10">骑缝签章
-					<input class="checkbox floatRight" ng-click="runSign()" type="radio" name="signNoticeType" />
+					<input class="checkbox floatRight" ng-click="runSign2()" type="radio" name="signNoticeType" />
 				</div>
 				<div class="signNoticeTypeText">在文档右边的交界处加盖印章</div>
 			</div>
@@ -20,12 +20,15 @@
 		<div class="signPic">
 			<div class="signPicShow">
 				<div class="signPics mrb20 posiRel" id="pic_0">
+					<div class="sign2" id="sign_0" style="position: absolute;height: 100%;width: 120px;top: 0;right: 0;"></div>
 					<img src="../template/static/js/third/viewerJs/img/tibet-1.jpg" width="100%" height="100%">
 				</div>
 				<div class="signPics mrb20 posiRel" id="pic_1">
+					<div class="sign2" id="sign_1" style="position: absolute;height: 100%;width: 120px;top: 0;right: 0;"></div>
 					<img src="../template/static/js/third/viewerJs/img/tibet-2.jpg" width="100%" height="100%">
 				</div>
 				<div class="signPics mrb20 posiRel" id="pic_2">
+					<div class="sign2" id="sign_2" style="position: absolute;height: 100%;width: 120px;top: 0;right: 0;"></div>
 					<img src="../template/static/js/third/viewerJs/img/tibet-3.jpg" width="100%" height="100%">
 				</div>
 			</div>
@@ -52,7 +55,7 @@
 	</div>
 	<div class="bottom-btn-group text_align_center">
 		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20 floatLeft" href="#/fileSign">上一步</a>
-		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20">保存</a>
+		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20" ng-click="saveImg()">保存</a>
 		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20 floatRight" href="#/signature">发送</a>
 	</div>
 </div>

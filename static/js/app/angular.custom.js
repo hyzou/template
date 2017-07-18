@@ -9,7 +9,8 @@ kry.constant('config', {
 			id: 'KRYID',
 			token: 'KRYTOKEN'
 		},
-		host: '../../',
+		host: 'http://192.168.2.140',//接口路径
+		// host: '../../',//接口路径
 		login: './login.htm',
 		noop: function() {}
 	})
@@ -127,32 +128,26 @@ kry.directive('endRepeat', ['$timeout', function($timeout) {
 kry.directive('pageNav', function() {
 	return {
 		restrict: 'E',
-		link: function(scope, ele, attr) {
-			scope.pageNav = {
-				total: attr['pageTotal'],
-				idx: attr['pageIdx'],
-				size: attr['pageSize']
-			}
-			var trigger = attr['pageTrigger'],
-				copy = {};
-
-			function build() {
-				copy = angular.copy(scope.pageNav);
-				if (copy.total == 0) return;
-				if (copy.total < copy.size) {
-					ele.html('<span class="page-nav-item page-nav-current">1</span>');
-				}
-			}
-
-			scope.$watch(function() {
-				return scope.pageNav;
-			}, function(val) {
-				if (val.total != copy.total || val.idx != copy.idx || val.size != copy.size) {
-					copy = angular.copy(val);
-					build();
-				}
-			});
-		}
+		controller: 'ctrl.pageNavCtrl',
+		template: '<div class="floatRight" id="red"></div>',
+		replace: true
+	}
+})
+// todo
+kry.directive('fromDate', function() {
+	return {
+		restrict: 'E',
+		controller: 'ctrl.fromDate',
+		template: '<input type="text" class="fromdata" readonly />',
+		replace: true
+	}
+})
+kry.directive('endDate', function() {
+	return {
+		restrict: 'E',
+		controller: 'ctrl.endDate',
+		template: '<input type="text" class="enddata" readonly />',
+		replace: true
 	}
 })
 kry.directive('ngUploadfile', [
@@ -321,8 +316,9 @@ kry.factory('api', function() {
 		getResidentType: "getResidentType"
 	}
 	var api = {
-		//获取用户
-		getUserList:'users'
+		//接口名称
+		getUserList:'users',
+		// getUserList:'users'
 	}
 	return api;
 })
@@ -498,10 +494,47 @@ kry.controller('global', [
 		
 		$scope.seen = false;
 		$root.showSubmenu = false;
+		/*$root.v = '1.0.2';
+		*$root.openid = '1f488f7849362df64674a3c9f76dbf8e';
+		*$root.secret = '67136c0f7383b71a9d62a57732a104f5';
+		*$root.timestamp = getNowFormatDate();*/
+		$root.params = {};
+		$root.params['v'] = '1.0.2';
+		$root.params['openid'] = '1f488f7849362df64674a3c9f76dbf8e';
+		$root.params['secret'] = '67136c0f7383b71a9d62a57732a104f5';
+		$root.params['timestamp'] = getNowFormatDate();
+		
 		$root.phNotice = null;
 		$root.InterValObj = null;
 		$scope.backToIdx = false;
 
+		function getNowFormatDate() {
+			var date = new Date();
+			var month = date.getMonth() + 1;
+			var strDate = date.getDate();
+			var hour = date.getHours();
+			var minute = date.getMinutes();
+			var second = date.getSeconds();
+			if(month >= 1 && month <= 9) {
+				month = "0" + month;
+			}
+			if(strDate >= 0 && strDate <= 9) {
+				strDate = "0" + strDate;
+			}
+			if(hour >= 0 && hour <= 9) {
+				hour = "0" + hour;
+			}
+			if(minute >= 0 && minute <= 9) {
+				minute = "0" + minute;
+			}
+			if(second >= 0 && second <= 9) {
+				second = "0" + second;
+			}
+		
+			var currentdate = date.getFullYear() + month + strDate + hour + minute + second;
+			return currentdate;
+		}
+		
 		$root.setSite = function(o) {
 			$scope.site = angular.merge($scope.site, o);
 		}
@@ -549,7 +582,7 @@ kry.controller('global', [
 			$scope.navRoute = navs["main"];
 			getNavTip();
 			$scope.globalNavs = $scope.mainNavs;
-			/*srv.getUserList(function(xhr) {
+			/*srv.getUserList(data,function(xhr) {
 				if (!xhr.code) {
 					$root.user = xhr.data;
 					$scope.navRoute = navs[xhr.data.role];
@@ -776,9 +809,12 @@ kry.controller('ctrl.index', [
 			title: '首页',
 			menuKey: 'index'
 		})
-		/*$scope.cli = function(){
-			$location.path('/div');
-		}*/
+		var param = $root.params;
+		srv.getUserList(param,function(xhr){
+			if(!xhr.code){
+				
+			}
+		})
 		$scope.titleList = [
 			"本地文件签署","云文件签署","合同模板签署"
 		];
@@ -861,72 +897,49 @@ kry.controller('ctrl.main.signMe', [
 			title: '待我签署',
 			menuKey: 'signMe'
 		});
-		$('#red').smartpaginator({ 
-			totalrecords: 320, 
-			recordsperpage: 4, 
-			length: 10, 
-			next: '>', 
-			prev: '<', 
-			first: '首页', 
-			last: '尾页', 
-			theme: 'defined', 
-			controlsalways: true, 
-			onchange: function (newPage) {
-            	alert('Page # ' + newPage);
-            }	
-        });
-    	$(".fromdata").datepicker({ //添加日期选择功能    
-    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
-    		}
-    	});
-    	$(".enddata").datepicker({ //添加日期选择功能    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    
-    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
-    		}
-    	});
+		$scope.fastSearch = function(){
+			if(!$scope.documentTit){
+				base.alert('请输入文档标题再筛选')
+			}else{
+				base.alert($scope.documentTit)
+			}
+		}
+		$scope.fiterSearch = function(){
+			$scope.fromDate = $(".fromdata").val();
+			$scope.endDate = $(".enddata").val();
+			var data = {};
+			if(base.isDefined($scope.documentName)){
+				data['documentName'] = $scope.documentName;
+			}
+			if(base.isDefined($scope.provider)){
+				data['provider'] = $scope.provider;
+			}
+			if(base.isDefined($scope.receiver)){
+				data['receiver'] = $scope.receiver;
+			}
+			if(base.isDefined($scope.fromDate)){
+				data['fromDate'] = $scope.fromDate;
+			}
+			if(base.isDefined($scope.endDate)){
+				data['endDate'] = $scope.endDate;
+			}
+			if(base.isDefined($scope.docType)){
+				data['docType'] = $scope.docType;
+			}
+			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
+				base.alert('请输入筛选条件后再进行筛选')
+			}else{
+				console.log(data);
+			}
+		}
+		$scope.filterReset = function(){
+			$scope.documentName = '';
+			$scope.provider = '';
+			$scope.receiver = '';
+			$(".fromdata").val('');
+			$(".enddata").val('');
+			$scope.docType = '';
+		}
 		$scope.documentRank = function(){
 			var diag = dialog.open({
 				templateUrl: 'templates/dialog/dialog.documentRank.htm',
@@ -934,6 +947,9 @@ kry.controller('ctrl.main.signMe', [
 				controller:'ctrl.dialog.documentRank',
 				className: 'ngdialog-theme-input'
 			});
+		}
+		$scope.cliNav = function(newPage){
+			alert(newPage)
 		}
 	}
 ])
@@ -958,72 +974,49 @@ kry.controller('ctrl.main.signOther', [
 			title: '待他人签署',
 			menuKey: 'signOther'
 		});
-		$('#red').smartpaginator({ 
-			totalrecords: 320, 
-			recordsperpage: 4, 
-			length: 10, 
-			next: '>', 
-			prev: '<', 
-			first: '首页', 
-			last: '尾页', 
-			theme: 'defined', 
-			controlsalways: true, 
-			onchange: function (newPage) {
-            	alert('Page # ' + newPage);
-            }	
-       })
-    	$(".fromdata").datepicker({ //添加日期选择功能    
-    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
-    		}
-    	});
-    	$(".enddata").datepicker({ //添加日期选择功能    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    
-    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
-    		}
-    	});
+		$scope.fastSearch = function(){
+			if(!$scope.documentTit){
+				base.alert('请输入文档标题再筛选')
+			}else{
+				base.alert($scope.documentTit)
+			}
+		}
+		$scope.fiterSearch = function(){
+			$scope.fromDate = $(".fromdata").val();
+			$scope.endDate = $(".enddata").val();
+			var data = {};
+			if(base.isDefined($scope.documentName)){
+				data['documentName'] = $scope.documentName;
+			}
+			if(base.isDefined($scope.provider)){
+				data['provider'] = $scope.provider;
+			}
+			if(base.isDefined($scope.receiver)){
+				data['receiver'] = $scope.receiver;
+			}
+			if(base.isDefined($scope.fromDate)){
+				data['fromDate'] = $scope.fromDate;
+			}
+			if(base.isDefined($scope.endDate)){
+				data['endDate'] = $scope.endDate;
+			}
+			if(base.isDefined($scope.docType)){
+				data['docType'] = $scope.docType;
+			}
+			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
+				base.alert('请输入筛选条件后再进行筛选')
+			}else{
+				console.log(data);
+			}
+		}
+		$scope.filterReset = function(){
+			$scope.documentName = '';
+			$scope.provider = '';
+			$scope.receiver = '';
+			$(".fromdata").val('');
+			$(".enddata").val('');
+			$scope.docType = '';
+		}
 		$scope.documentRank = function(){
 			var diag = dialog.open({
 				templateUrl: 'templates/dialog/dialog.documentRank.htm',
@@ -1031,6 +1024,9 @@ kry.controller('ctrl.main.signOther', [
 				controller:'ctrl.dialog.documentRank',
 				className: 'ngdialog-theme-input'
 			});
+		}
+		$scope.cliNav = function(newPage){
+			alert(newPage)
 		}
 	}
 ])
@@ -1055,72 +1051,49 @@ kry.controller('ctrl.main.signFinish', [
 			title: '已完成签署',
 			menuKey: 'signFinish'
 		});
-		$('#red').smartpaginator({ 
-			totalrecords: 320, 
-			recordsperpage: 4, 
-			length: 10, 
-			next: '>', 
-			prev: '<', 
-			first: '首页', 
-			last: '尾页', 
-			theme: 'defined', 
-			controlsalways: true, 
-			onchange: function (newPage) {
-            	alert('Page # ' + newPage);
-            }	
-        })
-    	$(".fromdata").datepicker({ //添加日期选择功能    
-    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
-    		}
-    	});
-    	$(".enddata").datepicker({ //添加日期选择功能    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    
-    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
-    		}
-    	});
+		$scope.fastSearch = function(){
+			if(!$scope.documentTit){
+				base.alert('请输入文档标题再筛选')
+			}else{
+				base.alert($scope.documentTit)
+			}
+		}
+		$scope.fiterSearch = function(){
+			$scope.fromDate = $(".fromdata").val();
+			$scope.endDate = $(".enddata").val();
+			var data = {};
+			if(base.isDefined($scope.documentName)){
+				data['documentName'] = $scope.documentName;
+			}
+			if(base.isDefined($scope.provider)){
+				data['provider'] = $scope.provider;
+			}
+			if(base.isDefined($scope.receiver)){
+				data['receiver'] = $scope.receiver;
+			}
+			if(base.isDefined($scope.fromDate)){
+				data['fromDate'] = $scope.fromDate;
+			}
+			if(base.isDefined($scope.endDate)){
+				data['endDate'] = $scope.endDate;
+			}
+			if(base.isDefined($scope.docType)){
+				data['docType'] = $scope.docType;
+			}
+			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
+				base.alert('请输入筛选条件后再进行筛选')
+			}else{
+				console.log(data);
+			}
+		}
+		$scope.filterReset = function(){
+			$scope.documentName = '';
+			$scope.provider = '';
+			$scope.receiver = '';
+			$(".fromdata").val('');
+			$(".enddata").val('');
+			$scope.docType = '';
+		}
 		$scope.documentRank = function(){
 			var diag = dialog.open({
 				templateUrl: 'templates/dialog/dialog.documentRank.htm',
@@ -1128,6 +1101,9 @@ kry.controller('ctrl.main.signFinish', [
 				controller:'ctrl.dialog.documentRank',
 				className: 'ngdialog-theme-input'
 			});
+		}
+		$scope.cliNav = function(newPage){
+			alert(newPage)
 		}
 	}
 ])
@@ -1152,72 +1128,49 @@ kry.controller('ctrl.main.docBack', [
 			title: '退回的文件',
 			menuKey: 'docBack'
 		});
-		$('#red').smartpaginator({ 
-			totalrecords: 320, 
-			recordsperpage: 4, 
-			length: 10, 
-			next: '>', 
-			prev: '<', 
-			first: '首页', 
-			last: '尾页', 
-			theme: 'defined', 
-			controlsalways: true, 
-			onchange: function (newPage) {
-            	alert('Page # ' + newPage);
-            }	
-        });
-    	$(".fromdata").datepicker({ //添加日期选择功能    
-    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
-    		}
-    	});
-    	$(".enddata").datepicker({ //添加日期选择功能    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    
-    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
-    		}
-    	});
+		$scope.fastSearch = function(){
+			if(!$scope.documentTit){
+				base.alert('请输入文档标题再筛选')
+			}else{
+				base.alert($scope.documentTit)
+			}
+		}
+		$scope.fiterSearch = function(){
+			$scope.fromDate = $(".fromdata").val();
+			$scope.endDate = $(".enddata").val();
+			var data = {};
+			if(base.isDefined($scope.documentName)){
+				data['documentName'] = $scope.documentName;
+			}
+			if(base.isDefined($scope.provider)){
+				data['provider'] = $scope.provider;
+			}
+			if(base.isDefined($scope.receiver)){
+				data['receiver'] = $scope.receiver;
+			}
+			if(base.isDefined($scope.fromDate)){
+				data['fromDate'] = $scope.fromDate;
+			}
+			if(base.isDefined($scope.endDate)){
+				data['endDate'] = $scope.endDate;
+			}
+			if(base.isDefined($scope.docType)){
+				data['docType'] = $scope.docType;
+			}
+			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
+				base.alert('请输入筛选条件后再进行筛选')
+			}else{
+				console.log(data);
+			}
+		}
+		$scope.filterReset = function(){
+			$scope.documentName = '';
+			$scope.provider = '';
+			$scope.receiver = '';
+			$(".fromdata").val('');
+			$(".enddata").val('');
+			$scope.docType = '';
+		}
 		$scope.documentRank = function(){
 //			srv.getUserList(28,function(xhr){
 //				console.log(xhr);
@@ -1228,6 +1181,9 @@ kry.controller('ctrl.main.docBack', [
 				controller:'ctrl.dialog.documentRank',
 				className: 'ngdialog-theme-input'
 			});
+		}
+		$scope.cliNav = function(newPage){
+			alert(newPage)
 		}
 	}
 ])
@@ -1252,72 +1208,49 @@ kry.controller('ctrl.main.drafts', [
 			title: '草稿箱',
 			menuKey: 'drafts'
 		});
-		$('#red').smartpaginator({ 
-			totalrecords: 320, 
-			recordsperpage: 4, 
-			length: 10, 
-			next: '>', 
-			prev: '<', 
-			first: '首页', 
-			last: '尾页', 
-			theme: 'defined', 
-			controlsalways: true, 
-			onchange: function (newPage) {
-            	alert('Page # ' + newPage);
-            }	
-       })
-    	$(".fromdata").datepicker({ //添加日期选择功能    
-    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
-    		}
-    	});
-    	$(".enddata").datepicker({ //添加日期选择功能    
-    		numberOfMonths: 1, //显示几个月    
-    		showButtonPanel: true, //是否显示按钮面板    
-    		showClearButton: true,
-    		changeMonth: false,
-    		defaultDate: +1,
-    		//   showWeek: true,   
-    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
-    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
-    		showAnim: "toggle", //弹出日历的效果  
-    		buttonText: 'Choose',
-    		hideIfNoPrevNext: true,
-    
-    		dateFormat: 'yy-mm-dd', //日期格式    
-    		clearText: "清除", //清除日期的按钮名称    
-    		closeText: "关闭", //关闭选择框的按钮名称    
-    		yearSuffix: '年', //年的后缀    
-    		showMonthAfterYear: true, //是否把月放在年的后面    
-    		//defaultDate: '2013-03-10', //默认日期    
-    		minDate: '2014-01-01', //最小日期    
-    		maxDate: '2024-12-31', //最大日期    
-    		onSelect: function(selectedDate) {
-    
-    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
-    		}
-    	});
+		$scope.fastSearch = function(){
+			if(!$scope.documentTit){
+				base.alert('请输入文档标题再筛选')
+			}else{
+				base.alert($scope.documentTit)
+			}
+		}
+		$scope.fiterSearch = function(){
+			$scope.fromDate = $(".fromdata").val();
+			$scope.endDate = $(".enddata").val();
+			var data = {};
+			if(base.isDefined($scope.documentName)){
+				data['documentName'] = $scope.documentName;
+			}
+			if(base.isDefined($scope.provider)){
+				data['provider'] = $scope.provider;
+			}
+			if(base.isDefined($scope.receiver)){
+				data['receiver'] = $scope.receiver;
+			}
+			if(base.isDefined($scope.fromDate)){
+				data['fromDate'] = $scope.fromDate;
+			}
+			if(base.isDefined($scope.endDate)){
+				data['endDate'] = $scope.endDate;
+			}
+			if(base.isDefined($scope.docType)){
+				data['docType'] = $scope.docType;
+			}
+			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
+				base.alert('请输入筛选条件后再进行筛选')
+			}else{
+				console.log(data);
+			}
+		}
+		$scope.filterReset = function(){
+			$scope.documentName = '';
+			$scope.provider = '';
+			$scope.receiver = '';
+			$(".fromdata").val('');
+			$(".enddata").val('');
+			$scope.docType = '';
+		}
 		$scope.documentRank = function(){
 			var diag = dialog.open({
 				templateUrl: 'templates/dialog/dialog.documentRank.htm',
@@ -1325,6 +1258,9 @@ kry.controller('ctrl.main.drafts', [
 				controller:'ctrl.dialog.documentRank',
 				className: 'ngdialog-theme-input'
 			});
+		}
+		$scope.cliNav = function(newPage){
+			alert(newPage)
 		}
 	}
 ])
@@ -1456,13 +1392,6 @@ kry.controller('ctrl.main.fileSign', [
 			title: '文件签署',
 			menuKey: 'fileSign'
 		});
-//		$(".filesContain").slide({
-//			mainCell:".filesPicCon",
-//			vis:3,
-//			prevCell:".filesArrowPrew",
-//			nextCell:".filesArrowNext",
-//			effect:"leftLoop"
-//		});
 		$scope.contactList = [{
 			'tel': '13812345678',
 			'name': '孙红雷',
@@ -1563,10 +1492,33 @@ kry.controller('ctrl.main.signature', [
 			document.getElementById("pic_"+index).scrollIntoView();
 		}
 		$scope.runSign = function(){
+			$(".panel").remove();
+			$(".sign").remove();
 			var fileList = $(".signPics");
 			for(var i=0;i<fileList.length;i++){
-				$("#pic_"+i).zSign({ img: '../template/static/js/third/zSign/images/1.gif'});
+				$("#pic_"+i).zSign({ 
+					img: '../template/static/js/third/zSign/images/1.gif',
+					width: 120,
+        			height: 120,
+					offset: 0
+				});
 			}
+		}
+		$scope.runSign2 = function(){
+			$(".panel").remove();
+			$(".sign").remove();
+			var fileList = $(".sign2");
+			for(var i=0;i<fileList.length;i++){
+				$("#sign_"+i).zSign({ 
+					img: '../template/static/js/third/zSign/images/1.gif',
+					width: 120,
+        			height: 120,
+					offset: 0
+				});
+			}
+		}
+		$scope.saveImg = function(){
+			$(".panel").remove();
 		}
 	}
 ])
@@ -2037,5 +1989,126 @@ kry.controller('ctrl.dialog.documentRank', [
 			menuKey: 'index'
 		});
 		
+	}
+])
+kry.controller('ctrl.pageNavCtrl', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+		$('#red').smartpaginator({ 
+			totalrecords: 320, 
+			recordsperpage: 4, 
+			length: 10, 
+			next: '>', 
+			prev: '<', 
+			first: '首页', 
+			last: '尾页', 
+			theme: 'defined', 
+			controlsalways: true, 
+			onchange: function (newPage) {
+				$scope.cliNav(newPage);
+            }	
+       })
+	}
+])
+kry.controller('ctrl.fromDate', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+    	$(".fromdata").datepicker({ //添加日期选择功能    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    			//$scope.fromDate = selectedDate;
+    			$(".enddata").datepicker("option", "minDate", new Date(selectedDate.replace(/-/g, ','))); //结束时间可选最小值为选中值  
+    		}
+    	});
+	}
+])
+kry.controller('ctrl.endDate', [
+	'$scope',
+	'$rootScope',
+	'$location',
+	'$compile',
+	'ngDialog',
+	'srv',
+	'base',
+	function(
+		$scope,
+		$root,
+		$location,
+		$compile,
+		dialog,
+		srv,
+		base
+	) {
+    	$(".enddata").datepicker({ //添加日期选择功能    
+    		numberOfMonths: 1, //显示几个月    
+    		showButtonPanel: true, //是否显示按钮面板    
+    		showClearButton: true,
+    		changeMonth: false,
+    		defaultDate: +1,
+    		//   showWeek: true,   
+    		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
+    		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
+    		showAnim: "toggle", //弹出日历的效果  
+    		buttonText: 'Choose',
+    		hideIfNoPrevNext: true,
+    		dateFormat: 'yy-mm-dd', //日期格式    
+    		clearText: "清除", //清除日期的按钮名称    
+    		closeText: "关闭", //关闭选择框的按钮名称    
+    		yearSuffix: '年', //年的后缀    
+    		showMonthAfterYear: true, //是否把月放在年的后面    
+    		//defaultDate: '2013-03-10', //默认日期    
+    		minDate: '2014-01-01', //最小日期    
+    		maxDate: '2024-12-31', //最大日期    
+    		onSelect: function(selectedDate) {
+    			//$scope.endDate = selectedDate;
+    			$(".fromdata").datepicker("option", "maxDate", new Date(selectedDate.replace(/-/g, ','))); //起始时间可选最大值为选中值  
+    		}
+    	});
 	}
 ])

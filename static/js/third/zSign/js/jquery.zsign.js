@@ -17,8 +17,9 @@
     var range = {
         minX: _s.offset,
         minY: _s.offset,
-        maxX: _parent.width() - _s.width - _s.offset - 18,      //扣去2个padding=8px以及2个边框1px
-        maxY: _parent.height() - _s.height - _s.offset - 18
+        // maxX: _parent.width() - _s.width - _s.offset - 18,      //扣去2个padding=8px以及2个边框1px
+        maxX: _parent.width() - _s.width - _s.offset,      //扣去2个padding=8px以及2个边框1px
+        maxY: _parent.height() - _s.height - _s.offset
     };
 
     var _btnPanel = $("<div class='panel'><button class='btn add' >盖 章</button><button class='btn cancel'>关 闭</button></div>").appendTo(_parent);

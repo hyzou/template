@@ -19,12 +19,24 @@
   				</ul>
   				<div class="signbox displayNo">
   					<ul>
-  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="登录名" /></li>
-  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="手机号/邮箱号" /></li>
-  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="密码" /></li>
   						<li class="boxsbb posiRel">
-  							<input type="text" class="boxsbb" placeholder="6位数验证码" />
-  							<span class="sendTelCode posiAbs loginYzm">发送验证码</span>
+  							<input type="text" id="setName" class="boxsbb editIpt" placeholder="登录名" />
+  							<div class="errTip">登录名不能为空</div>
+  						</li>
+  						<li class="boxsbb posiRel">
+  							<input type="text" id="setCount" class="boxsbb editIpt" placeholder="手机号/邮箱号" />
+  							<div class="errTip">登录帐号不能为空</div>
+  						</li>
+  						<li class="boxsbb posiRel">
+  							<input type="text" id="setPsw" class="boxsbb editIpt" placeholder="密码" />
+  							<div class="errTip">登录密码不能为空</div>
+  						</li>
+  						<li class="boxsbb posiRel">
+  							<input type="text" id="setYzm" class="boxsbb editIpt" placeholder="6位数验证码" />
+  							<span id="yzmSend" class="sendTelCode posiAbs loginYzm">发送验证码</span>
+  							<span id="yzmCount" class="sendTelCode posiAbs loginYzm displayNo"></span>
+  							<div class="errTip">验证码不能为空</div>
+  							<div class="errTipPhone">手机号/邮箱不能为空</div>
   						</li>
   					</ul>
 	  				<div class="setbox">
@@ -32,7 +44,7 @@
 	  						注册玺签宝
 	  					</div>
 	  					<div class="readOrders">
-	  						点击「注册」按钮即代表你同意<span>《玺签宝注册协议》</span>
+	  						点击「注册」按钮即代表你同意<span id="segements">《玺签宝注册协议》</span>
 	  					</div>
 	  				</div>
 		  			<div class="download">
@@ -41,11 +53,24 @@
   				</div>
   				<div class="loginbox">
   					<ul>
-  						<li class="boxsbb"><input type="text" class="boxsbb" placeholder="手机号/邮箱号/登录名" /></li>
-  						<li class="boxsbb" style="margin-bottom: 0;" id="mmNum"><input type="text" class="boxsbb" placeholder="密码" /></li>
-  						<li class="boxsbb posiRel displayNo" id="yzmNum">
-  							<input type="text" class="boxsbb" placeholder="6位数验证码" />
-  							<span class="sendTelCode posiAbs loginYzm">发送验证码</span>
+  						<li class="boxsbb posiRel">
+  							<input type="text" id="loginName" class="boxsbb editIptx" placeholder="手机号/邮箱号/登录名" />
+  							<div class="errTip">
+  								登录帐号不能为空
+  							</div>
+  						</li>
+  						<li class="boxsbb posiRel marginBottom0" id="mmNum">
+  							<input type="text" id="loginPsw" class="boxsbb editIptx" placeholder="密码" />
+  							<div class="errTip">
+  								登录密码不能为空
+  							</div>
+  						</li>
+  						<li class="boxsbb posiRel displayNo marginBottom0" id="yzmNum">
+  							<input type="text" id="loginYzm" class="boxsbb editIptx" placeholder="6位数验证码" />
+  							<span id="yzmReceive" class="sendTelCode posiAbs loginYzm">发送验证码</span>
+  							<span id="yzmrecCount" class="sendTelCode posiAbs loginYzm displayNo"></span>
+  							<div class="errTip">验证码不能为空</div>
+  							<div class="errTipPhonex">手机号/邮箱不能为空</div>
   						</li>
   					</ul>
 	  				<div class="setbox">
@@ -81,30 +106,209 @@
   		<div class="ngdialog-content">
   			<div class="closeB" id="closeDia">×</div>
   			<div class="backStatus" style="margin-top: 80px;">
-  				<img src="static/css/assets/loginSuc.png" width="100%" />
+  				<img src="static/css/assets/loginFail.png" width="100%" />
   			</div>
+  			<div class="btnGroup" style="text-align: center;margin-top: -60px;color: #474747;"></div>
   		</div>
   	</div>
     <script type="text/javascript">
+    	var yzmlog = false;
     	$("#yzmLog").on('click',function(){
     		$("#yzmNum").show();
     		$("#mmNum").hide();
     		$("#mmLog").show();
     		$("#yzmLog").hide();
+    		yzmlog = true;
     	})
     	$("#mmLog").on('click',function(){
     		$("#yzmNum").hide();
     		$("#mmNum").show();
     		$("#mmLog").hide();
     		$("#yzmLog").show();
+    		yzmlog = false;
     	})
     	$("#login").on('click',function(){
-    		window.location.replace("./app.htm");
-    		localStorage.setItem('cookie','1')
+    		debugger
+			var postSend = true;
+			if(!yzmlog){
+				$("#loginYzm").removeClass('editIptx');
+				$("#loginPsw").addClass('editIptx');
+			}else{
+				$("#loginPsw").removeClass('editIptx');
+				$("#loginYzm").addClass('editIptx');
+			}
+    		$('.editIptx').each(function(){
+    			var that = $(this);
+    			if(!that.val()){
+    				that.parent().find('.errTip').show();
+    				postSend = false;
+    			}
+    		});
+    		if(postSend){
+	    		$.ajax({
+	    			type:"post",
+	    			url:"http://192.168.2.140:8083",
+					data:{
+						'v': '1.0.2',
+						'openid': '1f488f7849362df64674a3c9f76dbf8e',
+						'secret': '67136c0f7383b71a9d62a57732a104f5',
+						'timestamp': getNowFormatDate(),
+						'method': 'com.shuige.sealsign.login',
+						'loginName': $("#loginName").val(),
+						'password': $("#loginPsw").val()
+					},
+					dataType: "json",
+	    			async:true,
+	    			success:function(xhr){
+	    				if(!xhr.code){
+				    		window.location.replace("./app.htm");
+				    		localStorage.setItem('cookie','1');
+	    				}else{
+	    					$("#ngdialog2").show();
+	    				}
+	    			}
+	    		});
+     		}else{
+    			return;
+    		}
+    	})
+    	$("#yzmReceive").on('click',function(){
+    		if(!$("#loginName").val()){
+    			$(".errTipPhonex").show();
+    		}else{
+    			$(".errTipPhonex").hide();
+//	    		$.ajax({
+//	    			type:"post",
+//	    			url:"http://192.168.2.140:8083",
+//					data:{
+//						'v':'1.0.2',
+//						'openid':'1f488f7849362df64674a3c9f76dbf8e',
+//						'secret':'67136c0f7383b71a9d62a57732a104f5',
+//						'timestamp':getNowFormatDate(),
+//						'method':'com.shuige.sealsign.sendcaptcha',
+//						'mobileOrEmail':$("#setCount").val()
+//					},
+//					dataType: "json",
+//	    			async:true,
+//	    			success:function(xhr){
+//	    				if(!xhr.code){
+			    			$(".errTipPhone").hide();
+			    			$("#yzmReceive").hide();
+			    			$("#yzmrecCount").show();
+			    			var nums = 3;
+			    			$("#yzmrecCount").text(nums+'秒重发');
+			    			var clock = setInterval(doLoop, 1000);
+			    			function doLoop(){
+								nums--;
+								if(nums > 0){
+									$("#yzmrecCount").text(nums+'秒重发');
+								}else{
+									clearInterval(clock); //清除js定时器
+									$("#yzmrecCount").hide();
+									$("#yzmReceive").show();
+									nums = 3; //重置时间
+								}
+							}	
+//	    				}else{
+//				    		$("#ngdialog2").show();
+//				    		$("#ngdialog2").find(".btnGroup").text("验证码获取失败了!")
+//	    				}
+//	    			}
+//	    		});
+    		}
+    	})
+    	$("#yzmSend").on('click',function(){
+    		debugger
+    		if(!$("#setCount").val()){
+    			$(".errTipPhone").show();
+    		}else{
+	    		$.ajax({
+	    			type:"post",
+	    			url:"http://192.168.2.140:8083",
+					data:{
+						'v':'1.0.2',
+						'openid':'1f488f7849362df64674a3c9f76dbf8e',
+						'secret':'67136c0f7383b71a9d62a57732a104f5',
+						'timestamp':getNowFormatDate(),
+						'method':'com.shuige.sealsign.sendcaptcha',
+						'mobileOrEmail':$("#setCount").val()
+					},
+					dataType: "json",
+	    			async:true,
+	    			success:function(xhr){
+	    				if(!xhr.code){
+			    			$(".errTipPhone").hide();
+			    			$("#yzmSend").hide();
+			    			$("#yzmCount").show();
+			    			var nums = 3;
+			    			$("#yzmCount").text(nums+'秒重发');
+			    			var clock = setInterval(doLoop, 1000);
+			    			function doLoop(){
+								nums--;
+								if(nums > 0){
+									$("#yzmCount").text(nums+'秒重发');
+								}else{
+									clearInterval(clock); //清除js定时器
+									$("#yzmCount").hide();
+									$("#yzmSend").show();
+									nums = 3; //重置时间
+								}
+							}	
+	    				}else{
+				    		$("#ngdialog2").show();
+				    		$("#ngdialog2").find(".btnGroup").text("验证码获取失败了!")
+	    				}
+	    			}
+	    		});
+    		}
     	})
     	$("#signUp").on('click',function(){
-    		$("#ngdialog2").show();
-    		return;
+			var postSend = true;
+    		$('.editIpt').each(function(){
+    			var that = $(this);
+    			if(!that.val()){
+    				that.parent().find('.errTip').show();
+    				postSend = false;
+    			}
+    		})
+    		if(postSend){
+    			$("#ngdialog1").show();
+//	    		$.ajax({
+//	    			type:"post",
+//	    			url:"http://192.168.2.140:8083",
+//					data:{
+//						'v':'1.0.2',
+//						'openid':'1f488f7849362df64674a3c9f76dbf8e',
+//						'secret':'67136c0f7383b71a9d62a57732a104f5',
+//						'timestamp':getNowFormatDate(),
+//						'method':'com.shuige.sealsign.regist',
+//						'loginName':$("#setName").val(),
+//						'mobileOrEmail':$("#setCount").val(),
+//						'password':$("#setPsw").val(),
+//						'captcha':$("#setYzm")
+//					},
+//					dataType: "json",
+//	    			async:true,
+//	    			success:function(xhr){
+//	    				if(!xhr.code){
+//	    					$("#ngdialog1").show();
+//	    				}else{
+//	    					$("#ngdialog2").show();
+//	    					$("#ngdialog2").find(".btnGroup").text("申请失败!")
+//	    				}
+//	    			}
+//	    		});
+     		}else{
+    			return;
+    		}
+    	})
+    	$(".editIpt").on('input',function(){
+    		$(this).parent().find('.errTip').hide();
+			$(".errTipPhone").hide();
+    	})
+    	$(".editIptx").on('input',function(){
+    		$(this).parent().find('.errTip').hide();
+			$(".errTipPhonex").hide();
     	})
     	$("#closeDia").on('click',function(){
     		$("#ngdialog2").hide();
@@ -132,6 +336,38 @@
     			$(".login_container ").css('height','670px')
     		}
     	})
+    	$(".download").on('click',function(){
+    		alert('功能暂未开放')
+    	})
+    	$("#segements").on('click',function(){
+    		alert('没有文字和ui');
+    	})
+		function getNowFormatDate() {
+			var date = new Date();
+			var month = date.getMonth() + 1;
+			var strDate = date.getDate();
+			var hour = date.getHours();
+			var minute = date.getMinutes();
+			var second = date.getSeconds();
+			if(month >= 1 && month <= 9) {
+				month = "0" + month;
+			}
+			if(strDate >= 0 && strDate <= 9) {
+				strDate = "0" + strDate;
+			}
+			if(hour >= 0 && hour <= 9) {
+				hour = "0" + hour;
+			}
+			if(minute >= 0 && minute <= 9) {
+				minute = "0" + minute;
+			}
+			if(second >= 0 && second <= 9) {
+				second = "0" + second;
+			}
+		
+			var currentdate = date.getFullYear() + month + strDate + hour + minute + second;
+			return currentdate;
+		}
     </script>
 </body>
 </html>
