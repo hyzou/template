@@ -603,29 +603,27 @@ kry.controller('global', [
 			$scope.navRoute = navs["person"];
 			getNavTip();
 			$scope.globalNavs = $scope.personNavs;
-			if ($scope.navRoute.srv[key])
+			/*if ($scope.navRoute.srv[key])
 				return $scope.navRoute.srv[key].route;
-			else return false;
+			else return false;*/
 		}
 		$scope.backtoIndex = function(key) {
 			$scope.backToIdx = false;
 			$scope.navRoute = navs["main"];
-			getNavTip();
 			$scope.globalNavs = $scope.mainNavs;
-			if ($scope.navRoute.srv[key])
-				return $scope.navRoute.srv[key].route;
-			else return false;
+			getNavTip();
 		}
 		checkUrl();
 		function checkUrl(key){
+			debugger
 			if($location.$$url != '/' && $location.$$url.substring(1,5) == 'pers'){
 				$scope.backToIdx = true;
 				$scope.navRoute = navs["person"];
 				getNavTip();
 				$scope.globalNavs = $scope.personNavs;
-				if ($scope.navRoute.srv[key])
+				/*if ($scope.navRoute.srv[key])
 					return $scope.navRoute.srv[key].route;
-				else return false;
+				else return false;*/
 			}else{
 				$scope.backToIdx = false;
 				$scope.navRoute = navs["main"];
@@ -648,7 +646,6 @@ kry.controller('global', [
 		function getNavTip() {
 			var navcount  = JSON.parse(JSON.stringify($root.params));
 				navcount['method'] = 'com.shuige.sealsign.filesCount';
-			console.log(navcount);	
 			srv.headlogo(navcount,function(xhr){
 				if(xhr.code == '0'){
 					debugger
@@ -1572,11 +1569,8 @@ kry.controller('ctrl.person.info', [
 			var loaddata = JSON.parse(JSON.stringify($root.params));
 				loaddata['method'] = 'com.shuige.sealsign.selectUserExtVo';
 				loaddata['strToken'] = $root.uid;
-			console.log($root.params);
-			console.log(loaddata)
 			srv.headlogo(loaddata,function(xhr){
 				if(xhr.code == '0'){
-					console.log(xhr.data)
 	    			$scope.loginName = xhr.data.loginName;
 	    			$scope.loginIdnum = xhr.data.idCard;
 	    			$scope.province = xhr.data.provinceId;
@@ -1751,7 +1745,6 @@ kry.controller('ctrl.person.info', [
 				data1['entName'] = $scope.company;
 			if (base.isDefined($scope.job))
 				data1['positionName'] = $scope.job;
-			console.log(data1);
 			srv.headlogo(data1,function(xhr){
 				if(xhr.code == '0'){
 					$root.dosuccess();
@@ -1801,7 +1794,6 @@ kry.controller('ctrl.person.inforec', [
 				loaddata['strToken'] = $root.uid;
 			srv.headlogo(loaddata,function(xhr){
 				if(xhr.code == '0'){
-					console.log(xhr.data)
 					var authentication = xhr.data.authentication;
 					if(authentication == '0'){
 						$scope.recmo = false;
@@ -2156,7 +2148,6 @@ kry.controller('ctrl.person.inforec', [
 				namedata['entName'] = $scope.company;
 			if (base.isDefined($scope.job))
 				namedata['positionName'] = $scope.job;
-			console.log(namedata);
 			srv.headlogo(namedata,function(xhr){
 				if(xhr.code == '0'){
 					$scope.realNameRec = false;
@@ -2248,7 +2239,6 @@ kry.controller('ctrl.person.msg', [
 				loaddata['strToken'] = $root.uid;
 			srv.headlogo(loaddata,function(xhr){
 				if(xhr.code == '0'){
-					console.log(xhr.data)
 					var msgFlg = xhr.data.msgFlag;
 					if(msgFlg == '0'){
 						$scope.open = false;
@@ -2278,6 +2268,11 @@ kry.controller('ctrl.person.msg', [
 				$scope.open = true;
 				msgData['messagepass'] = '1';
 			}
+			if(!$scope.openM){
+				msgData['mailpass'] = '0';
+			}else{
+				msgData['mailpass'] = '1';
+			}
 			srv.headlogo(msgData,function(xhr){
 				if(xhr.code == '0'){
 					$root.dosuccess();
@@ -2295,6 +2290,11 @@ kry.controller('ctrl.person.msg', [
 			}else{
 				$scope.openM = true;
 				mailData['mailpass'] = '1';
+			}
+			if(!$scope.open){
+				mailData['messagepass'] = '0';
+			}else{
+				mailData['messagepass'] = '1';
 			}
 			srv.headlogo(mailData,function(xhr){
 				if(xhr.code == '0'){
@@ -2338,7 +2338,6 @@ kry.controller('ctrl.person.safe', [
 				loaddata['strToken'] = $root.uid;
 			srv.headlogo(loaddata,function(xhr){
 				if(xhr.code == '0'){
-					console.log(xhr.data)
 					var signstatus = xhr.data.signstatus;
 					if(signstatus == '0'){
 						$scope.seted = false;
@@ -2506,29 +2505,55 @@ kry.controller('ctrl.person.sign', [
 				}
 			})
 		}
-		$scope.selectCode = function(){
-			var selcodedata  = JSON.parse(JSON.stringify($root.params));
-				selcodedata['method'] = 'com.shuige.sealsign.upUserSignPic';
-			srv.headlogo(selcodedata,function(xhr){
-				if(xhr.code == '0'){
-	    			$scope.qrcode = xhr.data;
-				}else{
-					base.alert(xhr.msg);
-				}
-			})
-		}
-		
+		$("#signUpload").uploadify({
+			'auto': true,
+	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
+	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'queueID': 'fileQueue',//与下面的id对应
+	        'fileTypeDesc': '图片格式',
+	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+	        'method': 'POST',
+	        'multi': true,
+	        'buttonText': '上传文件',
+	        'fileObjName': 'files',//服务端File对应的名称。
+	        'height': 22,
+            'width': 48,
+	        'onUploadSuccess': function (file, data, response) {
+	            var dataObj = JSON.parse(data);
+	            $scope.signpicUrl = dataObj.data[0].path;
+	            var imgUrl = $root.globalImgPath + dataObj.data[0].path;
+	            $("#signpic").attr('src', imgUrl)
+				var upsigndata  = JSON.parse(JSON.stringify($root.params));
+					upsigndata['method'] = 'com.shuige.sealsign.upUserSignPic';
+					upsigndata['filePath'] = $scope.signpicUrl;
+				srv.headlogo(upsigndata,function(xhr){
+					if(xhr.code == '0'){
+		    			$root.dosuccess();
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
+	        },
+	        'onUploadError': function (file, errorCode, errorMsg, errorString) {
+	            base.alert('当前文件：' + file.name + '上传失败，失败原因：' + errorString);
+	        }
+        });
 		gethandCode();
 		$scope.freshCode = function(){
 			gethandCode();
 		}
 		function gethandCode(){
-			debugger
 			var codedata  = JSON.parse(JSON.stringify($root.params));
 				codedata['method'] = 'com.shuige.sealsign.getQRCodeContent';
 			srv.headlogo(codedata,function(xhr){
 				if(xhr.code == '0'){
 	    			$scope.qrcode = xhr.data;
+	    			$("#qrcode").qrcode({
+						render: "table",
+						width: 120,
+						height:120,
+						text: $scope.qrcode
+					});
 				}else{
 					base.alert(xhr.msg);
 				}

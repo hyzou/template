@@ -76,11 +76,12 @@
 			<div class="mrAuto" style="width: 220px;">
 				<div class="pHeadlogoText text_align_left">本地上传</div>
 				<div class="personalSign">
-					<img src="../template/static/css/img/picbg.png"/ width="100%">
+					<img id="signpic" src="../template/static/css/img/picbg.png"/ width="100%" height="100%">
 				</div>
 				<div class="idRecGroupBtn mrt10">
 					<a href="javascript:;" class="a-upload">
-					    <input type="file" name="" id="">点击上传
+					    <!--<input type="file" name="" id="">点击上传-->
+						<input type="file" id="signUpload" name="uploadify" />点击上传
 					</a>
 				</div>
 			</div>
@@ -89,8 +90,8 @@
 			<div class="mrAuto" style="width: 440px;">
 				<div class="pHeadlogoText text_align_left">手绘签名</div>
 				<div class="personalSignH5">
-					<div class="qrCode">
-						<img src="../template/static/css/img/qrcode.png"/ width="100%">
+					<div id="qrcode" class="qrCode">
+						<!--<img src="../template/static/css/img/qrcode.png"/ width="100%">-->
 					</div>
 					<div class="qrCodeIntro mrt20">
 						<p>使用说明</p>
@@ -107,3 +108,4 @@
 		<div class="clearfix"></div>
 	</div>
 </div>
+<script src="static/js/third/qrcode/jquery.qrcode.min.js"></script>
