@@ -9,7 +9,7 @@ kry.constant('config', {
 			id: 'KRYID',
 			token: 'KRYTOKEN'
 		},
-		host: 'http://192.168.2.140',//接口路径
+		host: 'http://192.168.2.119:8280/',//接口路径
 		// host: '../../',//接口路径
 		login: './login.htm',
 		noop: function() {}
@@ -184,7 +184,7 @@ kry.directive('ngUploadfile', [
 					$root.upload(order, flag, isocr, uploadType, key, that.files[0], function(xhr) {
 						delete $root.uploading[key];
 						if (!xhr) return;
-						if (!xhr.code || xhr.code == -1) {
+						if (xhr.code == '0' || xhr.code == -1) {
 							if (xhr.code == -1) {
 								base.alert(xhr.msg);
 							}
@@ -230,7 +230,7 @@ kry.factory('base', [
 			}
 		}
 		return {
-			//imgPath: 'http://192.168.2.190:8020/image/',
+			imgPath: 'http://114.55.106.217:5000/eh-web-api/file/viewfile/',
 			imgType: ['idcfront', 'idcback', 'sign', 'auth'],
 			isPhone: function(phone) {
 				return rules.phone.test(phone);
@@ -317,8 +317,8 @@ kry.factory('api', function() {
 	}
 	var api = {
 		//接口名称
-		getUserList:'users',
-		// getUserList:'users'
+		// mainName:'eh-web-api/gateway'
+		mainName:'gateway'
 	}
 	return api;
 })
@@ -433,34 +433,28 @@ kry.factory('srv', [
 				}, cb);
 			}
 			/**
-			 * 获取征信管理列表
+			 * 获取首页各列表数量
 			 * @params {object} params
 			 */
-			srv.getUserList = function(params, cb) {
+			srv.getListNumber = function(params, cb) {
 				var p = {
-					url: api.getUserList,
+					url: api.mainName,
 					data: params,
-					method: 'get'
+					method: 'post'
+				}
+				ajax(p, cb);
+			}
+			/* 上传头像  */
+			srv.headlogo = function(params, cb) {
+				var p = {
+					url: api.mainName,
+					data: params,
+					method: 'post'
 				}
 				ajax(p, cb);
 			}
 
 		return srv;
-	}
-])
-kry.controller('ctrl.dialog.upload', [
-	'$scope',
-	'base',
-	function(
-		$scope,
-		base
-	) {
-		if (!$scope.ngDialogData.imageUrl) {
-			base.alert('无法查看大图，缺少相关参数');
-			$scope.closeThisDialog();
-			return;
-		}
-		$scope.imageUrl = $scope.ngDialogData.imageUrl;
 	}
 ])
 
@@ -498,15 +492,52 @@ kry.controller('global', [
 		*$root.openid = '1f488f7849362df64674a3c9f76dbf8e';
 		*$root.secret = '67136c0f7383b71a9d62a57732a104f5';
 		*$root.timestamp = getNowFormatDate();*/
+		$root.phNotice = null;
+		$root.InterValObj = null;
+		$scope.backToIdx = false;
+		$cookies.put(config.cookie.id, localStorage.getItem('cookie'));
+		// localStorage.removeItem('cookie');
+		$root.uid = $cookies.get(config.cookie.id);
 		$root.params = {};
 		$root.params['v'] = '1.0.2';
 		$root.params['openid'] = '1f488f7849362df64674a3c9f76dbf8e';
 		$root.params['secret'] = '67136c0f7383b71a9d62a57732a104f5';
+		$root.params['token'] = $root.uid;
 		$root.params['timestamp'] = getNowFormatDate();
-		
-		$root.phNotice = null;
-		$root.InterValObj = null;
-		$scope.backToIdx = false;
+		//$root.uid = localStorage.getItem('cookie');
+		if (!$root.uid) {
+			var diag = base.alert('你未登录，或凭据已过期，请先登录');
+			diag.closePromise.then(function(d) {
+				$window.location.href = config.login;
+			})
+		}else {
+			$root.user = {
+		        "assurerno":"hqdb",
+		        "role":"客户经理",
+		        "roleDisplayName":"",
+		        "deptId":332,
+		        "dept":"税鸽飞腾",
+		        "deptType":1,
+		        "userName":"税鸽飞腾",
+		        "account":"hqjbr1",
+		        "isSign":1
+		    }
+			$scope.navRoute = navs["main"];
+			// getNavTip();
+			$scope.globalNavs = $scope.mainNavs;
+			/*srv.getUserList(data,function(xhr) {
+				if (xhr.code == '0') {
+					$root.user = xhr.data;
+					$scope.navRoute = navs[xhr.data.role];
+					getNavTip();
+				} else {
+					var diag = base.alert('获取用户数据失败，请尝试重新登录');
+					diag.closePromise.then(function(a) {
+						$cookies.remove(config.cookie.id);
+					})
+				}
+			})*/
+		}
 
 		function getNowFormatDate() {
 			var date = new Date();
@@ -556,44 +587,6 @@ kry.controller('global', [
 			var fd = new FormData();
 			fd.append('fileData', file);
 			srv.upload(order, flag, isocr, role, type, fd, cb);
-		}
-		$cookies.put(config.cookie.id, localStorage.getItem('cookie'));
-		localStorage.removeItem('cookie');
-		$root.uid = $cookies.get(config.cookie.id);
-		//$root.uid = localStorage.getItem('cookie');
-		if (!$root.uid) {
-			var diag = base.alert('你未登录，或凭据已过期，请先登录');
-			diag.closePromise.then(function(d) {
-				$window.location.href = config.login;
-			})
-		}
-		else {
-			$root.user = {
-		        "assurerno":"hqdb",
-		        "role":"客户经理",
-		        "roleDisplayName":"",
-		        "deptId":332,
-		        "dept":"税鸽飞腾",
-		        "deptType":1,
-		        "userName":"税鸽飞腾",
-		        "account":"hqjbr1",
-		        "isSign":1
-		    }
-			$scope.navRoute = navs["main"];
-			getNavTip();
-			$scope.globalNavs = $scope.mainNavs;
-			/*srv.getUserList(data,function(xhr) {
-				if (!xhr.code) {
-					$root.user = xhr.data;
-					$scope.navRoute = navs[xhr.data.role];
-					getNavTip();
-				} else {
-					var diag = base.alert('获取用户数据失败，请尝试重新登录');
-					diag.closePromise.then(function(a) {
-						$cookies.remove(config.cookie.id);
-					})
-				}
-			})*/
 		}
 
 		$scope.getNavRoute = function(key) {
@@ -645,7 +638,7 @@ kry.controller('global', [
 			$window.location.href = config.login;
 			localStorage.clear();
 			/*srv.loginOut(function(xhr) {
-				if (!xhr.code) {
+				if (xhr.code == '0') {
 					$window.location.href = config.login;
 				} else
 					base.alert('退出失败，请刷新后重试');
@@ -653,6 +646,23 @@ kry.controller('global', [
 		}
 
 		function getNavTip() {
+			var navcount  = JSON.parse(JSON.stringify($root.params));
+				navcount['method'] = 'com.shuige.sealsign.filesCount';
+			console.log(navcount);	
+			srv.headlogo(navcount,function(xhr){
+				if(xhr.code == '0'){
+					debugger
+					$scope.alreadyCount = xhr.data.alreadyCount;
+					$scope.forMeCount = xhr.data.forMeCount;
+					$scope.cgCount = xhr.data.cgCount;
+					$scope.toOthersCount = xhr.data.toOthersCount;
+					$scope.cloudyCount = xhr.data.cloudyCount;
+					$scope.refuseCount = xhr.data.refuseCount;
+					setTimeout(getNavTip(),6000);
+				}else{
+					base.alert(xhr.msg)
+				}
+			})
 			$scope.mainNavs = [
 		        {
 		            "key":"index",
@@ -662,32 +672,32 @@ kry.controller('global', [
 		        {
 		            "key":"signMe",
 		            "name":"待我签署",
-		            "count":206
+		            "count":$scope.forMeCount
 		        },
 		        {
 		            "key":"signOther",
 		            "name":"待他人签署",
-		            "count":137
+		            "count":$scope.toOthersCount
 		        },
 		        {
 		            "key":"signFinish",
 		            "name":"已完成签署",
-		            "count":0
+		            "count":$scope.alreadyCount
 		        },
 		        {
 		            "key":"docBack",
 		            "name":"退回的文件",
-		            "count":0
+		            "count":$scope.refuseCount
 		        },
 		        {
 		            "key":"drafts",
 		            "name":"草稿箱",
-		            "count":0
+		            "count":$scope.cgCount
 		        },
 		        {
 		            "key":"cloudFile",
 		            "name":"云文件",
-		            "count":0
+		            "count":$scope.cloudyCount
 		        }
 		    ];
 			$scope.personNavs = [
@@ -717,14 +727,33 @@ kry.controller('global', [
 		            "count":0
 		        }
 		    ];
-			/*srv.nav(function(xhr) {
-				if (!xhr.code) {
-					$scope.globalNavs = xhr.data;
-					var myMenuList = $scope.navRoute.user;
-					srv.getUserCount(myMenuList, $scope);
-					setTimeout(getNavTip, 60000);
-				}
-			})*/
+		}
+		$root.dosuccess = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.recSuccess.htm',
+				className: 'ngdialog-notopen'
+			});
+			setTimeout(function(){
+				diag.close();
+			},1500);
+		}
+		$root.dofail = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.recFail.htm',
+				className: 'ngdialog-notopen'
+			});
+			setTimeout(function(){
+				diag.close();
+			},1500);
+		}
+		$root.notopen = function(){
+			var diag = dialog.open({
+				templateUrl: 'templates/dialog/dialog.notopen.htm',
+				className: 'ngdialog-notopen'
+			});
+			setTimeout(function(){
+				diag.close();
+			},1500);
 		}
 	}
 ])
@@ -808,12 +837,6 @@ kry.controller('ctrl.index', [
 		$root.setSite({
 			title: '首页',
 			menuKey: 'index'
-		})
-		var param = $root.params;
-		srv.getUserList(param,function(xhr){
-			if(!xhr.code){
-				
-			}
 		})
 		$scope.titleList = [
 			"本地文件签署","云文件签署","合同模板签署"
@@ -1543,7 +1566,72 @@ kry.controller('ctrl.person.info', [
 			title: '个人信息',
 			menuKey: 'personInfo'
 		});
-		$scope.fileUpload = function(fil){
+		getProvince();
+		loadRec();
+		function loadRec(){
+			var loaddata = JSON.parse(JSON.stringify($root.params));
+				loaddata['method'] = 'com.shuige.sealsign.selectUserExtVo';
+				loaddata['strToken'] = $root.uid;
+			console.log($root.params);
+			console.log(loaddata)
+			srv.headlogo(loaddata,function(xhr){
+				if(xhr.code == '0'){
+					console.log(xhr.data)
+	    			$scope.loginName = xhr.data.loginName;
+	    			$scope.loginIdnum = xhr.data.idCard;
+	    			$scope.province = xhr.data.provinceId;
+	    			if($scope.province){
+	    				getCity();
+	    			}
+	    			$scope.city = xhr.data.cityId;
+	    			if($scope.city){
+	    				getcoun();
+	    			}
+	    			$scope.county = xhr.data.countyId;
+	    			$scope.detailAdd = xhr.data.countyId;
+	    			$scope.company = xhr.data.entName;
+	    			$scope.job = xhr.data.positionName;
+				}else{
+					base.alert(xhr.msg);
+				}
+			})
+		}
+		$("#logoFile").uploadify({
+			'auto': true,
+	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
+	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'queueID': 'fileQueue',//与下面的id对应
+	        'fileTypeDesc': '图片格式',
+	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+	        'method': 'POST',
+	        'multi': true,
+	        'buttonText': '上传文件',
+	        'fileObjName': 'files',//服务端File对应的名称。
+	        'height': 120,
+            'width': 120,
+	        'onUploadSuccess': function (file, data, response) {
+	            var dataObj = JSON.parse(data);
+	            $scope.logoimg = dataObj.data[0].path;
+	            var imgUrl = $root.globalImgPath + dataObj.data[0].path;
+	            $("#logoPic").attr('src', imgUrl);
+				var logoPicData  = JSON.parse(JSON.stringify($root.params));
+				logoPicData['method'] = 'com.shuige.user.savePic';
+				logoPicData['userPic'] = $scope.logoimg;
+				logoPicData['v'] = '1.0.0';
+				srv.headlogo(logoPicData,function(xhr){
+					if(xhr.code == '0'){
+						$root.dosuccess();
+					}else{
+						base.alert(xhr.msg)
+						$root.dofail();
+					}
+				})
+	        },
+	        'onUploadError': function (file, errorCode, errorMsg, errorString) {
+	            base.alert('当前文件：' + file.name + '上传失败，失败原因：' + errorString);
+	        }
+        });
+		/*$scope.fileUpload = function(fil){
 			for(var i = 0; i < fil.length; i++) {
 				reads(fil[i]);
 			}
@@ -1552,50 +1640,125 @@ kry.controller('ctrl.person.info', [
 			var reader = new FileReader();
 			reader.readAsDataURL(fil);
 			reader.onload = function() {
-				$("#logoPic").attr('src', reader.result);
+				var data  = JSON.parse(JSON.stringify($root.params));
+					data['method'] = 'com.shuige.user.picUpHead';
+					data['userPic'] = reader.result; //.split(',')[1];
+					data['v'] = '1.0.1';
+				console.log(data);	
+				srv.headlogo(data,function(xhr){
+					if(xhr.code == '0'){
+						$("#logoPic").attr('src', reader.result);
+						$scope.picUrl = xhr.data;
+						$root.dosuccess();
+					}else{
+						$root.dofail();
+					}
+				})
 			};
+		}*/
+		function getProvince(){
+			var proData  = JSON.parse(JSON.stringify($root.params));
+			proData['method'] = 'com.shuige.sealsign.getDicProvinceList';
+			srv.headlogo(proData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.proList = xhr.data;
+				}else{
+					base.alert('获取省份列表失败');
+				}
+			})
+		}
+		$scope.getCity = function(){
+			$scope.city = '';
+			$scope.county = '';
+			$scope.detailAdd = '';
+			getCity();
+		}
+		function getCity(){
+			var cityData  = JSON.parse(JSON.stringify($root.params));
+			cityData['method'] = 'com.shuige.sealsign.getDicCityList';
+			cityData['provinceId'] = $scope.province;
+			srv.headlogo(cityData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.cityList = xhr.data;
+				}else{
+					$root.dofail();
+				}
+			})
+		}
+		$scope.getCountry = function(){
+			$scope.county = '';
+			$scope.detailAdd = '';
+			getcoun();
+		}
+		function getcoun(){
+			var counData  = JSON.parse(JSON.stringify($root.params));
+			counData['method'] = 'com.shuige.sealsign.getDicCountyList';
+			counData['provinceId'] = $scope.province;
+			counData['cityId'] = $scope.city;
+			srv.headlogo(counData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.counList = xhr.data;
+				}else{
+					$root.dofail();
+				}
+			})
 		}
 		$scope.infoSubmit = function(){
-			// var userCreditInfo = encodeURIComponent(encodeURIComponent(ct.userCreditInfo));  +,%编码
+			// var userCreditInfo = encodeURIComponent(encodeURIComponent(ct.userCreditInfo));  //+,%编码
 			// 解码方法http://blog.csdn.net/li2327234939/article/details/53675211
-			var data = {};
-			if (base.isDefined($scope.loginName))
-				data['loginName'] = $scope.loginName;
+			var data1  = JSON.parse(JSON.stringify($root.params));
+				data1['method'] = 'com.shuige.sealsign.personUpdate';
+			if (base.isDefined($scope.loginName)){
+	    		var re = /[^\u4e00-\u9fa5]/;  
+	 			if(!re.test(thisval)){
+	 				base.alert('登录名不能含中文')
+	 				$scope.loginName = '';
+	 			}else{
+	 				data1['loginName'] = $scope.loginName;
+	 			}
+			}
 			if (!$scope.loginIdnum || !base.isIdc($scope.loginIdnum)) {
 				base.alert('请正确填写您的身份证号码');
 				return;
 			} else {
-				data['loginIdnum'] = $scope.loginIdnum;
+				data1['idCard'] = $scope.loginIdnum;
 			}
 			if(!$scope.province){
 				base.alert("请填写您所在省份")
 				return;
 			} else {
-				data['province'] = $scope.province;
+				data1['provinceId'] = $scope.province;
 			}
 			if(!$scope.city){
 				base.alert("请填写您所在城市")
 				return;
 			} else {
-				data['city'] = $scope.city;
+				data1['cityId'] = $scope.city;
 			}
 			if(!$scope.county){
 				base.alert("请填写您所在区/县")
 				return;
 			} else {
-				data['county'] = $scope.county;
+				data1['countyId'] = $scope.county;
 			}
 			if(!$scope.detailAdd){
 				base.alert("请填写您的详细地址")
 				return;
 			} else {
-				data['detailAdd'] = $scope.detailAdd;
+				data1['address'] = $scope.detailAdd;
 			}
 			if (base.isDefined($scope.company))
-				data['company'] = $scope.company;
+				data1['entName'] = $scope.company;
 			if (base.isDefined($scope.job))
-				data['job'] = $scope.job;
-			console.log(data);
+				data1['positionName'] = $scope.job;
+			console.log(data1);
+			srv.headlogo(data1,function(xhr){
+				if(xhr.code == '0'){
+					$root.dosuccess();
+				}else{
+					$root.dofail();
+				}
+			})
 		}
 	}
 ])
@@ -1626,31 +1789,100 @@ kry.controller('ctrl.person.inforec', [
 		$scope.notOpen = false;
 		$scope.idcardShow = false;
 		$scope.inforShow = true;
+		$scope.mobileyzmshow = true;
+		$scope.mailYzmshow = true;
+		$scope.recmo = false;
+		$scope.recma = false;
+		$scope.recna = false;
+		loadRec();
+		function loadRec(){
+			var loaddata  = JSON.parse(JSON.stringify($root.params));
+				loaddata['method'] = 'com.shuige.sealsign.selectUserExtVo';
+				loaddata['strToken'] = $root.uid;
+			srv.headlogo(loaddata,function(xhr){
+				if(xhr.code == '0'){
+					console.log(xhr.data)
+					var authentication = xhr.data.authentication;
+					if(authentication == '0'){
+						$scope.recmo = false;
+						$scope.recma = false;
+						$scope.recna = false;
+					}else if(authentication == '1'){
+						$scope.recmo = true;
+						$scope.recma = false;
+						$scope.recna = false;
+					}else if(authentication == '2'){
+						$scope.recmo = false;
+						$scope.recma = true;
+						$scope.recna = false;
+					}else if(authentication == '3'){
+						$scope.recmo = true;
+						$scope.recma = true;
+						$scope.recna = false;
+					}else if(authentication == '4'){
+						$scope.recmo = false;
+						$scope.recma = false;
+						$scope.recna = true;
+					}else if(authentication == '5'){
+						$scope.recmo = true;
+						$scope.recma = false;
+						$scope.recna = true;
+					}else if(authentication == '6'){
+						$scope.recmo = false;
+						$scope.recma = true;
+						$scope.recna = true;
+					}else{
+						$scope.recmo = true;
+						$scope.recma = true;
+						$scope.recna = true;
+					}
+	    			$scope.loginIdnum = xhr.data.idCard;
+	    			$scope.province = xhr.data.provinceId;
+	    			if($scope.province){
+	    				getCity();
+	    			}
+	    			$scope.city = xhr.data.cityId;
+	    			if($scope.city){
+	    				getcoun();
+	    			}
+	    			$scope.county = xhr.data.countyId;
+	    			$scope.detailAdd = xhr.data.countyId;
+	    			$scope.company = xhr.data.entName;
+	    			$scope.job = xhr.data.positionName;
+				}else{
+					base.alert(xhr.msg);
+				}
+			})
+		}
 		$scope.mobileCli = function(){
 			$scope.mailRec = false;
-			$scope.mobileRec = true;
+			if($scope.recmo){
+				$scope.mobileRec = false;
+			}else{
+				$scope.mobileRec = true;
+			}
 			$scope.realNameRec = false;
 		};
 		$scope.mailCli = function(){
-			$scope.mailRec = true;
+			if($scope.recma){
+				$scope.mailRec = false;
+			}else{
+				$scope.mailRec = true;
+			}
 			$scope.mobileRec = false;
 			$scope.realNameRec = false;
 		};
 		$scope.nameRealCli = function(){
+			if($scope.recna){
+				$scope.realNameRec = false;
+			}else{
+				$scope.realNameRec = true;
+			}
 			$scope.mailRec = false;
 			$scope.mobileRec = false;
-			$scope.realNameRec = true;
 		};
 		$scope.bankRec = function(){
-			var diag = dialog.open({
-				templateUrl: 'templates/dialog/dialog.notopen.htm',
-				scope: $scope,
-				// controller:'ctrl.dialog.cloudfilelist',
-				className: 'ngdialog-notopen'
-			});
-			setTimeout(function(){
-				diag.close();
-			},1500);
+			$root.notopen();
 		};
 		$scope.fileUpload = function(fil,elem){
 			for(var i = 0; i < fil.length; i++) {
@@ -1672,52 +1904,318 @@ kry.controller('ctrl.person.inforec', [
 			$scope.idcardShow = false;
 			$scope.inforShow = true;
 		}
+		//手机认证验证码
+		$scope.getphoneYzm = function(){
+			var yzmData  = JSON.parse(JSON.stringify($root.params));
+			yzmData['mobileOrEmail'] = $scope.telphone;
+			yzmData['method'] = 'com.shuige.sealsign.sendcaptcha';
+			srv.headlogo(yzmData,function(xhr){
+				if(xhr.code == '0'){
+	    			$("#mobileyzmshow").hide();
+	    			$("#mobileyzm").show();
+	    			var nums = 3;
+	    			$("#mobileyzm").text(nums+'秒重发');
+	    			var clock = setInterval(doLoop, 1000);
+	    			function doLoop(){
+						nums--;
+						if(nums > 0){
+							$("#mobileyzm").text(nums+'秒重发');
+						}else{
+			    			$("#mobileyzmshow").show();
+			    			$("#mobileyzm").hide();
+							clearInterval(clock); //清除js定时器
+							nums = 3; //重置时间
+						}
+					}	
+				}else{
+					$root.dofail();
+				}
+			})
+		}
+		//手机认证提交信息
+		$scope.subMobile = function(){
+			var mobData  = JSON.parse(JSON.stringify($root.params));
+			mobData['method'] = 'com.shuige.sealsign.updateUserExt';
+			mobData['authentication'] = '1';
+			if(!$scope.telphone){
+				base.alert("请填写您的手机号码")
+				return;
+			} else {
+				mobData['mobile'] = $scope.telphone;
+			}
+			if(!$scope.phoneYzm){
+				base.alert("请填写您的验证码")
+				return;
+			} else {
+				mobData['captcha'] = $scope.phoneYzm;
+			}
+			srv.headlogo(mobData,function(xhr){
+				if(xhr.code == '0'){
+					$root.dosuccess();
+					$scope.mobileRec = false;
+				}else{
+					$root.dofail();
+				}
+			})
+		}
+		//邮箱认证验证码
+		$scope.getmailYzm = function(){
+			var mailyzmData  = JSON.parse(JSON.stringify($root.params));
+				mailyzmData['method'] = 'com.shuige.sealsign.sendcaptcha';
+			if(!$scope.mailNum){
+				base.alert("请填写您的邮箱")
+				return;
+			} else {
+				mailyzmData['mobileOrEmail'] = $scope.mailNum;
+			}
+			srv.headlogo(mailyzmData,function(xhr){
+				if(xhr.code == '0'){
+	    			$scope.mailYzmshow = false;
+	    			$("#mailyzmShow").hide();
+	    			$("#mailyzm").show();
+	    			var nums = 3;
+	    			$("#mailyzm").text(nums+'秒重发');
+	    			var clock = setInterval(doLoop, 1000);
+	    			function doLoop(){
+						nums--;
+						if(nums > 0){
+							$("#mailyzm").text(nums+'秒重发');
+						}else{
+							//$scope.mailYzmshow = true;
+			    			$("#mailyzmShow").show();
+			    			$("#mailyzm").hide();
+							clearInterval(clock); //清除js定时器
+							nums = 3; //重置时间
+						}
+					}	
+				}else{
+					$root.dofail();
+				}
+			})
+		}
+		//邮箱认证提交信息
+		$scope.submail = function(){
+			var mailData  = JSON.parse(JSON.stringify($root.params));
+				mailData['method'] = 'com.shuige.sealsign.updateUserExt';
+				mailData['authentication'] = '2';
+			if(!$scope.mailNum){
+				base.alert("请填写您的邮箱")
+				return;
+			} else {
+				mailData['email'] = $scope.mailNum;
+			}
+			if(!$scope.mailYzm){
+				base.alert("请填写您的验证码")
+				return;
+			} else {
+				mailData['captcha'] = $scope.mailYzm;
+			}
+			srv.headlogo(mailData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.mailRec = false;
+					$root.dosuccess();
+				}else{
+					$root.dofail();
+				}
+			})
+		}
+		$("#frontId").uploadify({
+			'auto': true,
+	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
+	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'queueID': 'fileQueue',//与下面的id对应
+	        'fileTypeDesc': '图片格式',
+	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+	        'method': 'POST',
+	        'multi': true,
+	        'buttonText': '上传文件',
+	        'fileObjName': 'files',//服务端File对应的名称。
+	        'height': 22,
+            'width': 48,
+	        /*'onUploadStart': function (file) {
+	            console.log(file)
+	        },*/
+	        'onUploadSuccess': function (file, data, response) {
+	            var dataObj = JSON.parse(data);
+	            $scope.cardFront = dataObj.data[0].path;
+	            var imgUrl = $root.globalImgPath + dataObj.data[0].path;
+	            $("#frontIdPic").attr('src', imgUrl)
+	        },
+	        'onUploadError': function (file, errorCode, errorMsg, errorString) {
+	            base.alert('当前文件：' + file.name + '上传失败，失败原因：' + errorString);
+	        }
+        });
+		$("#backId").uploadify({
+			'auto': true,
+	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
+	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'queueID': 'fileQueue',//与下面的id对应
+	        'fileTypeDesc': '图片格式',
+	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+	        'method': 'POST',
+	        'multi': true,
+	        'buttonText': '上传文件',
+	        'fileObjName': 'files',//服务端File对应的名称。
+	        'height': 22,
+            'width': 48,
+	        'onUploadSuccess': function (file, data, response) {
+	            var dataObj = JSON.parse(data)
+	            $scope.cardReverse = dataObj.data[0].path;
+	            var imgUrl = $root.globalImgPath + dataObj.data[0].path;
+	            $("#backIdPic").attr('src', imgUrl)
+	        },
+	        'onUploadError': function (file, errorCode, errorMsg, errorString) {
+	            base.alert('当前文件：' + file.name + '上传失败，失败原因：' + errorString);
+	        }
+        });
+		$("#handId").uploadify({
+			'auto': true,
+	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
+	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'queueID': 'fileQueue',//与下面的id对应
+	        'fileTypeDesc': '图片格式',
+	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+	        'method': 'POST',
+	        'multi': true,
+	        'buttonText': '上传文件',
+	        'fileObjName': 'files',//服务端File对应的名称。
+	        'height': 22,
+            'width': 48,
+	        'onUploadSuccess': function (file, data, response) {
+	            var dataObj = JSON.parse(data)
+	            $scope.cardInHand = dataObj.data[0].path;
+	            var imgUrl = $root.globalImgPath + dataObj.data[0].path;
+	            $("#handIdPic").attr('src', imgUrl)
+	        },
+	        'onUploadError': function (file, errorCode, errorMsg, errorString) {
+	            base.alert('当前文件：' + file.name + '上传失败，失败原因：' + errorString);
+	        }
+        });
+		//实名认证提交信息
 		$scope.infoRecSubmit = function(){
 			// var userCreditInfo = encodeURIComponent(encodeURIComponent(ct.userCreditInfo));  +,%编码
 			// 解码方法http://blog.csdn.net/li2327234939/article/details/53675211
-			var data = {};
+			var namedata  = JSON.parse(JSON.stringify($root.params));
+				namedata['method'] = 'com.shuige.sealsign.updateUserExt';
+				namedata['authentication'] = '4';
 			if (!$scope.loginName) {
 				base.alert('请填写您的名字');
 				return;
 			} else {
-				data['loginName'] = $scope.loginName;
+				namedata['userName'] = $scope.loginName;
 			}
 			if (!$scope.loginIdnum || !base.isIdc($scope.loginIdnum)) {
 				base.alert('请正确填写您的身份证号码');
 				return;
 			} else {
-				data['loginIdnum'] = $scope.loginIdnum;
+				namedata['idCard'] = $scope.loginIdnum;
 			}
 			if(!$scope.province){
 				base.alert("请填写您所在省份")
 				return;
 			} else {
-				data['province'] = $scope.province;
+				namedata['provinceId'] = $scope.province;
 			}
 			if(!$scope.city){
 				base.alert("请填写您所在城市")
 				return;
 			} else {
-				data['city'] = $scope.city;
+				namedata['cityId'] = $scope.city;
 			}
 			if(!$scope.county){
 				base.alert("请填写您所在区/县")
 				return;
 			} else {
-				data['county'] = $scope.county;
+				namedata['countyId'] = $scope.county;
 			}
 			if(!$scope.detailAdd){
 				base.alert("请填写您的详细地址")
 				return;
 			} else {
-				data['detailAdd'] = $scope.detailAdd;
+				namedata['address'] = $scope.detailAdd;
+			}
+			if(!$scope.cardFront){
+				base.alert("请先上传身份证信息页照片")
+				return;
+			} else {
+				namedata['cardFront'] = $scope.cardFront;
+			}
+			if(!$scope.cardReverse){
+				base.alert("请先上传身份证国徽页照片")
+				return;
+			} else {
+				namedata['cardReverse'] = $scope.cardReverse;
+			}
+			if(!$scope.cardInHand){
+				base.alert("请先上传手持身份证照片")
+				return;
+			} else {
+				namedata['cardInHand'] = $scope.cardInHand;
 			}
 			if (base.isDefined($scope.company))
-				data['company'] = $scope.company;
+				namedata['entName'] = $scope.company;
 			if (base.isDefined($scope.job))
-				data['job'] = $scope.job;
-			console.log(data);
+				namedata['positionName'] = $scope.job;
+			console.log(namedata);
+			srv.headlogo(namedata,function(xhr){
+				if(xhr.code == '0'){
+					$scope.realNameRec = false;
+					$root.dosuccess();
+				}else{
+					$root.dofail();
+				}
+			})
 		}
+		
+		getProvince();
+		function getProvince(){
+			var proData  = JSON.parse(JSON.stringify($root.params));
+			proData['method'] = 'com.shuige.sealsign.getDicProvinceList';
+			srv.headlogo(proData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.proList = xhr.data;
+				}else{
+					base.alert('获取省份列表失败');
+				}
+			})
+		}
+		$scope.getCity = function(){
+			$scope.city = '';
+			$scope.county = '';
+			$scope.detailAdd = '';
+			getCity();
+		}
+		function getCity(){
+			var cityData  = JSON.parse(JSON.stringify($root.params));
+			cityData['method'] = 'com.shuige.sealsign.getDicCityList';
+			cityData['provinceId'] = $scope.province;
+			srv.headlogo(cityData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.cityList = xhr.data;
+				}else{
+					$root.dofail();
+				}
+			})
+		}
+		$scope.getCountry = function(){
+			$scope.county = '';
+			$scope.detailAdd = '';
+			getcoun();
+		}
+		function getcoun(){
+			var counData  = JSON.parse(JSON.stringify($root.params));
+			counData['method'] = 'com.shuige.sealsign.getDicCountyList';
+			counData['provinceId'] = $scope.province;
+			counData['cityId'] = $scope.city;
+			srv.headlogo(counData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.counList = xhr.data;
+				}else{
+					$root.dofail();
+				}
+			})
+		}
+		
 	}
 ])
 kry.controller('ctrl.person.msg', [
@@ -1743,19 +2241,68 @@ kry.controller('ctrl.person.msg', [
 		});
 		$scope.open = false;
 		$scope.openM = false;
+		loadRec();
+		function loadRec(){
+			var loaddata  = JSON.parse(JSON.stringify($root.params));
+				loaddata['method'] = 'com.shuige.sealsign.selectUserExtVo';
+				loaddata['strToken'] = $root.uid;
+			srv.headlogo(loaddata,function(xhr){
+				if(xhr.code == '0'){
+					console.log(xhr.data)
+					var msgFlg = xhr.data.msgFlag;
+					if(msgFlg == '0'){
+						$scope.open = false;
+						$scope.openM = false;
+					}else if(msgFlg == '1'){
+						$scope.open = true;
+						$scope.openM = false;
+					}else if(msgFlg == '2'){
+						$scope.open = false;
+						$scope.openM = true;
+					}else{
+						$scope.open = true;
+						$scope.openM = true;
+					}
+				}else{
+					base.alert(xhr.msg);
+				}
+			})
+		}
 		$scope.openMsg = function(){
+			var msgData  = JSON.parse(JSON.stringify($root.params));
+			msgData['method'] = 'com.shuige.sealsign.updateUserExtMsgFlagBytoken';
 			if($scope.open){
 				$scope.open = false;
+				msgData['messagepass'] = '0';
 			}else{
 				$scope.open = true;
+				msgData['messagepass'] = '1';
 			}
+			srv.headlogo(msgData,function(xhr){
+				if(xhr.code == '0'){
+					$root.dosuccess();
+				}else{
+					$root.dofail();
+				}
+			})
 		}
 		$scope.openMail = function(){
+			var mailData  = JSON.parse(JSON.stringify($root.params));
+			mailData['method'] = 'com.shuige.sealsign.updateUserExtMsgFlagBytoken';
 			if($scope.openM){
 				$scope.openM = false;
+				mailData['mailpass'] = '0';
 			}else{
 				$scope.openM = true;
+				mailData['mailpass'] = '1';
 			}
+			srv.headlogo(mailData,function(xhr){
+				if(xhr.code == '0'){
+					$root.dosuccess();
+				}else{
+					$root.dofail();
+				}
+			})
 		}
 	}
 ])
@@ -1780,11 +2327,29 @@ kry.controller('ctrl.person.safe', [
 			title: '安全设置',
 			menuKey: 'personSafe'
 		});
-		$scope.noSign = true;
-		$scope.hasSign = false;
+		$scope.seted = true;
 		$scope.password = false;
 		$scope.signPsw = false;
 		$scope.signPswCh = false;
+		loadSignsta();
+		function loadSignsta(){
+			var loaddata  = JSON.parse(JSON.stringify($root.params));
+				loaddata['method'] = 'com.shuige.sealsign.selectUserExtVo';
+				loaddata['strToken'] = $root.uid;
+			srv.headlogo(loaddata,function(xhr){
+				if(xhr.code == '0'){
+					console.log(xhr.data)
+					var signstatus = xhr.data.signstatus;
+					if(signstatus == '0'){
+						$scope.seted = false;
+					}else{
+						$scope.seted = true;
+					}
+				}else{
+					base.alert(xhr.msg);
+				}
+			})
+		}
 		$scope.passwordCh = function(){
 			$scope.password = true;
 			$scope.signPsw = false;
@@ -1801,29 +2366,22 @@ kry.controller('ctrl.person.safe', [
 			$scope.signPswCh = true;
 		};
 		$scope.bindUkey = function(){
-			var diag = dialog.open({
-				templateUrl: 'templates/dialog/dialog.notopen.htm',
-				scope: $scope,
-				// controller:'ctrl.dialog.cloudfilelist',
-				className: 'ngdialog-notopen'
-			});
-			setTimeout(function(){
-				diag.close();
-			},1500);
+			$root.notopen();
 		};
 		$scope.setPsw = function(){
-			var data = {};
+			var pswdata  = JSON.parse(JSON.stringify($root.params));
+				pswdata['method'] = 'com.shuige.user.signmodifyPass';
 			if(!$scope.prePsw){
 				base.alert("请填写原密码")
 				return;
 			} else {
-				data['prePsw'] = $scope.prePsw;
+				pswdata['oldPassword'] = $scope.prePsw;
 			}
 			if(!$scope.newPsw){
 				base.alert("请填写新密码")
 				return;
 			} else {
-				data['newPsw'] = $scope.newPsw;
+				pswdata['password'] = $scope.newPsw;
 			}
 			if(!$scope.confirmPsw){
 				base.alert("请确认新密码")
@@ -1833,18 +2391,24 @@ kry.controller('ctrl.person.safe', [
 					base.alert("确认密码与新密码不一致，请重新填写")
 					$scope.confirmPsw = '';
 					return;
-				}else{
-					data['confirmPsw'] = $scope.confirmPsw;
 				}
 			}
+			srv.headlogo(pswdata,function(xhr){
+				if(xhr.code == '0'){
+					$root.dosuccess();
+				}else{
+					$root.dofail();
+				}
+			})
 		}
 		$scope.setSignPsw = function(){
-			var data = {};
+			var signdata  = JSON.parse(JSON.stringify($root.params));
+				signdata['method'] = 'com.shuige.sealsign.updateSignPassWord';
 			if(!$scope.setsignPsw){
 				base.alert("请填写签署密码")
 				return;
 			} else {
-				data['setsignPsw'] = $scope.setsignPsw;
+				signdata['signPassword'] = $scope.setsignPsw;
 			}
 			if(!$scope.confirmSignPsw){
 				base.alert("请确认签署密码")
@@ -1854,24 +2418,30 @@ kry.controller('ctrl.person.safe', [
 					base.alert("确认密码与签署密码不一致，请重新填写")
 					$scope.confirmSignPsw = '';
 					return;
-				}else{
-					data['confirmSignPsw'] = $scope.confirmSignPsw;
 				}
 			}
+			srv.headlogo(signdata,function(xhr){
+				if(xhr.code == '0'){
+					$root.dosuccess();
+				}else{
+					$root.dofail();
+				}
+			})
 		}
 		$scope.resetSignPsw = function(){
-			var data = {};
+			var resetSigndata  = JSON.parse(JSON.stringify($root.params));
+				resetSigndata['method'] = 'com.shuige.sealsign.signPass';
 			if(!$scope.presignPsw){
 				base.alert("请填写原密码")
 				return;
 			} else {
-				data['presignPsw'] = $scope.presignPsw;
+				resetSigndata['oldPassword'] = $scope.presignPsw;
 			}
 			if(!$scope.newsignPsw){
 				base.alert("请填写新密码")
 				return;
 			} else {
-				data['newsignPsw'] = $scope.newsignPsw;
+				resetSigndata['password'] = $scope.newsignPsw;
 			}
 			if(!$scope.confirmnewsignPsw){
 				base.alert("请确认新密码")
@@ -1882,9 +2452,16 @@ kry.controller('ctrl.person.safe', [
 					$scope.confirmnewsignPsw = '';
 					return;
 				}else{
-					data['confirmnewsignPsw'] = $scope.confirmnewsignPsw;
+					resetSigndata['repassword'] = $scope.confirmnewsignPsw;
 				}
 			}
+			srv.headlogo(resetSigndata,function(xhr){
+				if(xhr.code == '0'){
+					$root.dosuccess();
+				}else{
+					$root.dofail();
+				}
+			})
 		}
 	}
 ])
@@ -1909,14 +2486,54 @@ kry.controller('ctrl.person.sign', [
 			title: '我的签名',
 			menuKey: 'personSign'
 		});
-		$scope.fontChoose = false;
+		
 		$scope.fontChose = function(){
-			if($scope.fontChoose){
-				$scope.fontChoose = false;
-			}else{
-				$scope.fontChoose = true;
-			}
+			$scope.fontChoose = !$scope.fontChoose;
 		};
+		loadsign();
+		function loadsign(){
+			var loaddata  = JSON.parse(JSON.stringify($root.params));
+				loaddata['method'] = 'com.shuige.sealsign.getSignFileList';
+				loaddata['strToken'] = $root.uid;
+			srv.headlogo(loaddata,function(xhr){
+				if(xhr.code == '0'){
+	    			$scope.signlist = xhr.data;
+//	    			for(var i=0;i<$scope.signlist.length;i++){
+//	    				//$scope.fontChoose+i = false;
+//	    			}
+				}else{
+					base.alert(xhr.msg);
+				}
+			})
+		}
+		$scope.selectCode = function(){
+			var selcodedata  = JSON.parse(JSON.stringify($root.params));
+				selcodedata['method'] = 'com.shuige.sealsign.upUserSignPic';
+			srv.headlogo(selcodedata,function(xhr){
+				if(xhr.code == '0'){
+	    			$scope.qrcode = xhr.data;
+				}else{
+					base.alert(xhr.msg);
+				}
+			})
+		}
+		
+		gethandCode();
+		$scope.freshCode = function(){
+			gethandCode();
+		}
+		function gethandCode(){
+			debugger
+			var codedata  = JSON.parse(JSON.stringify($root.params));
+				codedata['method'] = 'com.shuige.sealsign.getQRCodeContent';
+			srv.headlogo(codedata,function(xhr){
+				if(xhr.code == '0'){
+	    			$scope.qrcode = xhr.data;
+				}else{
+					base.alert(xhr.msg);
+				}
+			})
+		}
 	}
 ])
 kry.controller('ctrl.dialog.cloudfilelist', [
@@ -2091,7 +2708,7 @@ kry.controller('ctrl.endDate', [
     		showClearButton: true,
     		changeMonth: false,
     		defaultDate: +1,
-    		//   showWeek: true,   
+    		// showWeek: true,   
     		howOn: "button", //borth 既可以触发按钮 又可以触发文本框 弹出 日历  如果是button 只能触发button事件    
     		buttonImageOnly: true, //设置这按钮只显示图片效果 不要有button的样式    
     		showAnim: "toggle", //弹出日历的效果  

@@ -23,8 +23,8 @@
 				</div>
 				<div class="pMsgRectext floatLeft">
 					<p class="pMsgRectextTit">签署密码<span class="bgColordanger boxCircle">!</span></p>
-					<p class="pMsgRectextTet" ng-if="noSign"><span>未设置</span><a class="mrl15 colorDanger text_underline" ng-click="signPswSet()">设置</a></p>
-					<p class="pMsgRectextTet" ng-if="hasSign"><span>已设置</span><a class="mrl15 colorDanger text_underline" ng-click="signPswChange()">更改</a></p>
+					<p class="pMsgRectextTet" ng-if="!seted"><span>未设置</span><a class="mrl15 colorDanger text_underline" ng-click="signPswSet()">设置</a></p>
+					<p class="pMsgRectextTet" ng-if="seted"><span>已设置</span><a class="mrl15 colorDanger text_underline" ng-click="signPswChange()">更改</a></p>
 				</div>
 				<div class="vertail-line-2-78"></div>
 				<div class="clearfix"></div>
@@ -121,7 +121,4 @@
 			</table>
 		</div>
 	</div>
-</div>
-<div class="notOPen">
-	该功能暂未开放
 </div>

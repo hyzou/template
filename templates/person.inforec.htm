@@ -9,7 +9,10 @@
 					<img src="../template/static/css/img/phone.png"/>
 				</div>
 				<div class="pMsgRectext floatLeft">
-					<p class="pMsgRectextTit">手机认证<span class="bgColorsuc boxCircle">✔</span></p>
+					<p class="pMsgRectextTit">手机认证
+						<span ng-show="recmo" class="bgColorsuc boxCircle">✔</span>
+						<span ng-show="!recmo" class="bgColordanger boxCircle">!</span>
+					</p>
 					<p class="pMsgRectextTet">您已完成手机认证</p>
 				</div>
 				<div class="vertail-line-2-78"></div>
@@ -22,7 +25,10 @@
 					<img src="../template/static/css/img/mail.png"/>
 				</div>
 				<div class="pMsgRectext floatLeft">
-					<p class="pMsgRectextTit">邮箱认证<span class="bgColordanger boxCircle">!</span></p>
+					<p class="pMsgRectextTit">邮箱认证
+						<span ng-show="recma" class="bgColorsuc boxCircle">✔</span>
+						<span ng-show="!recma" class="bgColordanger boxCircle">!</span>
+					</p>
 					<p class="pMsgRectextTet">邮箱认证后可使用更多服务</p>
 				</div>
 				<div class="vertail-line-2-78"></div>
@@ -35,7 +41,10 @@
 					<img src="../template/static/css/img/person.png"/>
 				</div>
 				<div class="pMsgRectext floatLeft">
-					<p class="pMsgRectextTit">实名认证<span class="bgColordanger boxCircle">!</span></p>
+					<p class="pMsgRectextTit">实名认证
+						<span ng-show="recna" class="bgColorsuc boxCircle">✔</span>
+						<span ng-show="!recna" class="bgColordanger boxCircle">!</span>
+					</p>
 					<p class="pMsgRectextTet">实名认证后可使用更多服务</p>
 				</div>
 				<div class="clearfix"></div>
@@ -79,15 +88,16 @@
 					<div class="pMailRecGroup mrb40">
 						<div class="pMailReclogo boxCircle bgColorblue floatLeft">1</div>
 						<div class="pMailRectext floatLeft">请输入邮箱号:</div>
-						<div class="pMailRecIpt floatLeft"><input type="text" /></div>
-						<div class="pMailRecBtn bgColorblue floatLeft">获取验证码</div>
+						<div class="pMailRecIpt floatLeft"><input type="text" ng-model="mailNum" /></div>
+						<div id="mailyzmShow" class="pMailRecBtn bgColorblue floatLeft cursor" ng-click="getmailYzm()">获取验证码</div>
+						<div id="mailyzm" class="pMailRecBtn bgColorblue floatLeft displayNo"></div>
 						<div class="clearfix"></div>
 					</div>
 					<div class="pMailRecGroup">
 						<div class="pMailReclogo boxCircle bgColorblue floatLeft">2</div>
 						<div class="pMailRectext floatLeft">请输入验证码:</div>
-						<div class="pMailRecIpt floatLeft"><input type="text" /></div>
-						<div class="pMailRecBtn bgColorblue floatLeft">提交</div>
+						<div class="pMailRecIpt floatLeft"><input type="text" ng-model="mailYzm" /></div>
+						<div class="pMailRecBtn bgColorblue floatLeft" ng-click="submail()">提交</div>
 						<div class="clearfix"></div>
 					</div>
 				</div>
@@ -130,15 +140,16 @@
 					<div class="pMailRecGroup mrb40">
 						<div class="pMailReclogo boxCircle bgColorblue floatLeft">1</div>
 						<div class="pMailRectext floatLeft">请输入手机号:</div>
-						<div class="pMailRecIpt floatLeft"><input type="text" /></div>
-						<div class="pMailRecBtn bgColorblue floatLeft">获取验证码</div>
+						<div class="pMailRecIpt floatLeft"><input type="text" ng-model="telphone" /></div>
+						<div id="mobileyzmshow" class="pMailRecBtn bgColorblue floatLeft cursor" ng-click="getphoneYzm()">获取验证码</div>
+						<div id="mobileyzm" class="pMailRecBtn bgColorblue floatLeft displayNo"></div>
 						<div class="clearfix"></div>
 					</div>
 					<div class="pMailRecGroup">
 						<div class="pMailReclogo boxCircle bgColorblue floatLeft">2</div>
 						<div class="pMailRectext floatLeft">请输入验证码:</div>
-						<div class="pMailRecIpt floatLeft"><input type="text" /></div>
-						<div class="pMailRecBtn bgColorblue floatLeft">提交</div>
+						<div class="pMailRecIpt floatLeft"><input type="text" ng-model="phoneYzm" /></div>
+						<div class="pMailRecBtn bgColorblue floatLeft cursor" ng-click="subMobile()">提交</div>
 						<div class="clearfix"></div>
 					</div>
 				</div>
@@ -182,11 +193,12 @@
 									</div>
 									<div class="idRecGroupPic">
 										<!--<div class="idPicFront"></div>-->
-										<img src="../template/static/css/img/idCardidx.png" width="100%" height="100%" />
+										<img id="frontIdPic" src="../template/static/css/img/idCardidx.png" width="100%" height="100%" />
 									</div>
 									<div class="idRecGroupBtn mrt10">
 										<a href="javascript:;" class="a-upload">
-										    <input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件
+											<input type="file" id="frontId" name="uploadify" />上传文件
+										    <!--<input type="file" data-id="frontId" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件-->
 										</a>
 									</div>
 								</div>
@@ -198,11 +210,12 @@
 									</div>
 									<div class="idRecGroupPic">
 										<!--<div class="idPicBack"></div>-->
-										<img src="../template/static/css/img/idCardbg.png" width="100%" height="100%" />
+										<img id="backIdPic" src="../template/static/css/img/idCardbg.png" width="100%" height="100%" />
 									</div>
 									<div class="idRecGroupBtn mrt10">
 										<a href="javascript:;" class="a-upload">
-										    <input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件
+											<input type="file" id="backId" name="uploadify" />上传文件
+										    <!--<input type="file" data-id="backId" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件-->
 										</a>
 									</div>
 								</div>
@@ -216,11 +229,12 @@
 									</div>
 									<div class="idRecGroupPic">
 										<!--<div class="idPicPeo"></div>-->
-										<img src="../template/static/css/img/idCardph.png" width="100%" height="100%" />
+										<img id="handIdPic" src="../template/static/css/img/idCardph.png" width="100%" height="100%" />
 									</div>
 									<div class="idRecGroupBtn mrt10">
 										<a href="javascript:;" class="a-upload">
-										    <input type="file" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件
+											<input type="file" id="handId" name="uploadify" />上传文件
+										    <!--<input type="file" data-id="handId" accept="image/png,image/gif,image/jpg,image/jpeg" onchange="angular.element(this).scope().fileUpload(this.files,this)">上传文件-->
 										</a>
 									</div>
 								</div>
@@ -248,21 +262,17 @@
 					<tr>
 						<td><i>*</i>常用地址:</td>
 						<td>
-							<select ng-model="province">
-								<option value="" disabled selected>省</option>
-								<option value="31">河北省</option>
-								<option value="41">浙江省</option>
+							<select ng-model="province" ng-change="getCity()">
+							    <option value="" disabled>省</option>
+							    <option ng-selected="province == proItem.id" ng-repeat="proItem in proList track by $index" title="{{proItem.title}}" value="{{proItem.id}}">{{proItem.title}}</option>
 							</select>
-							<select ng-model="city">
-								<option value="" disabled selected>市</option>
-								<option value="3101">唐山市</option>
-								<option value="4101">杭州市</option>
+							<select ng-model="city" ng-change="getCountry()">
+							    <option value="" disabled>市</option>
+							    <option ng-selected="city == cityItem.id" ng-repeat="cityItem in cityList track by $index" title="{{cityItem.title}}" value="{{cityItem.id}}">{{cityItem.title}}</option>
 							</select>
 							<select ng-model="county">
-								<option value="" disabled selected>区/县</option>
-								<option value="310101">乐亭县</option>
-								<option value="410101">萧山区</option>
-								<option value="410102">江干区</option>
+							    <option value="" disabled>区/县</option>
+							    <option ng-selected="county == counItem.id" ng-repeat="counItem in counList track by $index" title="{{counItem.title}}" value="{{counItem.id}}">{{counItem.title}}</option>
 							</select>
 						</td>
 					</tr>

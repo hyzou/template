@@ -1,3 +1,19 @@
+<style type="text/css">
+	#logoFile{
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 9;
+		opacity: 0;
+		border-radius: 50%;
+		-moz-border-radius: 50%;
+		-webkit-border-radius: 50%;
+	}
+	#logoFile-button{
+		width: 100%;
+		height: 100%;
+	}
+</style>
 <div class="main-container-white">
 	<div class="pTitle">
 		个人信息
@@ -5,7 +21,8 @@
 	<div class="pHeadlogo">
 		<div class="pHeadlogoPic posiRel">
 			<img id="logoPic" src="../template/static/css/img/personInfoLogo.png" width="100%" height="100%">
-			<input type="file" class="logoFile cursor" onchange="angular.element(this).scope().fileUpload(this.files)" multiple id="inputs" />
+			<input type="file" class="logoFile cursor" id="logoFile" name="uploadify" />上传文件
+			<!--<input type="file" class="logoFile cursor" onchange="angular.element(this).scope().fileUpload(this.files)" multiple id="inputs" />-->
 		</div>
 		<div class="pHeadlogoText">
 			修改头像
@@ -24,21 +41,17 @@
 			<tr>
 				<td><i>*</i>常用地址:</td>
 				<td>
-					<select ng-model="province">
-						<option value="" disabled selected>省</option>
-						<option value="31">河北省</option>
-						<option value="41">浙江省</option>
+					<select ng-model="province" ng-change="getCity()">
+					    <option value="" disabled>省</option>
+					    <option ng-selected="province == proItem.id" ng-repeat="proItem in proList track by $index" title="{{proItem.title}}" value="{{proItem.id}}">{{proItem.title}}</option>
 					</select>
-					<select ng-model="city">
-						<option value="" disabled selected>市</option>
-						<option value="3101">唐山市</option>
-						<option value="4101">杭州市</option>
+					<select ng-model="city" ng-change="getCountry()">
+					    <option value="" disabled>市</option>
+					    <option ng-selected="city == cityItem.id" ng-repeat="cityItem in cityList track by $index" title="{{cityItem.title}}" value="{{cityItem.id}}">{{cityItem.title}}</option>
 					</select>
 					<select ng-model="county">
-						<option value="" disabled selected>区/县</option>
-						<option value="310101">乐亭县</option>
-						<option value="410101">萧山区</option>
-						<option value="410102">江干区</option>
+					    <option value="" disabled>区/县</option>
+					    <option ng-selected="county == counItem.id" ng-repeat="counItem in counList track by $index" title="{{counItem.title}}" value="{{counItem.id}}">{{counItem.title}}</option>
 					</select>
 				</td>
 			</tr>
