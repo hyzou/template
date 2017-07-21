@@ -9,7 +9,8 @@ kry.constant('config', {
 			id: 'KRYID',
 			token: 'KRYTOKEN'
 		},
-		host: 'http://192.168.2.119:8280/',//接口路径
+		host: 'http://192.168.2.119:8280/',//wyr
+		// host: 'http://192.168.2.140:8380/',//zl
 		// host: '../../',//接口路径
 		login: './login.htm',
 		noop: function() {}
@@ -615,7 +616,6 @@ kry.controller('global', [
 		}
 		checkUrl();
 		function checkUrl(key){
-			debugger
 			if($location.$$url != '/' && $location.$$url.substring(1,5) == 'pers'){
 				$scope.backToIdx = true;
 				$scope.navRoute = navs["person"];
@@ -648,14 +648,13 @@ kry.controller('global', [
 				navcount['method'] = 'com.shuige.sealsign.filesCount';
 			srv.headlogo(navcount,function(xhr){
 				if(xhr.code == '0'){
-					debugger
 					$scope.alreadyCount = xhr.data.alreadyCount;
 					$scope.forMeCount = xhr.data.forMeCount;
 					$scope.cgCount = xhr.data.cgCount;
 					$scope.toOthersCount = xhr.data.toOthersCount;
 					$scope.cloudyCount = xhr.data.cloudyCount;
 					$scope.refuseCount = xhr.data.refuseCount;
-					setTimeout(getNavTip(),6000);
+					//setTimeout(getNavTip(),6000);
 				}else{
 					base.alert(xhr.msg)
 				}
@@ -2327,7 +2326,7 @@ kry.controller('ctrl.person.safe', [
 			title: '安全设置',
 			menuKey: 'personSafe'
 		});
-		$scope.seted = true;
+		$scope.seted = false;
 		$scope.password = false;
 		$scope.signPsw = false;
 		$scope.signPswCh = false;
@@ -2338,7 +2337,7 @@ kry.controller('ctrl.person.safe', [
 				loaddata['strToken'] = $root.uid;
 			srv.headlogo(loaddata,function(xhr){
 				if(xhr.code == '0'){
-					var signstatus = xhr.data.signstatus;
+					var signstatus = xhr.data.signStatus;
 					if(signstatus == '0'){
 						$scope.seted = false;
 					}else{
@@ -2370,11 +2369,12 @@ kry.controller('ctrl.person.safe', [
 		$scope.setPsw = function(){
 			var pswdata  = JSON.parse(JSON.stringify($root.params));
 				pswdata['method'] = 'com.shuige.user.signmodifyPass';
+				pswdata['v'] = '1.0.0';
 			if(!$scope.prePsw){
 				base.alert("请填写原密码")
 				return;
 			} else {
-				pswdata['oldPassword'] = $scope.prePsw;
+				pswdata['oldpassword'] = $scope.prePsw;
 			}
 			if(!$scope.newPsw){
 				base.alert("请填写新密码")
@@ -2390,11 +2390,14 @@ kry.controller('ctrl.person.safe', [
 					base.alert("确认密码与新密码不一致，请重新填写")
 					$scope.confirmPsw = '';
 					return;
+				}else{
+					pswdata['repassword'] = $scope.confirmPsw;
 				}
 			}
 			srv.headlogo(pswdata,function(xhr){
 				if(xhr.code == '0'){
 					$root.dosuccess();
+					$scope.password = false;
 				}else{
 					$root.dofail();
 				}
@@ -2413,7 +2416,7 @@ kry.controller('ctrl.person.safe', [
 				base.alert("请确认签署密码")
 				return;
 			} else {
-				if($scope.confirmSignPsw != $scope.signPsw){
+				if($scope.confirmSignPsw != $scope.setsignPsw){
 					base.alert("确认密码与签署密码不一致，请重新填写")
 					$scope.confirmSignPsw = '';
 					return;
@@ -2422,6 +2425,8 @@ kry.controller('ctrl.person.safe', [
 			srv.headlogo(signdata,function(xhr){
 				if(xhr.code == '0'){
 					$root.dosuccess();
+					$scope.signPsw = false;
+					$scope.seted = true;
 				}else{
 					$root.dofail();
 				}
@@ -2434,7 +2439,7 @@ kry.controller('ctrl.person.safe', [
 				base.alert("请填写原密码")
 				return;
 			} else {
-				resetSigndata['oldPassword'] = $scope.presignPsw;
+				resetSigndata['oldpassword'] = $scope.presignPsw;
 			}
 			if(!$scope.newsignPsw){
 				base.alert("请填写新密码")
@@ -2457,6 +2462,7 @@ kry.controller('ctrl.person.safe', [
 			srv.headlogo(resetSigndata,function(xhr){
 				if(xhr.code == '0'){
 					$root.dosuccess();
+					$scope.signPswCh = false;
 				}else{
 					$root.dofail();
 				}
@@ -2548,6 +2554,7 @@ kry.controller('ctrl.person.sign', [
 			srv.headlogo(codedata,function(xhr){
 				if(xhr.code == '0'){
 	    			$scope.qrcode = xhr.data;
+	    			console.log($scope.qrcode);
 	    			$("#qrcode").qrcode({
 						render: "table",
 						width: 120,
