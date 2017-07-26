@@ -5,8 +5,8 @@
 	</div>
 	<div class="cloudListCon">
 		<div class="cloudFileSearch mrb20">
-			<input class="floatLeft" type="text" placeholder="搜索..." />
-			<span class="floatRight">查看</span>
+			<input class="floatLeft" type="text" ng-model="searchItem" placeholder="搜索..." />
+			<span class="floatRight" ng-click="searchfiles(searchItem,1)">查看</span>
 		</div>
 		<div class="bgColorgray cloudListDetailtitle">
 			<ul>
@@ -18,15 +18,10 @@
 		</div>
 		<div class="cloudListDetail">
 			<table>
-				<tr>
-					<td width="75px">1</td>
-					<td width="229px" title="员工合同员工合同员工合同员工合同员工合同员工合同"><div>员工合同</div></td>
-					<td width="75px"><a class="colorDanger text_underline" href="#/fileSign" ng-click="closeThisDialog(1)">签章</a></td>
-				</tr>
-				<tr>
-					<td width="75px">2</td>
-					<td width="229px" title="员工合同员工合同员工合同员工合同员工合同员工合同" href="#/personInfo"><div>员工合同</div></td>
-					<td width="75px"><a class="colorDanger text_underline">签章</a></td>
+				<tr ng-repeat="modelItem in modellist track by $index">
+					<td width="75px">{{$index}}</td>
+					<td width="229px" title="{{modelItem.fileName}}"><div>{{modelItem.fileName}}</div></td>
+					<td width="75px"><a class="colorDanger text_underline" ng-click="itemcli(modelItem.id)">签章</a></td>
 				</tr>
 			</table>
 		</div>

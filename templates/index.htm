@@ -1,6 +1,24 @@
+<style type="text/css">
+	#localfileup{
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 9;
+		opacity: 0;
+		width: 100% !important;
+		height: 100% !important;
+		cursor: pointer;
+	}
+	#localfileup object, #localfileup-button{
+		display: block;
+		width: 100% !important;
+		height: 100% !important;
+		cursor: pointer;
+	}
+</style>
 <div class="main-container">
 	<ul class="idxItemList">
-		<li class="floatLeft" ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)">
+		<li class="floatLeft" ng-repeat="item in titleList track by $index" ng-click="titleSel($index,item)" end-repeat>
 			<div class="itemCon pdt35 posiRel cursor" ng-class="{'itemConActive': item == selectd }">
 				<div class="idxItem">
 					<div class="idxItemLogo boxCircle posiRel floatLeft" ng-class="{'bgColorsuc': $index == '0','bgColorblue': $index == '1','bgColorwarn': $index == '2' }">
@@ -15,7 +33,9 @@
 					</div>
 					<div class="clearfix"></div>
 				</div>
-				<input class="localfile cursor" onchange="angular.element(this).scope().fileUpload(this.files)" ng-if="$index == '0'" type="file" ng-model="fileName" />
+				<!--<input type="file" id="logoFile" name="uploadify" ng-if="$index == '0'" />-->
+				<input class="localfile cursor" id="localfileup" name="uploadify" ng-if="$index == '0'" type="file" />
+				<!--<input id="localfileup" name="uploadify" type="file" ng-if="$index == '0'" />-->
 			</div>
 		</li>
 		<div class="clearfix"></div>
@@ -24,7 +44,7 @@
 		<li class="floatLeft" ng-repeat="role in mainNavs track by $index" ng-if="$index !='0'">
 			<div class="itemCon posiRel cursor" ng-click="operatePage(role.name)" style="overflow: hidden;">
 				<div class="pTitle">
-					{{role.name}}
+					{{role.name}}{{role.count}}
 				</div>
 				<div class="itemcontent">
 					<span class="idxItemLogo boxCircle bgColorblack displayBl floatLeft">

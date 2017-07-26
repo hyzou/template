@@ -27,13 +27,13 @@
 					<td><from-date></from-date></td>
 					<td>结束时间:</td>
 					<td><end-date></end-date></td>
-					<td>类型:</td>
+					<td><!--类型:--></td>
 					<td>
-						<select ng-model="docType">
+						<!--<select ng-model="docType">
 							<option value="">请选择</option>
 							<option value="1">类型一</option>
 							<option value="2">类型二</option>
-						</select>
+						</select>-->
 					</td>
 				</tr>
 				<tr>
@@ -54,37 +54,26 @@
 						<th><div style="width: 300px;">创建时间</div></th>
 						<th><div style="width: 300px;">类型</div></th>
 					</tr>
-					<tr>
-						<td>Data</td>
-						<td>Data</td>
-						<td>Data</td>
-						<td>Data</td>
-						<td>Data</td>
+					<tr ng-if="docList" ng-repeat="docItem in docList track by $index">
+						<td>{{docItem.fromUserName}}</td>
+						<td>{{docItem.toUserName}}</td>
+						<td>{{docItem.fileName}}</td>
+						<td>{{docItem.sdoAddTime}}</td>
+						<td><span ng-if="docItem.sdoState == '9'">草稿</span><span ng-if="docItem.sdoState != '9'">签章</span></td>
 					</tr>
-					<tr>
-						<td>Data</td>
-						<td>Data</td>
-						<td>Data</td>
-						<td>Data</td>
-						<td>Data</td>
+					<tr ng-if="!docList">
+						<td colspan="5">已查询到的数据为0条</td>
 					</tr>
 				</table>
 			</div>
 			<div class="resultBarRight floatLeft mrb40">
 				<table>
 					<tr><th>操作</th></tr>
-					<tr>
+					<tr ng-repeat="docitem in docList track by $index">
 						<td>
-							<a class="colorBlue text_underline">下载</a>
-							<a class="mrl15 colorBlue text_underline">删除</a>
-							<a class="mrl15 colorBlue text_underline" ng-click="documentRank()">文档流程</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<a class="colorBlue text_underline">下载</a>
-							<a class="mrl15 colorBlue text_underline">删除</a>
-							<a class="mrl15 colorBlue text_underline" ng-click="documentRank()">文档流程</a>
+							<a class="colorBlue text_underline" ng-click="remindsign(docitem.id)">催签</a>
+							<a class="mrl15 colorBlue text_underline" ng-click="goback(docitem.id)">退回</a>
+							<a class="mrl15 colorBlue text_underline" ng-click="goback(docitem.id)">文档流程</a>
 						</td>
 					</tr>
 				</table>

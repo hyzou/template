@@ -19,35 +19,23 @@
 		</div>
 		<div class="signPic">
 			<div class="signPicShow">
-				<div class="signPics mrb20 posiRel" id="pic_0">
-					<div class="sign2" id="sign_0" style="position: absolute;height: 100%;width: 120px;top: 0;right: 0;"></div>
-					<img src="../template/static/js/third/viewerJs/img/tibet-1.jpg" width="100%" height="100%">
-				</div>
-				<div class="signPics mrb20 posiRel" id="pic_1">
-					<div class="sign2" id="sign_1" style="position: absolute;height: 100%;width: 120px;top: 0;right: 0;"></div>
-					<img src="../template/static/js/third/viewerJs/img/tibet-2.jpg" width="100%" height="100%">
-				</div>
-				<div class="signPics mrb20 posiRel" id="pic_2">
-					<div class="sign2" id="sign_2" style="position: absolute;height: 100%;width: 120px;top: 0;right: 0;"></div>
-					<img src="../template/static/js/third/viewerJs/img/tibet-3.jpg" width="100%" height="100%">
+				<div class="signPics mrb20 posiRel" ng-repeat="page in signDocPages track by $index" id="pic_{{$index}}">
+					<div id="signp_{{$index}}" style="position: absolute;left: 50%;margin-left: -396px;top: 50px;width: 793px;height: 1121px;">
+						<div class="sign2" id="sign_{{$index}}" style="position: absolute;height: 100%;width: 120px;top: 0;right: 0;"></div>
+						<img err-src ng-src="{{globalImgPath}}{{page.docPath}}" width="793" height="1121">
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="cloudNav posiRel">
 			<div class="cloudSearch" style="padding-right: 20px;">
 				<div class="signNoticeTypeTit">文件</div>
-				<div class="signNoticeTypeText">文件名称文件名称<span class="floatRight">共20页</span></div>
+				<div class="signNoticeTypeText">{{signDocdetail.fileName}}<span class="floatRight">共{{pageTotal}}页</span></div>
 			</div>
 			<div class="signNoticeHeadLogo">
 				<ul>
-					<li class="mrb10">
-						<a ng-click="scrollFile(0)"><img src="../template/static/js/third/viewerJs/img/thumbnails/tibet-1.jpg" alt="图片1" width="100%" height="100%"></a>
-					</li>
-					<li class="mrb10">
-						<a ng-click="scrollFile(1)"><img src="../template/static/js/third/viewerJs/img/thumbnails/tibet-2.jpg" alt="图片1" width="100%" height="100%"></a>
-					</li>
-					<li class="mrb10">
-						<a ng-click="scrollFile(2)"><img src="../template/static/js/third/viewerJs/img/thumbnails/tibet-3.jpg" alt="图片1" width="100%" height="100%"></a>
+					<li class="mrb10" ng-repeat="thunpic in signDocPages track by $index" style="padding: 5px;">
+						<a ng-click="scrollFile($index)"><img err-src ng-src="{{globalImgPath}}{{thunpic.docThumbPath}}" alt="图片{{$index}}" width="100%" height="100%"></a>
 					</li>
 				</ul>
 			</div>
@@ -55,7 +43,7 @@
 	</div>
 	<div class="bottom-btn-group text_align_center">
 		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20 floatLeft" href="#/fileSign">上一步</a>
-		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20" ng-click="saveImg()">保存</a>
-		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20 floatRight" href="#/signature">发送</a>
+		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20" ng-click="saveImg(9)">保存</a>
+		<a class="btn-middle-long bgColorgray colorWhite hoverBlue font20 floatRight" ng-click="saveImg(1)">发送</a>
 	</div>
 </div>

@@ -1161,7 +1161,7 @@ input[type=radio]:checked:after  {
 		}
 		.personalSignH5{
 			width: 365px;
-			height: 135px;
+			height: 160px;
 			display: flex;
 			display: -ms-flexbox;
 			display: -webkit-flex;
@@ -1170,8 +1170,8 @@ input[type=radio]:checked:after  {
 			justify-content: space-between;
 		}
 		.qrCode{
-			width: 135px;
-			height: 135px;
+			width: 160px;
+			height: 160px;
 			border: 1px dashed #c6c6c6;
 			padding: 5px;
 			border-radius: 3px;
@@ -1651,7 +1651,7 @@ input[type=radio]:checked:after  {
 		}
 		.signPics{
 			width: 100%;
-			min-height: 300px;
+			height: 1221px;
 			-webkit-box-shadow: 0 0 15px 3px rgba(0,0,0,.1);  
 			-moz-box-shadow: 0 0 15px 3px rgba(0,0,0,.1);  
 			box-shadow: 0 0 15px 3px rgba(0,0,0,.1);

@@ -5,61 +5,23 @@
 	<div class="pContent">
 		<div class="signPicCon">
 			<ul>
-				<li class="floatLeft">
-					<p>华文行楷框</p>
+				<li class="floatLeft" ng-repeat="sign in signlist track by $index">
+					<p>{{sign.signName}}</p>
 					<div class="signFont">
-						<img src="../template/static/css/img/sign.png"/>
+						<img err-src ng-src="{{globalImgPath}}{{sign.filePath}}" height="100%"/>
 					</div>
-					<div class="signStatus cursor" ng-if="fontChoose" ng-click="fontChose()">
+					<div class="signStatus" ng-if="sign.isDefault == '1'">
 						<img src="../template/static/css/img/checked.png" class="floatLeft">
 						<span class="colorSuc floatLeft mrl10">默认</span>
 					</div>
-					<div class="signStatus cursor" ng-if="!fontChoose" ng-click="fontChose()">
+					<div class="signStatus cursor" ng-if="sign.isDefault == '0'" ng-click="fontChose(sign.id,1,sign.color)">
 						<img src="../template/static/css/img/inhert.png" class="floatLeft">
 						<span class="colorGray floatLeft mrl10">设为默认</span>
 					</div>
 					<div class="signColor">
-						<a class="btn-mini">黑色</a>
-						<a class="btn-mini bgColordanger borderdanger colorWhite">红色</a>
-						<a class="btn-mini colorDarkblue">蓝色</a>
-					</div>
-				</li>
-				<li class="floatLeft">
-					<p>华文行楷框</p>
-					<div class="signFont">
-						<img src="../template/static/css/img/sign.png"/>
-					</div>
-					<div class="signStatus cursor" ng-if="fontChoose" ng-click="fontChose()">
-						<img src="../template/static/css/img/checked.png" class="floatLeft">
-						<span class="colorSuc floatLeft mrl10">默认</span>
-					</div>
-					<div class="signStatus cursor" ng-if="!fontChoose" ng-click="fontChose()">
-						<img src="../template/static/css/img/inhert.png" class="floatLeft">
-						<span class="colorGray floatLeft mrl10">设为默认</span>
-					</div>
-					<div class="signColor">
-						<a class="btn-mini">黑色</a>
-						<a class="btn-mini bgColordanger borderdanger colorWhite">红色</a>
-						<a class="btn-mini colorDarkblue">蓝色</a>
-					</div>
-				</li>
-				<li class="floatLeft">
-					<p>华文行楷框</p>
-					<div class="signFont">
-						<img src="../template/static/css/img/sign.png"/>
-					</div>
-					<div class="signStatus cursor" ng-if="fontChoose" ng-click="fontChose()">
-						<img src="../template/static/css/img/checked.png" class="floatLeft">
-						<span class="colorSuc floatLeft mrl10">默认</span>
-					</div>
-					<div class="signStatus cursor" ng-if="!fontChoose" ng-click="fontChose()">
-						<img src="../template/static/css/img/inhert.png" class="floatLeft">
-						<span class="colorGray floatLeft mrl10">设为默认</span>
-					</div>
-					<div class="signColor">
-						<a class="btn-mini">黑色</a>
-						<a class="btn-mini bgColordanger borderdanger colorWhite">红色</a>
-						<a class="btn-mini colorDarkblue">蓝色</a>
+						<a class="btn-mini" ng-click="fontChose(sign.id,sign.isDefault,1)">黑色</a>
+						<a class="btn-mini bgColordanger borderdanger colorWhite" ng-click="fontChose(sign.id,sign.isDefault,2)">红色</a>
+						<a class="btn-mini colorDarkblue" ng-click="fontChose(sign.id,sign.isDefault,3)">蓝色</a>
 					</div>
 				</li>
 			</ul>

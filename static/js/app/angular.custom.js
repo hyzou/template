@@ -9,8 +9,8 @@ kry.constant('config', {
 			id: 'KRYID',
 			token: 'KRYTOKEN'
 		},
-		host: 'http://192.168.2.119:8280/',//wyr
-		// host: 'http://192.168.2.140:8380/',//zl
+		// host: 'http://192.168.2.119:8280/',//wyr
+		host: 'http://192.168.2.140:8380/',//zl
 		// host: '../../',//接口路径
 		login: './login.htm',
 		noop: function() {}
@@ -125,7 +125,17 @@ kry.directive('endRepeat', ['$timeout', function($timeout) {
 		}
 	}
 }])
-
+kry.directive('errSrc', function() {
+    return {
+	    link: function(scope, element, attrs) {
+	        element.bind('error', function() {
+//	        	if (attrs.src != attrs.errSrc) {
+	        		attrs.$set('src', attrs.src);
+//	        	}
+	        });
+	    }
+    }
+});
 kry.directive('pageNav', function() {
 	return {
 		restrict: 'E',
@@ -217,6 +227,7 @@ kry.factory('base', [
 			idc: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
 			pwd: /^(?=.*?[a-zA-Z])(?=.*?[0-9])[a-zA-Z0-9]{6,20}$/,
 			code: /^[0-9]{4}$/,
+			mail: /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/,
 			number: /^\d{1,}$/,
 			bankcard: {
 				test: function(v) {
@@ -235,6 +246,9 @@ kry.factory('base', [
 			imgType: ['idcfront', 'idcback', 'sign', 'auth'],
 			isPhone: function(phone) {
 				return rules.phone.test(phone);
+			},
+			isMail: function(mail) {
+				return rules.mail.test(mail);
 			},
 			isPwd: function(pwd) {
 				return rules.pwd.test(pwd);
@@ -495,6 +509,8 @@ kry.controller('global', [
 		*$root.timestamp = getNowFormatDate();*/
 		$root.phNotice = null;
 		$root.InterValObj = null;
+		// $root.uploadpath = 'http://192.168.2.119:8280/file/upload',//wyr
+		$root.uploadpath = 'http://192.168.2.140:8380/file/upload',//zl
 		$scope.backToIdx = false;
 		$cookies.put(config.cookie.id, localStorage.getItem('cookie'));
 		// localStorage.removeItem('cookie');
@@ -505,6 +521,7 @@ kry.controller('global', [
 		$root.params['secret'] = '67136c0f7383b71a9d62a57732a104f5';
 		$root.params['token'] = $root.uid;
 		$root.params['timestamp'] = getNowFormatDate();
+
 		//$root.uid = localStorage.getItem('cookie');
 		if (!$root.uid) {
 			var diag = base.alert('你未登录，或凭据已过期，请先登录');
@@ -525,7 +542,6 @@ kry.controller('global', [
 		    }
 			$scope.navRoute = navs["main"];
 			// getNavTip();
-			$scope.globalNavs = $scope.mainNavs;
 			/*srv.getUserList(data,function(xhr) {
 				if (xhr.code == '0') {
 					$root.user = xhr.data;
@@ -611,8 +627,8 @@ kry.controller('global', [
 		$scope.backtoIndex = function(key) {
 			$scope.backToIdx = false;
 			$scope.navRoute = navs["main"];
-			$scope.globalNavs = $scope.mainNavs;
 			getNavTip();
+			$scope.globalNavs = $scope.mainNavs;
 		}
 		checkUrl();
 		function checkUrl(key){
@@ -642,12 +658,13 @@ kry.controller('global', [
 					base.alert('退出失败，请刷新后重试');
 			})*/
 		}
-
+		getNavTip();
 		function getNavTip() {
 			var navcount  = JSON.parse(JSON.stringify($root.params));
 				navcount['method'] = 'com.shuige.sealsign.filesCount';
 			srv.headlogo(navcount,function(xhr){
 				if(xhr.code == '0'){
+					debugger
 					$scope.alreadyCount = xhr.data.alreadyCount;
 					$scope.forMeCount = xhr.data.forMeCount;
 					$scope.cgCount = xhr.data.cgCount;
@@ -655,47 +672,48 @@ kry.controller('global', [
 					$scope.cloudyCount = xhr.data.cloudyCount;
 					$scope.refuseCount = xhr.data.refuseCount;
 					//setTimeout(getNavTip(),6000);
+					$scope.mainNavs = [
+				        {
+				            "key":"index",
+				            "name":"任务概况",
+				            "count":0
+				        },
+				        {
+				            "key":"signMe",
+				            "name":"待我签署",
+				            "count":$scope.forMeCount
+				        },
+				        {
+				            "key":"signOther",
+				            "name":"待他人签署",
+				            "count":$scope.toOthersCount
+				        },
+				        {
+				            "key":"signFinish",
+				            "name":"已完成签署",
+				            "count":$scope.alreadyCount
+				        },
+				        {
+				            "key":"docBack",
+				            "name":"退回的文件",
+				            "count":$scope.refuseCount
+				        },
+				        {
+				            "key":"drafts",
+				            "name":"草稿箱",
+				            "count":$scope.cgCount
+				        },
+				        {
+				            "key":"cloudFile",
+				            "name":"云文件",
+				            "count":$scope.cloudyCount
+				        }
+				    ];
+				    $scope.globalNavs = $scope.mainNavs;
 				}else{
 					base.alert(xhr.msg)
 				}
 			})
-			$scope.mainNavs = [
-		        {
-		            "key":"index",
-		            "name":"首页",
-		            "count":0
-		        },
-		        {
-		            "key":"signMe",
-		            "name":"待我签署",
-		            "count":$scope.forMeCount
-		        },
-		        {
-		            "key":"signOther",
-		            "name":"待他人签署",
-		            "count":$scope.toOthersCount
-		        },
-		        {
-		            "key":"signFinish",
-		            "name":"已完成签署",
-		            "count":$scope.alreadyCount
-		        },
-		        {
-		            "key":"docBack",
-		            "name":"退回的文件",
-		            "count":$scope.refuseCount
-		        },
-		        {
-		            "key":"drafts",
-		            "name":"草稿箱",
-		            "count":$scope.cgCount
-		        },
-		        {
-		            "key":"cloudFile",
-		            "name":"云文件",
-		            "count":$scope.cloudyCount
-		        }
-		    ];
 			$scope.personNavs = [
 		        {
 		            "key":"personInfo",
@@ -831,13 +849,33 @@ kry.controller('ctrl.index', [
 		base
 	) {
 		$root.setSite({
-			title: '首页',
+			title: '任务概况',
 			menuKey: 'index'
 		})
 		$scope.titleList = [
 			"本地文件签署","云文件签署","合同模板签署"
 		];
 		// $scope.selectd = '本地文件签署';
+		$scope.itemcli = function(obj) {
+			var cloudlistjData  = JSON.parse(JSON.stringify($root.params));
+			cloudlistjData['method'] = 'com.shuige.sealsign.signToPageFileByCloud';
+			cloudlistjData['cloudFilesId'] = obj.value;
+			srv.headlogo(cloudlistjData,function(xhr){
+				if(xhr.code == '0'){
+					if(xhr.data.signDocumentPages){
+						localStorage.setItem('localfilepath','localfile');
+						localStorage.setItem('filesdetail',JSON.stringify(xhr.data.cloudFiles));
+						localStorage.setItem('localfilemic',JSON.stringify(xhr.data.signDocumentPages));
+						localStorage.setItem('localfileperson',JSON.stringify(xhr.data.userExtVo));
+						localStorage.setItem('checktype','0');
+					}
+					$location.path('/fileSign');
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
+		}
 		$scope.titleSel = function(idx,$el){
 			$scope.selectd = $el;
 			if($el == '云文件签署'){
@@ -847,9 +885,6 @@ kry.controller('ctrl.index', [
 					controller:'ctrl.dialog.cloudfilelist',
 					className: 'ngdialog-theme-input'
 				});
-				diag.closePromise.then(function() {
-					console.log(123)
-				})
 			} else if ($el == '合同模板签署'){
 				var diag = dialog.open({
 					templateUrl: 'templates/dialog/dialog.modelfilelist.htm',
@@ -857,16 +892,73 @@ kry.controller('ctrl.index', [
 					controller:'ctrl.dialog.modelfilelist',
 					className: 'ngdialog-theme-input'
 				});
-				diag.closePromise.then(function() {
-					console.log(123)
-				})
 			} 
 		};
-		$scope.fileUpload = function(file){
-			console.log(file);
-			if(file){
-				$location.path('/fileSign');
+		$scope.searchfiles = function(item,idx){
+			if(!item){
+				base.alert("请输入要搜索的内容")
+			}else{
+				var namesearchData  = JSON.parse(JSON.stringify($root.params));
+				namesearchData['method'] = 'com.shuige.sealsign.signToPageFileByCloud';
+				namesearchData['fileName'] = item;
+				namesearchData['fileType'] = idx;
+				srv.headlogo(namesearchData,function(xhr){
+					if(xhr.code == '0'){
+						if(idx == '0'){
+							$scope.cloudlist = xhr.data;
+						}else{
+							$scope.modellist = xhr.data;
+						}
+					}else{
+						base.alert(xhr.msg)
+						$root.dofail();
+					}
+				})
 			}
+		}
+		$scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+        	uploadedfile();
+		}); 
+		function uploadedfile(){
+			$("#localfileup").uploadify({
+				'auto': true,
+		        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
+		        'uploader': $root.uploadpath,//后台处理的请求
+		        'queueID': 'fileQueue',//与下面的id对应
+		        'fileTypeDesc': '图片格式',
+		        'fileTypeExts': '*.docx', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
+		        'method': 'POST',
+		        'multi': true,
+		        'buttonText': '上传文件',
+		        'fileObjName': 'files',//服务端File对应的名称。
+		        'onUploadSuccess': function (file, data, response) {
+		            var dataObj = JSON.parse(data);
+		            $scope.logoimg = dataObj.data[0].path;
+		            var imgUrl = $root.globalImgPath + dataObj.data[0].path;
+		            $("#logoPic").attr('src', imgUrl);
+					var logoPicData  = JSON.parse(JSON.stringify($root.params));
+					logoPicData['method'] = 'com.shuige.sealsign.signToPageFileByFileName';
+					logoPicData['filepath'] = $scope.logoimg;
+					srv.headlogo(logoPicData,function(xhr){
+						if(xhr.code == '0'){
+							if(xhr.data.signDocumentPages){
+								localStorage.setItem('localfilepath','localfile');
+								localStorage.setItem('filesdetail',JSON.stringify(xhr.data.cloudFiles));
+								localStorage.setItem('localfilemic',JSON.stringify(xhr.data.signDocumentPages));
+								localStorage.setItem('localfileperson',JSON.stringify(xhr.data.userExtVo));
+								localStorage.setItem('checktype','0');
+							}
+							$location.path('/fileSign');
+						}else{
+							base.alert(xhr.msg)
+							$root.dofail();
+						}
+					})
+		        },
+		        'onUploadError': function (file, errorCode, errorMsg, errorString) {
+		            base.alert('当前文件：' + file.name + '上传失败，失败原因：' + errorString);
+		        }
+	        });
 		}
 		$scope.operatePage = function(name){
 			switch (name){
@@ -920,36 +1012,93 @@ kry.controller('ctrl.main.signMe', [
 			if(!$scope.documentTit){
 				base.alert('请输入文档标题再筛选')
 			}else{
-				base.alert($scope.documentTit)
+				var titleserdata = JSON.parse(JSON.stringify($root.params));
+					titleserdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+					titleserdata['fileName'] = $scope.documentTit;
+					titleserdata['sdoState'] = '1';
+					titleserdata['rwtype'] = '2';
+				srv.headlogo(titleserdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
 		}
 		$scope.fiterSearch = function(){
 			$scope.fromDate = $(".fromdata").val();
 			$scope.endDate = $(".enddata").val();
-			var data = {};
+			var filterdata = JSON.parse(JSON.stringify($root.params));
+				filterdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+				filterdata['sdoState'] = '1';
+				filterdata['rwtype'] = '2';
 			if(base.isDefined($scope.documentName)){
-				data['documentName'] = $scope.documentName;
+				filterdata['signName'] = $scope.documentName;
 			}
 			if(base.isDefined($scope.provider)){
-				data['provider'] = $scope.provider;
+				filterdata['fromUserId'] = $scope.provider;
 			}
 			if(base.isDefined($scope.receiver)){
-				data['receiver'] = $scope.receiver;
+				filterdata['toUserId'] = $scope.receiver;
 			}
 			if(base.isDefined($scope.fromDate)){
-				data['fromDate'] = $scope.fromDate;
+				filterdata['timeBefore'] = $scope.fromDate;
 			}
 			if(base.isDefined($scope.endDate)){
-				data['endDate'] = $scope.endDate;
+				filterdata['timeBehind'] = $scope.endDate;
 			}
 			if(base.isDefined($scope.docType)){
-				data['docType'] = $scope.docType;
+				filterdata['docType'] = $scope.docType;
 			}
 			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
 				base.alert('请输入筛选条件后再进行筛选')
 			}else{
-				console.log(data);
+				console.log(filterdata);
+				srv.headlogo(filterdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
+		}
+		$scope.gocontinue = function(uid){
+			var gocontData  = JSON.parse(JSON.stringify($root.params));
+			gocontData['method'] = 'com.shuige.sealsign.signToPageFileByChose';
+			gocontData['signCocumentId'] = uid;
+			srv.headlogo(gocontData,function(xhr){
+				if(xhr.code == '0'){
+					debugger
+					if(xhr.data.signDocumentPages){
+						localStorage.setItem('filesdetail',JSON.stringify(xhr.data.cloudFiles));
+						localStorage.setItem('localfilemic',JSON.stringify(xhr.data.signDocumentPages));
+						localStorage.setItem('localfileperson',JSON.stringify(xhr.data.userExtVo));
+						localStorage.setItem('docId',JSON.stringify(xhr.data.signDocuments));
+						localStorage.setItem('prevuser',JSON.stringify(xhr.data.toUserExtVoList));
+						localStorage.setItem('signInfo',JSON.stringify(xhr.data.signFile));
+						localStorage.setItem('checktype','1');
+					}
+					$location.path('/fileSign');
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
+		}
+		$scope.goback = function(uid){
+			var backData  = JSON.parse(JSON.stringify($root.params));
+			backData['method'] = 'com.lifesea.sealsign.refuse';
+			backData['signerId'] = uid;
+			srv.headlogo(backData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.fiterSearch();
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
 		}
 		$scope.filterReset = function(){
 			$scope.documentName = '';
@@ -959,7 +1108,8 @@ kry.controller('ctrl.main.signMe', [
 			$(".enddata").val('');
 			$scope.docType = '';
 		}
-		$scope.documentRank = function(){
+		$scope.documentRank = function(id,index){
+			//$scope.rankstatus = $scope.docList[index].sdoStatus;
 			var diag = dialog.open({
 				templateUrl: 'templates/dialog/dialog.documentRank.htm',
 				scope: $scope,
@@ -997,36 +1147,85 @@ kry.controller('ctrl.main.signOther', [
 			if(!$scope.documentTit){
 				base.alert('请输入文档标题再筛选')
 			}else{
-				base.alert($scope.documentTit)
+				var titleserdata = JSON.parse(JSON.stringify($root.params));
+					titleserdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+					titleserdata['fileName'] = $scope.documentTit;
+					titleserdata['sdoState'] = '1';
+					titleserdata['rwtype'] = '3';
+				srv.headlogo(titleserdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
 		}
 		$scope.fiterSearch = function(){
 			$scope.fromDate = $(".fromdata").val();
 			$scope.endDate = $(".enddata").val();
-			var data = {};
+			var filterdata = JSON.parse(JSON.stringify($root.params));
+				filterdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+				filterdata['sdoState'] = '1';
+				filterdata['rwtype'] = '3';
 			if(base.isDefined($scope.documentName)){
-				data['documentName'] = $scope.documentName;
+				filterdata['signName'] = $scope.documentName;
 			}
 			if(base.isDefined($scope.provider)){
-				data['provider'] = $scope.provider;
+				filterdata['fromUserId'] = $scope.provider;
 			}
 			if(base.isDefined($scope.receiver)){
-				data['receiver'] = $scope.receiver;
+				filterdata['toUserId'] = $scope.receiver;
 			}
 			if(base.isDefined($scope.fromDate)){
-				data['fromDate'] = $scope.fromDate;
+				filterdata['timeBefore'] = $scope.fromDate;
 			}
 			if(base.isDefined($scope.endDate)){
-				data['endDate'] = $scope.endDate;
+				filterdata['timeBehind'] = $scope.endDate;
 			}
 			if(base.isDefined($scope.docType)){
-				data['docType'] = $scope.docType;
+				filterdata['docType'] = $scope.docType;
 			}
 			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
 				base.alert('请输入筛选条件后再进行筛选')
 			}else{
-				console.log(data);
+				console.log(filterdata);
+				srv.headlogo(filterdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
+		}
+		$scope.remindsign = function(uid){
+			var gocontData  = JSON.parse(JSON.stringify($root.params));
+			gocontData['method'] = 'com.lifesea.sealsign.reminderSign';
+			gocontData['signCocumentId'] = uid;
+			srv.headlogo(gocontData,function(xhr){
+				if(xhr.code == '0'){
+					if(xhr.data.signDocumentPages){
+						$root.dosuccess();
+					}
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
+		}
+		$scope.goback = function(uid){
+			var backData  = JSON.parse(JSON.stringify($root.params));
+			backData['method'] = 'com.lifesea.sealsign.refuse';
+			backData['signerId'] = uid;
+			srv.headlogo(backData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.fiterSearch();
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
 		}
 		$scope.filterReset = function(){
 			$scope.documentName = '';
@@ -1074,36 +1273,85 @@ kry.controller('ctrl.main.signFinish', [
 			if(!$scope.documentTit){
 				base.alert('请输入文档标题再筛选')
 			}else{
-				base.alert($scope.documentTit)
+				var titleserdata = JSON.parse(JSON.stringify($root.params));
+					titleserdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+					titleserdata['fileName'] = $scope.documentTit;
+					titleserdata['sdoState'] = '2';
+					titleserdata['rwtype'] = '1';
+				srv.headlogo(titleserdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
 		}
 		$scope.fiterSearch = function(){
 			$scope.fromDate = $(".fromdata").val();
 			$scope.endDate = $(".enddata").val();
-			var data = {};
+			var filterdata = JSON.parse(JSON.stringify($root.params));
+				filterdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+				filterdata['sdoState'] = '2';
+				filterdata['rwtype'] = '1';
 			if(base.isDefined($scope.documentName)){
-				data['documentName'] = $scope.documentName;
+				filterdata['signName'] = $scope.documentName;
 			}
 			if(base.isDefined($scope.provider)){
-				data['provider'] = $scope.provider;
+				filterdata['fromUserId'] = $scope.provider;
 			}
 			if(base.isDefined($scope.receiver)){
-				data['receiver'] = $scope.receiver;
+				filterdata['toUserId'] = $scope.receiver;
 			}
 			if(base.isDefined($scope.fromDate)){
-				data['fromDate'] = $scope.fromDate;
+				filterdata['timeBefore'] = $scope.fromDate;
 			}
 			if(base.isDefined($scope.endDate)){
-				data['endDate'] = $scope.endDate;
+				filterdata['timeBehind'] = $scope.endDate;
 			}
 			if(base.isDefined($scope.docType)){
-				data['docType'] = $scope.docType;
+				filterdata['docType'] = $scope.docType;
 			}
 			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
 				base.alert('请输入筛选条件后再进行筛选')
 			}else{
-				console.log(data);
+				console.log(filterdata);
+				srv.headlogo(filterdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
+		}
+		$scope.downloadsign = function(uid){
+			alert("接口为提供")
+			var gocontData  = JSON.parse(JSON.stringify($root.params));
+			gocontData['method'] = 'com.shuige.sealsign.signToPageFileByChose';
+			gocontData['signCocumentId'] = uid;
+			/*srv.headlogo(gocontData,function(xhr){
+				if(xhr.code == '0'){
+					$root.dosuccess();
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})*/
+		}
+		$scope.godel = function(uid){
+			alert(uid);
+			var delData  = JSON.parse(JSON.stringify($root.params));
+			delData['method'] = 'com.shuige.sealsign.delectSignDocumentsAndSigner';
+			delData['signerId'] = uid;
+			srv.headlogo(delData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.fiterSearch();
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
 		}
 		$scope.filterReset = function(){
 			$scope.documentName = '';
@@ -1151,36 +1399,94 @@ kry.controller('ctrl.main.docBack', [
 			if(!$scope.documentTit){
 				base.alert('请输入文档标题再筛选')
 			}else{
-				base.alert($scope.documentTit)
+				var titleserdata = JSON.parse(JSON.stringify($root.params));
+					titleserdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+					titleserdata['fileName'] = $scope.documentTit;
+					titleserdata['sdoState'] = '9';
+					titleserdata['rwtype'] = '5';
+				srv.headlogo(titleserdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
 		}
 		$scope.fiterSearch = function(){
 			$scope.fromDate = $(".fromdata").val();
 			$scope.endDate = $(".enddata").val();
-			var data = {};
+			var filterdata = JSON.parse(JSON.stringify($root.params));
+				filterdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+				filterdata['sdoState'] = '9';
+				filterdata['rwtype'] = '3';
 			if(base.isDefined($scope.documentName)){
-				data['documentName'] = $scope.documentName;
+				filterdata['signName'] = $scope.documentName;
 			}
 			if(base.isDefined($scope.provider)){
-				data['provider'] = $scope.provider;
+				filterdata['fromUserId'] = $scope.provider;
 			}
 			if(base.isDefined($scope.receiver)){
-				data['receiver'] = $scope.receiver;
+				filterdata['toUserId'] = $scope.receiver;
 			}
 			if(base.isDefined($scope.fromDate)){
-				data['fromDate'] = $scope.fromDate;
+				filterdata['timeBefore'] = $scope.fromDate;
 			}
 			if(base.isDefined($scope.endDate)){
-				data['endDate'] = $scope.endDate;
+				filterdata['timeBehind'] = $scope.endDate;
 			}
 			if(base.isDefined($scope.docType)){
-				data['docType'] = $scope.docType;
+				filterdata['docType'] = $scope.docType;
 			}
 			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
 				base.alert('请输入筛选条件后再进行筛选')
 			}else{
-				console.log(data);
+				console.log(filterdata);
+				srv.headlogo(filterdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
+		}
+		$scope.gocontinue = function(uid){
+			var gocontData  = JSON.parse(JSON.stringify($root.params));
+			gocontData['method'] = 'com.shuige.sealsign.signToPageFileByChose';
+			gocontData['signCocumentId'] = uid;
+			srv.headlogo(gocontData,function(xhr){
+				if(xhr.code == '0'){
+					debugger
+					if(xhr.data.signDocumentPages){
+						localStorage.setItem('filesdetail',JSON.stringify(xhr.data.cloudFiles));
+						localStorage.setItem('localfilemic',JSON.stringify(xhr.data.signDocumentPages));
+						localStorage.setItem('localfileperson',JSON.stringify(xhr.data.userExtVo));
+						localStorage.setItem('docId',JSON.stringify(xhr.data.signDocuments));
+						localStorage.setItem('prevuser',JSON.stringify(xhr.data.toUserExtVoList));
+						localStorage.setItem('signInfo',JSON.stringify(xhr.data.signFile));
+						localStorage.setItem('checktype','1');
+					}
+					$location.path('/fileSign');
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
+		}
+		$scope.godel = function(uid){
+			alert(uid);
+			var delData  = JSON.parse(JSON.stringify($root.params));
+			delData['method'] = 'com.shuige.sealsign.delectSignDocumentsAndSigner';
+			delData['signerId'] = uid;
+			srv.headlogo(delData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.fiterSearch();
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
 		}
 		$scope.filterReset = function(){
 			$scope.documentName = '';
@@ -1231,36 +1537,94 @@ kry.controller('ctrl.main.drafts', [
 			if(!$scope.documentTit){
 				base.alert('请输入文档标题再筛选')
 			}else{
-				base.alert($scope.documentTit)
+				var titleserdata = JSON.parse(JSON.stringify($root.params));
+					titleserdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+					titleserdata['fileName'] = $scope.documentTit;
+					titleserdata['sdoState'] = '9';
+					titleserdata['rwtype'] = '3';
+				srv.headlogo(titleserdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
 		}
 		$scope.fiterSearch = function(){
 			$scope.fromDate = $(".fromdata").val();
 			$scope.endDate = $(".enddata").val();
-			var data = {};
+			var filterdata = JSON.parse(JSON.stringify($root.params));
+				filterdata['method'] = 'com.shuige.sealsign.getSignDocumentsVo';
+				filterdata['sdoState'] = '9';
+				filterdata['rwtype'] = '3';
 			if(base.isDefined($scope.documentName)){
-				data['documentName'] = $scope.documentName;
+				filterdata['signName'] = $scope.documentName;
 			}
 			if(base.isDefined($scope.provider)){
-				data['provider'] = $scope.provider;
+				filterdata['fromUserId'] = $scope.provider;
 			}
 			if(base.isDefined($scope.receiver)){
-				data['receiver'] = $scope.receiver;
+				filterdata['toUserId'] = $scope.receiver;
 			}
 			if(base.isDefined($scope.fromDate)){
-				data['fromDate'] = $scope.fromDate;
+				filterdata['timeBefore'] = $scope.fromDate;
 			}
 			if(base.isDefined($scope.endDate)){
-				data['endDate'] = $scope.endDate;
+				filterdata['timeBehind'] = $scope.endDate;
 			}
 			if(base.isDefined($scope.docType)){
-				data['docType'] = $scope.docType;
+				filterdata['docType'] = $scope.docType;
 			}
 			if(!$scope.documentName && !$scope.provider && !$scope.receiver && !$scope.fromDate && !$scope.endDate && !$scope.docType){
 				base.alert('请输入筛选条件后再进行筛选')
 			}else{
-				console.log(data);
+				console.log(filterdata);
+				srv.headlogo(filterdata,function(xhr){
+					if(xhr.code == '0'){
+						$scope.docList = xhr.data;
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
 			}
+		}
+		$scope.gocontinue = function(uid){
+			var gocontData  = JSON.parse(JSON.stringify($root.params));
+			gocontData['method'] = 'com.shuige.sealsign.signToPageFileByChose';
+			gocontData['signCocumentId'] = uid;
+			srv.headlogo(gocontData,function(xhr){
+				if(xhr.code == '0'){
+					debugger
+					if(xhr.data.signDocumentPages){
+						localStorage.setItem('filesdetail',JSON.stringify(xhr.data.cloudFiles));
+						localStorage.setItem('localfilemic',JSON.stringify(xhr.data.signDocumentPages));
+						localStorage.setItem('localfileperson',JSON.stringify(xhr.data.userExtVo));
+						localStorage.setItem('docId',JSON.stringify(xhr.data.signDocuments));
+						localStorage.setItem('prevuser',JSON.stringify(xhr.data.toUserExtVoList));
+						localStorage.setItem('signInfo',JSON.stringify(xhr.data.signFile));
+						localStorage.setItem('checktype','1');
+					}
+					$location.path('/fileSign');
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
+		}
+		$scope.godel = function(uid){
+			alert(uid);
+			var delData  = JSON.parse(JSON.stringify($root.params));
+			delData['method'] = 'com.shuige.sealsign.delectSignDocumentsAndSigner';
+			delData['signerId'] = uid;
+			srv.headlogo(delData,function(xhr){
+				if(xhr.code == '0'){
+					$scope.fiterSearch();
+				}else{
+					base.alert(xhr.msg)
+					$root.dofail();
+				}
+			})
 		}
 		$scope.filterReset = function(){
 			$scope.documentName = '';
@@ -1269,14 +1633,6 @@ kry.controller('ctrl.main.drafts', [
 			$(".fromdata").val('');
 			$(".enddata").val('');
 			$scope.docType = '';
-		}
-		$scope.documentRank = function(){
-			var diag = dialog.open({
-				templateUrl: 'templates/dialog/dialog.documentRank.htm',
-				scope: $scope,
-				controller:'ctrl.dialog.documentRank',
-				className: 'ngdialog-theme-input'
-			});
 		}
 		$scope.cliNav = function(newPage){
 			alert(newPage)
@@ -1412,25 +1768,68 @@ kry.controller('ctrl.main.fileSign', [
 			menuKey: 'fileSign'
 		});
 		$scope.contactList = [{
-			'tel': '13812345678',
-			'name': '孙红雷',
-			'mail': '2659889896@qq.com',
-			'recognize': '手机+邮箱+实名'
-		},{
-			'tel': '13812345678',
-			'name': '黄渤',
-			'mail': '2659889896@qq.com',
-			'recognize': '手机+邮箱+实名'
+			'mobile': '',
+			'userName': '',
+			'email': '',
+			'authentication': ''
 		}];
-		var h=0,
-			scrollTimes = 0;
-		$scope.scrollbar = false;
-		var maxTimes = $("#dowebok .filesPicConItem").length,
-			divWidth = $("#dowebok").width(),
-			showLen = Math.floor(divWidth/155);
-		if(maxTimes > showLen){
-			$scope.scrollbar = true;
+		$scope.picurl = JSON.parse(localStorage.getItem('localfilemic'));
+		$scope.perInfo = JSON.parse(localStorage.getItem('localfileperson'));
+		$scope.filedetail = JSON.parse(localStorage.getItem('filesdetail'));
+		if(localStorage.getItem('checktype') == '1'){
+			$scope.contactList = JSON.parse(localStorage.getItem('prevuser'));
+			console.log($scope.contactList);
+			$scope.docdetail = JSON.parse(localStorage.getItem('docId'));
+			$scope.signInfo = JSON.parse(localStorage.getItem('signInfo'));
 		}
+		loadsign();
+		function loadsign(){
+			var loaddata  = JSON.parse(JSON.stringify($root.params));
+				loaddata['method'] = 'com.shuige.sealsign.getSignFileList';
+				loaddata['strToken'] = $root.uid;
+			srv.headlogo(loaddata,function(xhr){
+				if(xhr.code == '0'){
+	    			$scope.signlist = xhr.data;
+				}else{
+					base.alert(xhr.msg);
+				}
+			})
+		}
+		$scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+			$('#dowebok').viewer({
+				url: 'data-original',
+			});
+			var h=0,
+				scrollTimes = 0;
+			$scope.scrollbar = false;
+			var maxTimes = $("#dowebok .filesPicConItem").length,
+				divWidth = $("#dowebok").width(),
+				showLen = Math.floor(divWidth/155);
+			if(maxTimes > showLen){
+				$scope.scrollbar = true;
+			}
+			//$("#payments").msDropdown({visibleRows:4});
+			$(".recRank").each(function(){
+				var authentication = $(this).val();
+				if(authentication == '0'){
+					$(this).val("未认证")
+				}else if(authentication == '1'){
+					$(this).val("手机已认证")
+				}else if(authentication == '2'){
+					$(this).val("邮箱已认证")
+				}else if(authentication == '3'){
+					$(this).val("手机+邮箱认证")
+				}else if(authentication == '4'){
+					$(this).val("实名认证 ")
+				}else if(authentication == '5'){
+					$(this).val("手机+实名认证")
+				}else if(authentication == '6'){
+					$(this).val("邮箱+实名认证")
+				}else{
+					$(this).val("手机+邮箱+实名认证")
+				}
+			})
+		}); 
 		$scope.scrollLeft = function(){
 			var maxTimes = $("#dowebok .filesPicConItem").length,
 				divWidth = $("#dowebok").width(),
@@ -1445,7 +1844,7 @@ kry.controller('ctrl.main.fileSign', [
 				h -= 154;
 				scrollTimes-=1;
 				$("#dowebok").scrollLeft(h);
-			}
+			};
 		}
 		$scope.scrollRight = function(){
 			var maxTimes = $("#dowebok .filesPicConItem").length,
@@ -1468,22 +1867,142 @@ kry.controller('ctrl.main.fileSign', [
 				$("#dowebok").scrollLeft(h);
 			}
 		}
-		$('#dowebok').viewer({
-			url: 'data-original',
-		});
+		$scope.signscon = false;
+		$scope.remotUrl = $root.globalImgPath + $scope.signInfo.filePath;
+		$scope.selSign = function(){
+			$scope.signscon = !$scope.signscon;
+		}
+		$scope.signselected = function(id,path){
+			$scope.signId = id;
+			alert($scope.signId);
+			$scope.signscon = false;
+			$scope.remotUrl = $root.globalImgPath + path;
+		}
+		$scope.checkPerson = function(el,i){
+			var itval = el.target.value;
+			if(!base.isPhone(itval) && !base.isMail(itval)){
+				base.alert("请输入用户完整手机号或者邮箱号")
+				return;
+			}else{
+				var persearch = JSON.parse(JSON.stringify($root.params));
+					persearch['method'] = 'com.shuige.sealsign.getUserExtByMobileOrEmail';
+					persearch['mobileOrEmail'] = itval;
+				srv.headlogo(persearch,function(xhr){
+					if(xhr.code == '0'){
+						if(!xhr.data[0]){
+							base.alert('该用户尚未注册玺签宝')
+						}else{
+							if(xhr.data[0].id){
+								$("#userid_"+i).val(xhr.data[0].id)
+							}
+							if(xhr.data[0].userName){
+								$("#name_"+i).val(xhr.data[0].userName)
+							}
+							if(base.isPhone(itval)){
+								if(xhr.data[0].email){
+									$("#mail_"+i).val(xhr.data[0].email)
+								}
+							}
+							if(base.isMail(itval)){
+								if(xhr.data[0].mobile){
+									$("#mail_"+i).val(xhr.data[0].mobile)
+								}
+							}
+							if(xhr.data[0].authentication){
+								var authentication = xhr.data[0].authentication;
+								if(authentication == '0'){
+									$("#rec_"+i).val("未认证")
+								}else if(authentication == '1'){
+									$("#rec_"+i).val("手机已认证")
+								}else if(authentication == '2'){
+									$("#rec_"+i).val("邮箱已认证")
+								}else if(authentication == '3'){
+									$("#rec_"+i).val("手机+邮箱认证")
+								}else if(authentication == '4'){
+									$("#rec_"+i).val("实名认证 ")
+								}else if(authentication == '5'){
+									$("#rec_"+i).val("手机+实名认证")
+								}else if(authentication == '6'){
+									$("#rec_"+i).val("邮箱+实名认证")
+								}else{
+									$("#rec_"+i).val("手机+邮箱+实名认证")
+								}
+							}
+						}
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
+			}
+		}
 		$scope.addReceiver = function(){
 			var newObj = {
-			'tel': '',
-			'name': '',
-			'mail': '',
-			'recognize': ''
+			'mobile': '',
+			'userName': '',
+			'email': '',
+			'authentication': ''
 			};
 			$scope.contactList.push(newObj);
 		};
 		$scope.removeLast = function(){
 			$scope.contactList.pop();
 		};
-		$("#payments").msDropdown({visibleRows:4});
+		$scope.saveInfo = function(event){
+			var cliType = event.target.getAttribute('data-id');
+			console.log(event.target)
+	        var formList = $('form');
+        	var dataform = [];
+        	console.log(formList.length)
+	        formList.each(function(index){
+	        	debugger
+		        var params = $(this).serialize();
+		        console.log(params)
+		        var b = params.replace(/\+/g," ");
+				b =  decodeURIComponent(b);
+	            var paramArray = b.split("&");
+	            var data1 = {};
+	            for(var i=0;i<paramArray.length;i++){
+	                var valueStr = paramArray[i];
+	                data1[valueStr.split('=')[0]] = valueStr.split('=')[1];
+	            }
+				dataform[index]=data1;
+	        })
+			console.log(dataform);
+			var savedata = JSON.parse(JSON.stringify($root.params));
+				savedata['method'] = 'com.shuige.sealsign.saveSigner';
+				savedata['signers'] = JSON.stringify(dataform);
+				savedata['signDocumentPages'] = JSON.stringify($scope.picurl);
+				if(localStorage.getItem('checktype') == '1'){
+					savedata['id'] = $scope.docdetail.id;
+				}
+				if(cliType == 'save'){
+					savedata['state'] = '9';
+				}else{
+					savedata['state'] = '1';
+				}
+				savedata['signId'] = $scope.signId;
+				savedata['cloudId'] = $scope.filedetail.id;
+				savedata['addTime'] = $scope.docdetail.addTime;
+				savedata['fileId'] = $scope.docdetail.fileId;
+				savedata['userId'] = $scope.docdetail.userId;
+			console.log(savedata)	
+			srv.headlogo(savedata,function(xhr){
+				if(xhr.code == '0'){
+					if(cliType == 'save'){
+						$root.dosuccess();
+					}else{
+						//localStorage.setItem('signDocumentPages',JSON.stringify(xhr.data.signDocumentPages));
+						localStorage.setItem('signDocuments',JSON.stringify(xhr.data.signDocuments));
+						$location.path('/signature');
+					}
+				}else{
+					base.alert(xhr.msg)
+				}
+			})	
+		}
+		$scope.nextstep = function(){
+			
+		}
 	}
 ])
 kry.controller('ctrl.main.signature', [
@@ -1510,20 +2029,36 @@ kry.controller('ctrl.main.signature', [
 		$scope.scrollFile = function(index){
 			document.getElementById("pic_"+index).scrollIntoView();
 		}
+		$scope.signDocdetail = 	JSON.parse(localStorage.getItem('filesdetail'));
+		$scope.signDocPages = 	JSON.parse(localStorage.getItem('localfilemic'));
+		$scope.signDocuments = JSON.parse(localStorage.getItem('signDocuments'));
+		$scope.pageTotal = $scope.signDocPages.length;
+		$scope.signtype = '';
+		$scope.signtop = '';
+		$scope.signleft = '';
 		$scope.runSign = function(){
+			$scope.signtype = '';
 			$(".panel").remove();
 			$(".sign").remove();
 			var fileList = $(".signPics");
 			for(var i=0;i<fileList.length;i++){
-				$("#pic_"+i).zSign({ 
+				$("#signp_"+i).zSign({ 
+					//img: $root.globalImgPath+'../template/static/js/third/zSign/images/1.gif',
 					img: '../template/static/js/third/zSign/images/1.gif',
 					width: 120,
         			height: 120,
-					offset: 0
+					offset: 0,
+					callBack: function(opt){
+						console.log(opt);
+						$scope.signtype = '0';
+						$scope.signtop = opt.top;
+						$scope.signleft = opt.left;
+					}
 				});
 			}
 		}
 		$scope.runSign2 = function(){
+			$scope.signtype = '';
 			$(".panel").remove();
 			$(".sign").remove();
 			var fileList = $(".sign2");
@@ -1532,12 +2067,42 @@ kry.controller('ctrl.main.signature', [
 					img: '../template/static/js/third/zSign/images/1.gif',
 					width: 120,
         			height: 120,
-					offset: 0
+					offset: 0,
+					callBack: function(opt){
+						console.log(opt);
+						$scope.signtype = '1';
+						$scope.signtop = opt.top;
+						$scope.signleft = opt.left;
+					}
 				});
 			}
 		}
-		$scope.saveImg = function(){
+		$scope.saveImg = function(sta){
+			var posobj = {};
+				posobj['width'] = '120';
+				posobj['height'] = '120';
+				posobj['top'] = $scope.signtop;
+				posobj['left'] = $scope.signleft;
 			$(".panel").remove();
+			if(!$scope.signtype){
+				base.alert('请先进行签章后再进行保存');
+			}else{
+				var signdata = JSON.parse(JSON.stringify($root.params));
+					signdata['method'] = 'com.shuige.sealsign.sendSigner';
+					signdata['status'] = sta;
+					signdata['id'] = $scope.signDocuments.id;
+					signdata['signPosition'] = JSON.stringify(posobj);
+					signdata['signType'] = $scope.signtype;
+					signdata['signDocumentPages'] = JSON.stringify($scope.signDocPages);
+				console.log(signdata);
+				srv.headlogo(signdata,function(xhr){
+					if(xhr.code == '0'){
+						$location.path('/index');
+					}else{
+						base.alert(xhr.msg);
+					}
+				})
+			};
 		}
 	}
 ])
@@ -1581,9 +2146,12 @@ kry.controller('ctrl.person.info', [
 	    				getcoun();
 	    			}
 	    			$scope.county = xhr.data.countyId;
-	    			$scope.detailAdd = xhr.data.countyId;
+	    			$scope.detailAdd = xhr.data.address;
 	    			$scope.company = xhr.data.entName;
 	    			$scope.job = xhr.data.positionName;
+	    			if(xhr.data.userPic){
+	    				$("#logoPic").attr('src', imgUrl);
+	    			}
 				}else{
 					base.alert(xhr.msg);
 				}
@@ -1592,7 +2160,7 @@ kry.controller('ctrl.person.info', [
 		$("#logoFile").uploadify({
 			'auto': true,
 	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
-	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'uploader': $root.uploadpath,//后台处理的请求
 	        'queueID': 'fileQueue',//与下面的id对应
 	        'fileTypeDesc': '图片格式',
 	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
@@ -1624,31 +2192,6 @@ kry.controller('ctrl.person.info', [
 	            base.alert('当前文件：' + file.name + '上传失败，失败原因：' + errorString);
 	        }
         });
-		/*$scope.fileUpload = function(fil){
-			for(var i = 0; i < fil.length; i++) {
-				reads(fil[i]);
-			}
-		};
-		function reads(fil) {
-			var reader = new FileReader();
-			reader.readAsDataURL(fil);
-			reader.onload = function() {
-				var data  = JSON.parse(JSON.stringify($root.params));
-					data['method'] = 'com.shuige.user.picUpHead';
-					data['userPic'] = reader.result; //.split(',')[1];
-					data['v'] = '1.0.1';
-				console.log(data);	
-				srv.headlogo(data,function(xhr){
-					if(xhr.code == '0'){
-						$("#logoPic").attr('src', reader.result);
-						$scope.picUrl = xhr.data;
-						$root.dosuccess();
-					}else{
-						$root.dofail();
-					}
-				})
-			};
-		}*/
 		function getProvince(){
 			var proData  = JSON.parse(JSON.stringify($root.params));
 			proData['method'] = 'com.shuige.sealsign.getDicProvinceList';
@@ -1703,7 +2246,7 @@ kry.controller('ctrl.person.info', [
 				data1['method'] = 'com.shuige.sealsign.personUpdate';
 			if (base.isDefined($scope.loginName)){
 	    		var re = /[^\u4e00-\u9fa5]/;  
-	 			if(!re.test(thisval)){
+	 			if(!re.test($scope.loginName)){
 	 				base.alert('登录名不能含中文')
 	 				$scope.loginName = '';
 	 			}else{
@@ -1837,7 +2380,7 @@ kry.controller('ctrl.person.inforec', [
 	    				getcoun();
 	    			}
 	    			$scope.county = xhr.data.countyId;
-	    			$scope.detailAdd = xhr.data.countyId;
+	    			$scope.detailAdd = xhr.data.address;
 	    			$scope.company = xhr.data.entName;
 	    			$scope.job = xhr.data.positionName;
 				}else{
@@ -1874,18 +2417,6 @@ kry.controller('ctrl.person.inforec', [
 		};
 		$scope.bankRec = function(){
 			$root.notopen();
-		};
-		$scope.fileUpload = function(fil,elem){
-			for(var i = 0; i < fil.length; i++) {
-				reads(fil[i],elem);
-			}
-		};
-		function reads(fil,ele) {
-			var reader = new FileReader();
-			reader.readAsDataURL(fil);
-			reader.onload = function() {
-				$(ele).parent().parent().siblings('.idRecGroupPic').find('img').attr('src', reader.result);
-			};
 		};
 		$scope.inforIdcard = function(){
 			$scope.idcardShow = true;
@@ -1942,8 +2473,9 @@ kry.controller('ctrl.person.inforec', [
 			}
 			srv.headlogo(mobData,function(xhr){
 				if(xhr.code == '0'){
-					$root.dosuccess();
+					loadRec();
 					$scope.mobileRec = false;
+					$root.dosuccess();
 				}else{
 					$root.dofail();
 				}
@@ -2003,6 +2535,7 @@ kry.controller('ctrl.person.inforec', [
 			}
 			srv.headlogo(mailData,function(xhr){
 				if(xhr.code == '0'){
+					loadRec();
 					$scope.mailRec = false;
 					$root.dosuccess();
 				}else{
@@ -2013,7 +2546,7 @@ kry.controller('ctrl.person.inforec', [
 		$("#frontId").uploadify({
 			'auto': true,
 	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
-	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'uploader': $root.uploadpath,//后台处理的请求
 	        'queueID': 'fileQueue',//与下面的id对应
 	        'fileTypeDesc': '图片格式',
 	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
@@ -2039,7 +2572,7 @@ kry.controller('ctrl.person.inforec', [
 		$("#backId").uploadify({
 			'auto': true,
 	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
-	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'uploader': $root.uploadpath,//后台处理的请求
 	        'queueID': 'fileQueue',//与下面的id对应
 	        'fileTypeDesc': '图片格式',
 	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
@@ -2062,7 +2595,7 @@ kry.controller('ctrl.person.inforec', [
 		$("#handId").uploadify({
 			'auto': true,
 	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
-	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'uploader': $root.uploadpath,//后台处理的请求
 	        'queueID': 'fileQueue',//与下面的id对应
 	        'fileTypeDesc': '图片格式',
 	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
@@ -2149,6 +2682,7 @@ kry.controller('ctrl.person.inforec', [
 				namedata['positionName'] = $scope.job;
 			srv.headlogo(namedata,function(xhr){
 				if(xhr.code == '0'){
+					loadRec();
 					$scope.realNameRec = false;
 					$root.dosuccess();
 				}else{
@@ -2491,9 +3025,21 @@ kry.controller('ctrl.person.sign', [
 			title: '我的签名',
 			menuKey: 'personSign'
 		});
-		
-		$scope.fontChose = function(){
-			$scope.fontChoose = !$scope.fontChoose;
+		$scope.time = new Date().getTime();
+		$scope.fontChose = function(fid,def,col){
+			var chosedata  = JSON.parse(JSON.stringify($root.params));
+				chosedata['method'] = 'com.shuige.sealsign.updateSignFile';
+				chosedata['id'] = fid;
+				chosedata['color'] = col;
+				chosedata['isdefault'] = def;
+			srv.headlogo(chosedata,function(xhr){
+				if(xhr.code == '0'){
+	    			loadsign();
+				}else{
+					$root.dofail();
+					base.alert(xhr.msg);
+				}
+			})
 		};
 		loadsign();
 		function loadsign(){
@@ -2503,9 +3049,6 @@ kry.controller('ctrl.person.sign', [
 			srv.headlogo(loaddata,function(xhr){
 				if(xhr.code == '0'){
 	    			$scope.signlist = xhr.data;
-//	    			for(var i=0;i<$scope.signlist.length;i++){
-//	    				//$scope.fontChoose+i = false;
-//	    			}
 				}else{
 					base.alert(xhr.msg);
 				}
@@ -2514,7 +3057,7 @@ kry.controller('ctrl.person.sign', [
 		$("#signUpload").uploadify({
 			'auto': true,
 	        'swf': 'static/js/third/jqueryUplodify/uploadify.swf',
-	        'uploader': 'http://192.168.2.119:8280/file/upload',//后台处理的请求
+	        'uploader': $root.uploadpath,//后台处理的请求
 	        'queueID': 'fileQueue',//与下面的id对应
 	        'fileTypeDesc': '图片格式',
 	        'fileTypeExts': '*.jpg;*.jpeg;*.png', //控制可上传文件的扩展名，启用本项时需同时声明fileDesc
@@ -2549,17 +3092,19 @@ kry.controller('ctrl.person.sign', [
 			gethandCode();
 		}
 		function gethandCode(){
+			$("#qrcode").html('');
 			var codedata  = JSON.parse(JSON.stringify($root.params));
 				codedata['method'] = 'com.shuige.sealsign.getQRCodeContent';
 			srv.headlogo(codedata,function(xhr){
 				if(xhr.code == '0'){
-	    			$scope.qrcode = xhr.data;
-	    			console.log($scope.qrcode);
+	    			$scope.qrcode = JSON.parse(xhr.data);
+	    			var qrcodestr = 'http://192.168.2.190:8020/nihao/index.html?uuId='+$scope.qrcode.uuId+'&userId='+$scope.qrcode.token;
+	    			console.log(qrcodestr)
 	    			$("#qrcode").qrcode({
 						render: "table",
-						width: 120,
-						height:120,
-						text: $scope.qrcode
+						width: 155,
+						height:155,
+						text: qrcodestr
 					});
 				}else{
 					base.alert(xhr.msg);
@@ -2589,7 +3134,16 @@ kry.controller('ctrl.dialog.cloudfilelist', [
 			title: '云文件签署弹窗',
 			menuKey: 'index'
 		});
-		
+		var clouddata  = JSON.parse(JSON.stringify($root.params));
+			clouddata['method'] = 'com.shuige.sealsign.getCloudFilesBytoken';
+			clouddata['fileType'] = '0';
+		srv.headlogo(clouddata,function(xhr){
+			if(xhr.code == '0'){
+    			$scope.cloudlist = xhr.data;
+			}else{
+				base.alert(xhr.msg);
+			}
+		})
 	}
 ])
 kry.controller('ctrl.dialog.modelfilelist', [
@@ -2613,7 +3167,16 @@ kry.controller('ctrl.dialog.modelfilelist', [
 			title: '合同模板签署弹窗',
 			menuKey: 'index'
 		});
-		
+		var clouddata  = JSON.parse(JSON.stringify($root.params));
+			clouddata['method'] = 'com.shuige.sealsign.getCloudFilesBytoken';
+			clouddata['fileType'] = '1';
+		srv.headlogo(clouddata,function(xhr){
+			if(xhr.code == '0'){
+    			$scope.modellist = xhr.data;
+			}else{
+				base.alert(xhr.msg);
+			}
+		})
 	}
 ])
 kry.controller('ctrl.dialog.documentRank', [
@@ -2633,11 +3196,11 @@ kry.controller('ctrl.dialog.documentRank', [
 		srv,
 		base
 	) {
-		$root.setSite({
-			title: '首页',
-			menuKey: 'index'
-		});
-		
+//		$root.setSite({
+//			title: '任务概况',
+//			menuKey: 'index'
+//		});
+		//$scope.rankstatus =
 	}
 ])
 kry.controller('ctrl.pageNavCtrl', [

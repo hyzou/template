@@ -22,7 +22,10 @@
 					<img src="../template/static/css/img/passwordLogo.png"/>
 				</div>
 				<div class="pMsgRectext floatLeft">
-					<p class="pMsgRectextTit">签署密码<span class="bgColordanger boxCircle">!</span></p>
+					<p class="pMsgRectextTit">签署密码
+						<span ng-if="!seted" class="bgColordanger boxCircle">!</span>
+						<span ng-if="seted" class="bgColorsuc boxCircle">✔</span>
+					</p>
 					<p class="pMsgRectextTet" ng-if="!seted"><span>未设置</span><a class="mrl15 colorDanger text_underline" ng-click="signPswSet()">设置</a></p>
 					<p class="pMsgRectextTet" ng-if="seted"><span>已设置</span><a class="mrl15 colorDanger text_underline" ng-click="signPswChange()">更改</a></p>
 				</div>
